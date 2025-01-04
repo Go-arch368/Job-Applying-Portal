@@ -61,7 +61,7 @@ userCltr.login=async(req,res)=>{
       if(!user){
          return res.status(404).json("invalid email or password")
       }
-      const isValid = await bcrypt.compare(password,user.password)
+      const isValid = await animation bcrypt.compare(password,user.password)
       if(!isValid){
         return res.status(404).json("invalid email or password")
       }
