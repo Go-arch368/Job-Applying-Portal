@@ -2,77 +2,111 @@ import User from "../Models/userSchema.js"
 import { validationResult } from "express-validator"
 const userCltr = {}
 import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+
 
 userCltr.register=async(req,res)=>{
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if(!errors.isEmpty()){
         return res.status(404).json({error:errors.array()})
     }
-    const {name,email,password,role,companyname,isverified}= req.body;
-
+    const body = req.body
     try{
-      const userDetails = await User.countDocuments()
-      if(userDetails>1){
-        if(role==="recruiter"&&!companyname){
-            return res.status(400).json({message:"company name field is required"})
-          }
-      }
-      let assignedRole = role;
-      if(userDetails==0){
-        if(role=="recruiter"){
-            assignedRole="admin"
-            
-        }else{
-            assignedRole="admin"
-            
+        const user = new User(body)
+        const salt = await bcrypt.genSalt()
+        const hash= await bcrypt.hash(user.password,salt)
+           user.password=hash
+        const userdetails =await User.countDocuments()
+        if(userdetails==0){
+          user.role="admin"
         }
-      }
-       const user = new User({name,
-        email,
-        password,
-        role:assignedRole,
-        companyname:role=="recruiter"?companyname:undefined,
-        isverified:role=="recruiter"?(userDetails==0?true:false):true})
-       const salt = await bcrypt.genSalt()
-       const hash = await bcrypt.hash(user.password,salt)
-       user.password = hash
-       
-       await user.save()
-       return res.status(201).json(user)
-
+        await user.save()
+        const tokenData = jwt.sign({userId:user._id,role:user.role},"Secret@123",{expiresIn:"7d"})
+      return res.json({token:tokenData})
     }
     catch(err){
       console.log(err)
-      return res.status(500).json({err:"something went wrong"})
+      res.status(500).json({error:err})
     }
 }
 
-userCltr.login=async(req,res)=>{
-    let errors = validationResult(req)
+userCltr.loginUser=async(req,res)=>{
+    const errors=validationResult(req)
     if(!errors.isEmpty()){
         return res.status(404).json({error:errors.array()})
     }
-    const {email,password} = req.body
+    const body = req.body
     try{
-      const user = await User.findOne({email:email})
-      if(user.isverified===false){
-          return res.status(404).json("your account is still not verified by the admin")
-      }
+      const user = await User.findOne({email:body.email})
       if(!user){
-         return res.status(404).json("invalid email or password")
+        return res.status(404).json("invalid username or password")
       }
-      const isValid = await animation bcrypt.compare(password,user.password)
+      const isValid = await bcrypt.compare(body.password,user.password)
       if(!isValid){
-        return res.status(404).json("invalid email or password")
+        return res.status(404).json("invalid username or password")
       }
-      const tokenData = {userId:user._id,role:user.role}
-      const token = jwt.sign(tokenData,process.env.SECRET_KEY,{expiresIn:"7d"})
-      return res.json(token)
+    const tokenData = jwt.sign({userId:user._id,role:user.role},"Secret@123",{expiresIn:"7d"})
+      return res.json({token:tokenData})
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({error:err})
+    }
+}
+
+userCltr.getUserData=async(req,res)=>{
+    try{
+      const user = await User.findById(req.currentUser.userId)
+      return res.json(user)
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+
+
+/* userCltr.verify=async(req,res)=>{
+    try{
+     const getVerified = await User.find({isverified:false})
+     return  res.json(getVerified)
     }
     catch(err){
         console.log(err)
         return res.status(500).json({err:"something went wrong"})
     }
 }
+
+userCltr.updateRecruiter = async(req,res)=>{
+    let errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(404).json({error:errors.array()})
+    }
+       const id = req.params.id
+       const body= req.body
+    try{
+        const checkId = await User.findById(id)
+        if(!checkId){
+            return res.status(404).json("your id is not found")
+        }
+      const update = await User.findByIdAndUpdate(id,body,{new:true,runValidators:true})
+      return res.status(200).json(update)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({err:"something went wrong"})
+    }
+}
+
+userCltr.getAll = async(req,res)=>{
+    try{
+      const userDetails = await User.find({isverified:true})
+      return res.json(userDetails)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({err:"something went wrong"})
+    }
+} */
 
 export default userCltr
