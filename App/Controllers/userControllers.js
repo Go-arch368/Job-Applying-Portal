@@ -1,6 +1,7 @@
 import User from "../Models/userSchema.js"
 import { validationResult } from "express-validator"
 const userCltr = {}
+import Recruiter from "../Models/recruitermodel.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
@@ -45,6 +46,17 @@ userCltr.loginUser=async(req,res)=>{
       if(!isValid){
         return res.status(404).json("invalid username or password")
       }
+      const userCount = await User.countDocuments()
+      if(userCount>1&&user.role==="recruiter"){
+           const recruiter = await Recruiter.findOne({userId:user._id})
+           if(!recruiter){
+             return res.status(404).json({error:"recriter details not being found"})
+           }
+           if(!recruiter.isVerified){
+            return res.status(403).json("your data needed to verified by admin before logging")
+           }
+      }
+
     const tokenData = jwt.sign({userId:user._id,role:user.role},"Secret@123",{expiresIn:"7d"})
       return res.json({token:tokenData})
     }

@@ -21,7 +21,7 @@ Candidate Model:
      ref:”User”
  },
    name:String,
-   domainname:String,
+   domainname:[],
   education: [ {title, startYear, endYear, institute, cgp}, {}],
    resumeUpload: [{ name: '', filePath }]
    savedJobs: [JobIds]
