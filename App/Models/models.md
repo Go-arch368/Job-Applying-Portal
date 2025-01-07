@@ -102,3 +102,9 @@ JobFair Model
     description:String,
     recruiters:[{userId:{},companyname:String,role:String}],
     candidates:[{userId:{},email:String}],
+
+Subscription {
+
+}   
+
+payment

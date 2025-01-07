@@ -39,14 +39,11 @@ candidateCltr.posting = async (req, res) => {
                         resource_type: "auto",
                         folder: "resumes",
                     });
-
-                   
                     fs.unlink(file.path, (err) => {
                         if (err) {
                             console.error("Failed to delete local file", err);
                         }
                     });
-
                     return {
                         filename: result.public_id,
                         filepath: result.secure_url,
@@ -96,7 +93,6 @@ candidateCltr.getById=async(req,res)=>{
     }
 }
 
-
 /* candidateCltr.upload= async (req, res) => {
     console.log(req.files); 
   
@@ -110,3 +106,93 @@ candidateCltr.getById=async(req,res)=>{
     });
   };
    */
+
+candidateCltr.update=async(req,res)=>{
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(404).json({error:errors.array()})
+    }
+    try{
+        const { mobile, education, skills, certification, saveJobs } = req.body
+        const id = req.params.id
+        const candidate = await Candidate.findById(id)
+        if(!candidate){
+            return res.status(404).json("candidate id is not found")
+        }
+        if(mobile){
+            const mobileNumber = JSON.parse(mobile)
+            candidate.mobile=mobileNumber
+            
+        }
+        if(education){
+            const educationData = JSON.parse(education)
+            candidate.education=candidate.education.map((ele)=>{
+               const updateEdu = educationData.find((e)=>e._id==ele._id);
+               //ele._id==educationData._id?{...ele,...educationData}:ele
+               return updateEdu?{...ele,...updateEdu}:ele
+            })
+            const newEducation = educationData.filter((ele)=>!candidate.education.some((e)=>e._id==ele._id))//[]
+            candidate.education.push(...newEducation)//[{}, {}, {}].push(newEducation)
+        }
+        if(skills){
+            const skillsData = JSON.parse(skills)
+            candidate.skills =candidate.skills.map((ele)=>{
+             const updatedSkills = skillsData.find((e)=>e._id==ele._id)
+             return updatedSkills?{...ele,...updatedSkills}:ele
+            })
+         const newSkills = skillsData.filter((ele)=>!candidate.skills.some((e)=>e._id==ele._id))
+         console.log(newSkills)
+         //candidate.skills.push(...newSkills)
+         candidate.skills = [...candidate.skills, ...newSkills]
+        }
+       
+
+        if(certification){
+            const certificationData = JSON.parse(certification)
+            candidate.certification=candidate.certification.map((ele)=>{
+             const updatedCertification=certificationData.find((e)=>e._id==ele._id)
+                return updatedCertification?{...ele,...updatedCertification}:ele
+             })
+           
+             const newCertification = certificationData.filter(ele=> !candidate.certification.some(e=> e._id == ele._id))
+             //candidate.certification.push(...newCertification)
+             candidate.certification = [...candidate.certification, ...newCertification]
+        }
+
+        const resumeFiles = await Promise.all(
+            req.files.map(async (file) => {
+                try {
+                  
+                    const result = await cloudinary.uploader.upload(file.path, {
+                        resource_type: "auto",
+                        folder: "resumes",
+                    });
+
+                   
+                    fs.unlink(file.path, (err) => {
+                        if (err) {
+                            console.error("Failed to delete local file", err);
+                        }
+                    });
+
+                    return {
+                        filename: result.public_id,
+                        filepath: result.secure_url,
+                    };
+                } catch (uploadError) {
+                    console.error("Cloudinary upload failed", uploadError);
+                    throw new Error("File upload to Cloudinary failed.");
+                }
+            })
+        );
+        //candidate.resumeUpload.push(...resumeFiles)
+        candidate.resumeUpload = [...candidate.resumeUpload, ...resumeFiles]
+        await candidate.save()
+        return res.json(candidate)
+
+    }
+    catch(err){
+      console.log(err)
+      return res.status(500).json({err:"something went wrong"})
+    }
+}  
