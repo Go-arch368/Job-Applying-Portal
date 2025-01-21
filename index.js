@@ -3,6 +3,9 @@ import configuredb from "./Config/db.js"
 import userRouter from "./Routes/userRoute.js";
 import recruiterRouter from "./Routes/recruiterRoute.js"
 import candidateRouter from "./Routes/candidateRoute.js"
+import resumebuilderRouter from "./Routes/resumebuilderRoute.js"
+import jobRouter from "./Routes/jobRouter.js"
+import questionRouter from "./Routes/questionRoutes.js"
 import  dotenv from "dotenv";
 dotenv.config()
 const port =4010
@@ -13,6 +16,9 @@ app.use(express.json())
 app.use("/api",userRouter)
 app.use("/api",recruiterRouter)
 app.use("/api",candidateRouter)
+app.use("/api",resumebuilderRouter)
+app.use("/api",jobRouter)
+app.use("/api",questionRouter)
 
 app.listen(port,()=>{
     console.log(`${port} has been successfully registered`)

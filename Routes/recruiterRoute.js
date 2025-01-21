@@ -1,7 +1,7 @@
 import express from "express"
 import recruiterValidator from "../App/Validators/recruiterValidators.js"
 import recruiterCltr from "../App/Controllers/recruiterControllers.js"
-import authenticateUser from "../App/Middlewares/authenticateUser.js"
+import authenticateUser from "../App/Middlewares/AuthenticateUser.js"
 import idValidation from "../App/Validators/idValidation.js"
 import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
 import { checkSchema } from "express-validator"

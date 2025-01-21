@@ -41,6 +41,7 @@ Recruiter Model:
 
 Job Posting:
   jobtitle:String,
+  
     description:String,
     location:String,
     jobtype:{

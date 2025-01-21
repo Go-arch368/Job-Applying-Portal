@@ -16,20 +16,29 @@ candidateCltr.posting = async (req, res) => {
     if(!errors.isEmpty()){
         return res.status(404).json({error:errors.array()})
     }
-
+   
     try {
         const { mobile, education, skills, certification, saveJobs } = req.body
-
-        const newEducation = JSON.parse(education)
-        const newSkills = JSON.parse(skills)
-        const newCertification = JSON.parse(certification)
-        const newSavedJobs = JSON.parse(saveJobs)
-      
+        let newEducation, newSkills, newCertification, newSavedJobs;
+        console.log(req.body)
+        try {
+            newEducation = JSON.parse(education);
+            console.log("Parsed Education:", newEducation);
+            newSkills = JSON.parse(skills);
+            console.log("Parsed Skills:", newSkills);
+            newCertification = JSON.parse(certification);
+            console.log("Parsed Certification:", newCertification);
+            newSavedJobs = JSON.parse(saveJobs);
+            console.log("Parsed Saved Jobs:", newSavedJobs);
+        } catch (parseError) {
+            console.error("JSON parse error:", parseError.message);
+            return res.status(400).json({ error: "Invalid JSON in request body." });
+        }
          if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded." });
         } 
 
-        console.log(req.files);  
+       // console.log(req.files);  
 
         const resumeFiles = await Promise.all(
             req.files.map(async (file) => {
@@ -65,9 +74,10 @@ candidateCltr.posting = async (req, res) => {
             resumeUpload: resumeFiles,
         });
 
+       
         await candidate.save();
-        const populatedCandidate = await Candidate.findById(candidate._id).populate("userId");
-
+       const populatedCandidate = await Candidate.findById(candidate._id).populate("userId");
+        console.log(populatedCandidate)
         return res.status(201).json(populatedCandidate);
     } catch (err) {
         console.error("Error saving candidate", err);

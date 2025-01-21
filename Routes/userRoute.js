@@ -4,7 +4,7 @@ import { loginValidation } from "../App/Validators/userValidation.js"
 //import idValidation from "../App/Validators/idValidation.js"
 import userCltr from "../App/Controllers/userControllers.js"
 import {checkSchema} from "express-validator"
-import authenticateUser from "../App/Middlewares/authenticateUser.js"
+import authenticateUser from "../App/Middlewares/AuthenticateUser.js"
 //import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
 const router = express.Router()
 

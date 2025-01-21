@@ -17,11 +17,11 @@ recruiterCltr.posting = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "user not found" });
         }
-        recruiter.name = user.name;
-        recruiter.email = user.email;
+       // recruiter.name = user.name;
+       // recruiter.email = user.email;
         await recruiter.save();
-        
-        return res.status(201).json( recruiter );
+        const recruiterPopulate = await Recruiter.findById(recruiter._id).populate("userId");
+        return res.status(201).json( recruiterPopulate );
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Server error", error: err.message });

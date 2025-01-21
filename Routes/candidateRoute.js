@@ -1,7 +1,7 @@
 import express from "express"
 import candidateValidator from "../App/Validators/candidateValidator.js"
 import candidateCltr from "../App/Controllers/candidateController.js"
-import authenticateUser from "../App/Middlewares/authenticateUser.js"
+import authenticateUser from "../App/Middlewares/AuthenticateUser.js"
 import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
 import { checkSchema } from "express-validator"
 import upload from "../App/Middlewares/Multer.js"
