@@ -3,7 +3,7 @@ import mongoose, { Schema, model } from "mongoose";
 const resumebuilderSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "User", // Reference to the User model
+        ref: "User", 
         required: true,
     },
     personalInfo: [{
@@ -54,7 +54,7 @@ const resumebuilderSchema = new Schema({
     ],
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: "User", // Reference to the User model
+        ref: "User", 
     },
     visibility:{
       type:String,

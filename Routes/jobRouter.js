@@ -9,6 +9,9 @@ import { checkSchema } from "express-validator";
 const router = express.Router()
 
 router.post("/jobposting",authenticateUser,authorizeUser(["recruiter"]),checkSchema(jobValidators),jobCltr.posting)
-router.get("/job/:jobId/questions",authenticateUser,authorizeUser(["recruiter"]),jobCltr.gettingQuestions)
+router.get("/job/:jobId/questions",authenticateUser,authorizeUser(["recruiter","candidate"]),jobCltr.gettingQuestions)//using in the job application portal
+router.get("/jobs",authenticateUser,authorizeUser(["recruiter","admin"]),jobCltr.getAll)
+//candidate can able to search for an job :
+router.get("/job",authenticateUser,authorizeUser(["candidate"]),jobCltr.searching)
 
 export default router

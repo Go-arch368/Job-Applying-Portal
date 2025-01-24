@@ -8,7 +8,8 @@ const jobposting = new Schema ({
         type:String,required:true
     },
     recruiterId:{
-        type:Schema.Types.ObjectId,required:true,
+        type:Schema.Types.ObjectId,
+        required:true,
         ref:"Recruiter"
     },
     assignedQuestions:[{

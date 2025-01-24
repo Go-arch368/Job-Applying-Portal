@@ -6,6 +6,7 @@ import candidateRouter from "./Routes/candidateRoute.js"
 import resumebuilderRouter from "./Routes/resumebuilderRoute.js"
 import jobRouter from "./Routes/jobRouter.js"
 import questionRouter from "./Routes/questionRoutes.js"
+import jobApplicationRouter from "./Routes/jobApplicationRouter.js"
 import  dotenv from "dotenv";
 dotenv.config()
 const port =4010
@@ -19,6 +20,7 @@ app.use("/api",candidateRouter)
 app.use("/api",resumebuilderRouter)
 app.use("/api",jobRouter)
 app.use("/api",questionRouter)
+app.use("/api",jobApplicationRouter)
 
 app.listen(port,()=>{
     console.log(`${port} has been successfully registered`)

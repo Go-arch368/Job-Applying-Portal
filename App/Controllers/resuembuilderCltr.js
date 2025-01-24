@@ -123,38 +123,30 @@ resumeCltr.search = async (req, res) => {
         const { personalInfo, workExperience, skills } = req.query;
 
         const filter = {
-            visibility: { $ne: "private" }, // Exclude private resumes
+            visibility: { $ne: "private" }, // Exclude private resumes if the visibility is private 
         };
-
-        const orConditions = [];
-
-        
+        const orConditions = [];        
         if (skills) {
             orConditions.push({
                 "skills.skillName": { $in: skills.split(",").map((skill) => skill.trim()) },
             });
         }
-
         // Work experience filter (if provided)
         if (workExperience) {
             orConditions.push({
                 "workExperience.experience": { $gte: parseInt(workExperience, 10) },
             });
         }
-
         if (personalInfo) {
             orConditions.push({
                 "personalInfo.location": new RegExp(`^${personalInfo}$`, "i"), 
             });
         }
         if (orConditions.length > 0) {
-            filter["$or"] = orConditions;
+            filter["$or"] = orConditions; //atlest one condition must be true for an given document.
         }
-
         console.log(filter); // Debugging
-
         const resumes = await Resumebuilder.find(filter).populate("userId", "name email");
-
         if (resumes.length === 0) {
             return res.status(404).json({ message: "No resumes found matching the criteria." });
         }

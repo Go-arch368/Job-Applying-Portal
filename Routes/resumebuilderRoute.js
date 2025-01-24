@@ -7,7 +7,7 @@ import { checkSchema } from "express-validator";
 
 const router = express.Router();
 
-// Route to handle resume submission
+                         // Route to handle resume submission
 router.post("/resumedetails", authenticateUser,authorizeUser(["candidate"]),checkSchema(resumebuilder),resumeCltr.resumedetails);
 router.put("/resumedetails/:id",authenticateUser,authorizeUser(["candidate"]),checkSchema(resumebuilder),resumeCltr.update);
 router.get("/accessresume/:id",resumeCltr.access)

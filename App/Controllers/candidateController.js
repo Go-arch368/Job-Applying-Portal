@@ -23,13 +23,9 @@ candidateCltr.posting = async (req, res) => {
         console.log(req.body)
         try {
             newEducation = JSON.parse(education);
-            console.log("Parsed Education:", newEducation);
             newSkills = JSON.parse(skills);
-            console.log("Parsed Skills:", newSkills);
             newCertification = JSON.parse(certification);
-            console.log("Parsed Certification:", newCertification);
             newSavedJobs = JSON.parse(saveJobs);
-            console.log("Parsed Saved Jobs:", newSavedJobs);
         } catch (parseError) {
             console.error("JSON parse error:", parseError.message);
             return res.status(400).json({ error: "Invalid JSON in request body." });
@@ -142,7 +138,8 @@ candidateCltr.update=async(req,res)=>{
                return updateEdu?{...ele,...updateEdu}:ele
             })
             const newEducation = educationData.filter((ele)=>!candidate.education.some((e)=>e._id==ele._id))//[]
-            candidate.education.push(...newEducation)//[{}, {}, {}].push(newEducation)
+            //candidate.education.push(...newEducation)//[{}, {}, {}].push(newEducation)
+            candidate.education =[...candidate.education,...newEducation]
         }
         if(skills){
             const skillsData = JSON.parse(skills)
