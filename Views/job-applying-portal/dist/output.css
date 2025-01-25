@@ -1,0 +1,9 @@
+/*! tailwindcss v4.0.0 | MIT License | https://tailwindcss.com */
+@tailwind base;
+@tailwind components;
+.text-center {
+  text-align: center;
+}
+.underline {
+  text-decoration-line: underline;
+}
