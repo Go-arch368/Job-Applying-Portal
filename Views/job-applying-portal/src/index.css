@@ -1,3 +1,12 @@
 .navbar{
     background-color:rgb(74, 118, 230);
+    height: 50px;
+    
+}
+.vertical{
+   margin-left:500px;
+}
+li{
+    display:inline;
+    margin-left: 50px;
 }

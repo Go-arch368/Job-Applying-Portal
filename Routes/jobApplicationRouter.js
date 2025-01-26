@@ -25,4 +25,3 @@ router.get("/job/saved", authenticateUser,authorizeUser(["candidate"]), jobAppCl
 router.delete("/candidate/saved-jobs/:jobId",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.deletingJobId)
 
 export default router;
-

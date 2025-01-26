@@ -8,11 +8,15 @@ import jobRouter from "./Routes/jobRouter.js"
 import questionRouter from "./Routes/questionRoutes.js"
 import jobApplicationRouter from "./Routes/jobApplicationRouter.js"
 import  dotenv from "dotenv";
+import cors from "cors"
+const app=express()
+app.use(express.json())
+app.use(cors())
 dotenv.config()
 const port =4010
 configuredb()
-const app=express()
-app.use(express.json())
+
+
 
 app.use("/api",userRouter)
 app.use("/api",recruiterRouter)

@@ -1,11 +1,11 @@
 import express from "express"
-import {userValidations} from "../App/Validators/userValidation.js"
-import { loginValidation } from "../App/Validators/userValidation.js"
+import { userValidations, loginValidation } from "../App/Validators/userValidation.js"
+
 //import idValidation from "../App/Validators/idValidation.js"
 import userCltr from "../App/Controllers/userControllers.js"
 import {checkSchema} from "express-validator"
-import authenticateUser from "../App/Middlewares/AuthenticateUser.js"
-//import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
+import authenticateUser from "../App//Middlewares/AuthenticateUser.js"
+//import authorizeUser from "../App//App/Middlewares/AuthorizeUser.js"
 const router = express.Router()
 
 router.post("/users",checkSchema(userValidations),userCltr.register)
