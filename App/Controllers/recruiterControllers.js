@@ -9,10 +9,10 @@ recruiterCltr.posting = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { companyname, location, website } = req.body;
+    const { companyname, location, website ,description } = req.body;
 
     try {
-        const recruiter = new Recruiter({ companyname, location, website, userId: req.currentUser.userId });
+        const recruiter = new Recruiter({ companyname, location, website, userId: req.currentUser.userId ,description});
         const user = await User.findById(req.currentUser.userId);
         if (!user) {
             return res.status(404).json({ message: "user not found" });

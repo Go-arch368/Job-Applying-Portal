@@ -2,6 +2,7 @@ import { useState } from "react";
 import validator from "validator";
 import { useDispatch } from "react-redux";
 import { userRegister } from "../redux/slices/usersSlice";
+import RecruiterDetails from "./RecruiterDetails";
 
 export default function Register() {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export default function Register() {
     role: "",
   });
   const [clientErrors, setClientErrors] = useState({});
+  const [showRecruiterForm,setShowRecruiterForm] = useState(false)
 
   function validation() {
     let errors = {};
@@ -60,6 +62,9 @@ export default function Register() {
     } else {
       setClientErrors({});
       dispatch(userRegister({ users, resetForm }));
+      if(users.role==="recruiter"){
+        setShowRecruiterForm(true)
+      }
       console.log("Form submitted successfully!", users);
     }
   }
@@ -67,6 +72,7 @@ export default function Register() {
   return (
     <div>
       <h1>Create Your Account</h1>
+       {!showRecruiterForm?(
       <form onSubmit={handleSubmit}>
         <div className="flex gap-4 mb-4">
           <button
@@ -141,7 +147,9 @@ export default function Register() {
             </div>
           </>
         )}
-      </form>
+      </form>):(
+        <RecruiterDetails userData={users}/>
+      )}
     </div>
   );
 }

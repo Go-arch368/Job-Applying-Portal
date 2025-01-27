@@ -40,11 +40,11 @@ userCltr.loginUser=async(req,res)=>{
     try{
       const user = await User.findOne({email:body.email})
       if(!user){
-        return res.status(404).json("invalid username or password")
+        return res.status(404).json({error:"invalid username or password"})
       }
       const isValid = await bcrypt.compare(body.password,user.password)
       if(!isValid){
-        return res.status(404).json("invalid username or password")
+        return res.status(404).json({error:"invalid username or password"})
       }
       const userCount = await User.countDocuments()
       if(userCount>1&&user.role==="recruiter"){
