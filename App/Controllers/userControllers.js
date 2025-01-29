@@ -53,7 +53,7 @@ userCltr.loginUser=async(req,res)=>{
              return res.status(404).json({error:"recriter details not being found"})
            }
            if(!recruiter.isVerified){
-            return res.status(403).json("your data needed to verified by admin before logging")
+            return res.status(403).json({error:"Your data is not verified by the admin"})
            }
       }
 

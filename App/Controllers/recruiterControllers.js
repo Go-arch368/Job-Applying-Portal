@@ -30,7 +30,7 @@ recruiterCltr.posting = async (req, res) => {
 
 recruiterCltr.verify = async(req,res)=>{
     try{
-        const getting = await Recruiter.find({isVerified:false})
+        const getting = await Recruiter.find({isVerified:false}).populate("userId")
         return res.json(getting)
     }
     catch(err){
@@ -51,7 +51,7 @@ recruiterCltr.update = async(req,res)=>{
         if(!findingId){
             return res.status(404).json("your is not found")
         }
-       const update = await Recruiter.findByIdAndUpdate(id,body,{new:true,runValidators:true})
+       const update = await Recruiter.findByIdAndUpdate(id,body,{new:true,runValidators:true}).populate("userId")
        return res.status(200).json(update)
     }
     catch(err){
@@ -73,7 +73,7 @@ recruiterCltr.destroy=async(req,res)=>{
             return res.status(404).json("your is not found")
         }
       
-       const del =await Recruiter.findByIdAndDelete(id)
+       const del =await Recruiter.findByIdAndDelete(id).populate("userId")
        return res.status(200).json(del)
     }
     catch(err){

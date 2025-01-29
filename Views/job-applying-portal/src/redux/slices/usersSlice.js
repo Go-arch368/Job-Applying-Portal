@@ -66,17 +66,17 @@ const usersSlice = createSlice({
         builder.addCase(userRegister.rejected,(state,action)=>{
            return {...state,isloggedIn:false,user:null,serverErrors:action.payload}
         })
-        builder.addCase(userLogin.fulfilled,(state,action)=>{
+     /*    builder.addCase(userLogin.fulfilled,(state,action)=>{
            return {...state,isloggedIn:true,user:action.payload} 
         })
         builder.addCase(userLogin.rejected,(state,action)=>{
             return {...state,isloggedIn:false,user:null,serverErrors:action.payload}
-        })
+        })  */
         builder.addCase(userRole.fulfilled,(state,action)=>{
             return {...state,isloggedIn:true,user:action.payload}
         })
         builder.addCase(userRole.rejected,(state,action)=>{
-            return{...state,serverErrors:action.payload}
+            return{...state,serverErrors:action.payload,user:null}
         })
     }
 

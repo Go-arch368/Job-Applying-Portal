@@ -1,19 +1,24 @@
 import { useState } from "react";
 import validator from "validator";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userRegister } from "../redux/slices/usersSlice";
 import RecruiterDetails from "./RecruiterDetails";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+  const navigate = useNavigate();
+  const { serverErrors } = useSelector((state) => state.users);
   const dispatch = useDispatch();
+
   const [users, setUsers] = useState({
     name: "",
     email: "",
     password: "",
     role: "",
   });
+
   const [clientErrors, setClientErrors] = useState({});
-  const [showRecruiterForm,setShowRecruiterForm] = useState(false)
+  const [showRecruiterForm, setShowRecruiterForm] = useState(false);
 
   function validation() {
     let errors = {};
@@ -34,8 +39,7 @@ export default function Register() {
     if (!users.password) {
       errors.password = "The password field is required";
     } else if (users.password.length < 8 || users.password.length > 20) {
-      errors.password =
-        "The password must contain between 8 and 20 characters";
+      errors.password = "The password must be between 8 and 20 characters";
     }
 
     if (!users.role) {
@@ -61,95 +65,142 @@ export default function Register() {
       setClientErrors(errors);
     } else {
       setClientErrors({});
-      dispatch(userRegister({ users, resetForm }));
-      if(users.role==="recruiter"){
-        setShowRecruiterForm(true)
-      }
-      console.log("Form submitted successfully!", users);
+      dispatch(userRegister({ users, resetForm }))
+        .unwrap()
+        .then((response) => {
+          console.log("Registration successful!", response);
+          if (users.role === "recruiter") {
+            setShowRecruiterForm(true);
+          } else {
+            navigate("/login");
+          }
+        })
+        .catch((err) => {
+          console.log("Registration failed:", err);
+        });
     }
   }
 
   return (
-    <div>
-      <h1>Create Your Account</h1>
-       {!showRecruiterForm?(
-      <form onSubmit={handleSubmit}>
-        <div className="flex gap-4 mb-4">
-          <button
-            type="button"
-            className={`border p-2 ${
-              users.role === "candidate" ? "bg-blue-500 text-white" : ""
-            }`}
-            onClick={() => setUsers({ ...users, role: "candidate" })}
-          >
-            Register as Candidate
-          </button>
-          <button
-            type="button"
-            className={`border p-2 ${
-              users.role === "recruiter" ? "bg-blue-500 text-white" : ""
-            }`}
-            onClick={() => setUsers({ ...users, role: "recruiter" })}
-          >
-            Register as Recruiter
-          </button>
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-6">
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">
+          Create Your Account
+        </h1>
 
-        {clientErrors.role && (
-          <span style={{ color: "red" }}>{clientErrors.role}</span>
-        )}
-
-        {users.role && (
-          <>
-            <div>
-              <label>Name</label>
-              <input
-                type="text"
-                className="border"
-                value={users.name}
-                onChange={(e) => setUsers({ ...users, name: e.target.value })}
-              />
-              {clientErrors.name && (
-                <span style={{ color: "red" }}>{clientErrors.name}</span>
-              )}
-            </div>
-            <div>
-              <label>Email</label>
-              <input
-                type="email"
-                className="border"
-                value={users.email}
-                onChange={(e) => setUsers({ ...users, email: e.target.value })}
-              />
-              {clientErrors.email && (
-                <span style={{ color: "red" }}>{clientErrors.email}</span>
-              )}
-            </div>
-            <div>
-              <label>Password</label>
-              <input
-                type="password"
-                className="border"
-                value={users.password}
-                onChange={(e) =>
-                  setUsers({ ...users, password: e.target.value })
-                }
-              />
-              {clientErrors.password && (
-                <span style={{ color: "red" }}>{clientErrors.password}</span>
-              )}
-            </div>
-
-            <div>
-              <button className="border" type="submit">
-                Register
+        {!showRecruiterForm ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Role Selection Buttons */}
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className={`w-1/2 p-2 border rounded-md ${
+                  users.role === "candidate"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setUsers({ ...users, role: "candidate" })}
+              >
+                Register as Candidate
+              </button>
+              <button
+                type="button"
+                className={`w-1/2 p-2 border rounded-md ${
+                  users.role === "recruiter"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                }`}
+                onClick={() => setUsers({ ...users, role: "recruiter" })}
+              >
+                Register as Recruiter
               </button>
             </div>
-          </>
+            {clientErrors.role && (
+              <span className="text-red-500">{clientErrors.role}</span>
+            )}
+
+            {/* Form Fields */}
+            {users.role && (
+              <>
+                <div>
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={users.name}
+                    onChange={(e) =>
+                      setUsers({ ...users, name: e.target.value })
+                    }
+                  />
+                  {clientErrors.name && (
+                    <span className="text-red-500">{clientErrors.name}</span>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-gray-700">Email</label>
+                  <input
+                    type="email"
+                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={users.email}
+                    onChange={(e) =>
+                      setUsers({ ...users, email: e.target.value })
+                    }
+                  />
+                  {clientErrors.email && (
+                    <span className="text-red-500">{clientErrors.email}</span>
+                  )}
+                  <br />
+                  {serverErrors &&
+                    serverErrors
+                      .filter((ele) => ele.path === "email")
+                      .map((ele) => (
+                        <span key={ele.msg} className="text-red-500">
+                          {ele.msg}
+                        </span>
+                      ))}
+                </div>
+
+                <div>
+                  <label className="block text-gray-700">Password</label>
+                  <input
+                    type="password"
+                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={users.password}
+                    onChange={(e) =>
+                      setUsers({ ...users, password: e.target.value })
+                    }
+                  />
+                  {clientErrors.password && (
+                    <span className="text-red-500">{clientErrors.password}</span>
+                  )}
+                  <br />
+                  {serverErrors &&
+                    serverErrors
+                      .filter((ele) => ele.path === "password")
+                      .map((ele) => (
+                        <span key={ele.msg} className="text-red-500">
+                          {ele.msg}
+                        </span>
+                      ))}
+                </div>
+
+                {/* Submit Button */}
+                <div>
+                  <button
+                    className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
+                    type="submit"
+                  >
+                    Register
+                  </button>
+                </div>
+              </>
+            )}
+          </form>
+        ) : (
+          <RecruiterDetails users={users} />
         )}
-      </form>):(
-        <RecruiterDetails userData={users}/>
-      )}
+      </div>
     </div>
   );
 }

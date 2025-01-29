@@ -12,7 +12,7 @@ const recruiter = new Schema({
         type:Boolean, default:false,
     },
     name:String,
-    email:String,
+    /*  email:String, */
     description:String
 },{timestamps:true})
 

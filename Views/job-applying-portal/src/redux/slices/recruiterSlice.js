@@ -1,6 +1,6 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit"
 import axios from "../Config/axios"
-import { useNavigate } from "react-router-dom"
+
 
 
 export const recruiterData =createAsyncThunk("recruiter/recruiterData",async({recruiterDetails,resetForm},{rejectWithValue})=>{
@@ -32,7 +32,12 @@ const recruiterSlice = createSlice({
         
     },
     extraReducers:(builder)=>{
-        
+         builder.addCase(recruiterData.fulfilled,(state,action)=>{
+          return {...state,data:action.payload}
+         })
+         builder.addCase(recruiterData.rejected,(state,action)=>{
+          return {...state,serverErrors:action.payload,data:null}
+         })
     }
 })
 
