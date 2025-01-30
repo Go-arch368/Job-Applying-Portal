@@ -8,10 +8,10 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { user, serverErrors, isloggedIn } = useSelector((state) => state.users);
 
-
-  console.log("Is Logged In:", isloggedIn);
-  console.log("User:", user);
-  console.log("Server Errors:", serverErrors);
+/* 
+//   console.log("Is Logged In:", isloggedIn);
+//   console.log("User:", user);
+//   console.log("Server Errors:", serverErrors); */
 
   function handleClick(e) {
     e.preventDefault();

@@ -10,8 +10,8 @@ import { checkSchema } from "express-validator"
 const router = express.Router()
 
 router.post("/question",authenticateUser,authorizeUser(["recruiter"]),questionCltr.create)
-router.put("/questions/:jobId",authenticateUser,authorizeUser(["recruiter"]),questionCltr.update)
+router.put("/questions/:questionsId",authenticateUser,authorizeUser(["recruiter"]),questionCltr.update)
 router.get("/questions/:jobId",authenticateUser,authorizeUser(["recruiter"]),questionCltr.getById)
-router.delete("/job/:jobId/questions/:questionId",authenticateUser,authorizeUser(["recruiter"]),questionCltr.deletewithJob)
+router.delete("/questions/:questionsId",authenticateUser,authorizeUser(["recruiter"]),questionCltr.deleteWithJob)
 
 export default router

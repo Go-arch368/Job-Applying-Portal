@@ -12,12 +12,15 @@ questionCltr.create = async(req,res)=>{
     const {questions,jobId} =req.body
     console.log(questions)
 
-    if(!Array.isArray(questions)&&questions.length==0){
+    if(!Array.isArray(questions)||questions.length==0){
         return res.status(400).json("Questions should not be empty")
     }
   
     try{
     const data = await Recruiter.findOne({userId:req.currentUser.userId})
+    if(!data){
+        return res.status(404).json({error:"recruiter not found"})
+    }
     console.log(data._id)
     console.log(req.currentUser.userId)
     const newQuestion = new Question({
@@ -32,49 +35,37 @@ questionCltr.create = async(req,res)=>{
     return res.status(201).json(findingId)
     }
     catch(err){
-        console.log(err)
+        console.log(err)    
         return res.status(500).json({err:"internal server error"})
     }
 }
 
-questionCltr.update = async(req,res)=>{
-    const errors = validationResult(req)
-    if(!errors.isEmpty()){
-        return res.status(500).json({error:errors.array()})
-    }
-    const {questions} = req.body
-    const {jobId} = req.params
-    console.log(questions)
-    console.log(jobId)
-
-   if(!jobId){
-    return res.status(400).json({error:"jobId is required"})
-   }
-
-    //console.log(jobId)
-    if(!Array.isArray(questions)||questions.length==0){
-        return res.status(400).json({error:"Question must not be an empty array"})
-    }
-    //console.log(req.currentUser.userId)
-    const data = await Recruiter.findOne({userId:req.currentUser.userId})
+questionCltr.update = async (req, res) => {
+    try {
+       const {questionsId} = req.params
+       const {updatedQuestionText} = req.body
+       const question = await  Question.findOneAndUpdate(
+        { "questions._id": questionsId },
+        {
+            $set: {
+                "questions.$.questionText": updatedQuestionText  
+            }
+        },
+        { new: true, runValidators: true }  )
+        if (!question) {
+            return res.status(404).json({ error: "Question not found" });
+        }
+        res.json({
+            message: "Question updated successfully",
+            question
+        });
     
-    try{
-      const updatedQuestions  = await Question.findOneAndUpdate(
-        {jobId,createdBy:data._id},
-        {questions},
-        {new:true}
-      )
-      console.log(updatedQuestions)
-      if(!updatedQuestions) {
-        return res.status(404).json("questions not found or unauthorized to update")
-      }
-      return res.status(200).json(updatedQuestions)
+    } catch (error) {
+        console.error("Error updating question:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-    catch(err){
-        console.log(err)
-        return res.status(500).json("internal server error")
-    }
-}
+};
+
 
 questionCltr.getById = async(req,res)=>{
     try{
@@ -98,23 +89,29 @@ questionCltr.getById = async(req,res)=>{
     }
 }
 
-questionCltr.deletewithJob=async(req,res)=>{
-    try{
-        const {jobId,questionId} =req.params
-        const updatedQuestion = await Question.findOneAndUpdate({jobId,"questions._id":questionId},
-            {$pull:{questions:{_id:questionId}}},//pull is used to delete from the given data.
-            {new:true}
-        )
-        if (!updatedQuestion) {
-            return res.status(404).json({ error: "Question not found for this job" });
+questionCltr.deleteWithJob = async (req, res) => {
+    try {
+        const { questionsId } = req.params;  
+        const question = await Question.findOneAndUpdate(
+            { "questions._id": questionsId }, 
+            { $pull: { questions: { _id: questionsId } } },  
+            { new: true }  
+        );
+         console.log(question)
+        if (!question) {
+            return res.status(404).json({ error: "Question not found" });
         }
 
-        return res.status(200).json(updatedQuestion);
+        res.json({
+            message: "Question deleted successfully",
+            question
+        });
+
+    } catch (error) {
+        console.error("Error deleting question:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-    catch(err){
-        console.log(err)
-        return res.status(500).json("something went wrong")
-    }
-}
+};
+
 
 export default questionCltr

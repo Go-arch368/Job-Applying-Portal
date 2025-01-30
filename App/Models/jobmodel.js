@@ -1,7 +1,10 @@
 import {Schema,model} from "mongoose"
 
 const jobposting = new Schema ({
-    title:{
+    jobtitle:{
+        type:String,required:true
+    },
+    companyname:{
         type:String,required:true
     },
     description:{
@@ -19,11 +22,12 @@ const jobposting = new Schema ({
         type:String,
         enum:["parttime","fulltime","freelance","internship"]
     },
+    skillsrequired: { type: [String], required: true },
     location:{type:String,required:true},
-    experienceRequired:{type:String,required:true},
-    salaryRange:{type:String,required:true},
+    experienceRequired:{type:String},
+    salary:{type:String,required:true},
     createdAt:{type:Date,default:Date.now()},
-    deadline:"String"
+    deadline:{type:String}
     
 })
 

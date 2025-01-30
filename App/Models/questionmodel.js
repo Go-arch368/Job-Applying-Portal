@@ -3,8 +3,7 @@ import { Schema, model } from "mongoose";
 const questionSchema = new Schema({
   questions: [
     {
-      text: { type: String, required: true },
-      type: { type: String, enum: ["video"], required: true },
+      questionText: { type: String, required: true }
     },
   ],
   createdBy: {

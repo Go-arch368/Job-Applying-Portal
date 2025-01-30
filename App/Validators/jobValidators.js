@@ -1,6 +1,6 @@
 
 const jobValidators = {
-    title:{
+    jobtitle:{
         exists:{
             errorMessage:"the jobtitle field is required"
         },
@@ -18,15 +18,15 @@ const jobValidators = {
         },
         trim:true
     },
-    location:{
-        exists:{
-            errorMessage:"the location field is required"
-        },
-        notEmpty:{
-            errorMessage:"the locaiton field should not be empty"
-        },
-        trim:true
-    },
+    // location:{
+    //     exists:{
+    //         errorMessage:"the location field is required"
+    //     },
+    //     notEmpty:{
+    //         errorMessage:"the locaiton field should not be empty"
+    //     },
+    //     trim:true
+    // },
     salaryRange:{
         exists:{
             errorMessage:"the salary field is required"

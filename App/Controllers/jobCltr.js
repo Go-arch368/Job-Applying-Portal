@@ -5,36 +5,51 @@ import { validationResult } from "express-validator";
 const jobCltr = {}
 
 
+
+
 jobCltr.posting = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() });
     }
 
-    const { title, description, location, experienceRequired, salaryRange, jobtype, deadline } = req.body;
+    const { jobtitle, description, experienceRequired, salary, jobtype, deadline, skillsrequired } = req.body;
+    console.log(req.body)
 
     if (!["parttime", "fulltime", "freelance", "internship"].includes(jobtype)) {
         return res.status(400).json({ error: "Invalid job type" });
     }
-    //const recruiter = await Recruiter.findOne({userId:req.currentUser.userId})
+
     try {
+        // Find recruiter to get location and company name
+        const recruiter = await Recruiter.findOne({ userId: req.currentUser.userId });
+        if (!recruiter) {
+            return res.status(400).json({ error: "Recruiter not found" });
+        }
+
         // Create the job posting
         const jobPosting = await Job.create({
-            title,
+            jobtitle,
             description,
-            location,
+            location: recruiter.location,
+            companyname: recruiter.companyname,
             experienceRequired,
-            salaryRange,    
+            skillsrequired,
+            salary,
             recruiterId: req.currentUser.userId,
             jobtype,
             deadline,
         });
+
         return res.status(201).json(jobPosting);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Something went wrong" });
     }
-}
+};
+
+
+
 
 jobCltr.gettingQuestions = async(req,res)=>{
     try {
