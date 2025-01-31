@@ -23,6 +23,18 @@ export const postjob = createAsyncThunk(
     }
 );
 
+export const displayJobs = createAsyncThunk("/jobposting/displayJobs",async(_,{rejectWithValue})=>{
+     try{
+       const response = await axios.get("/api/jobs",{headers:{Authorization:localStorage.getItem("token")}})
+       console.log(response.data)
+       return response.data
+     }
+     catch(err){
+        console.log(err)
+        return rejectWithValue(err)
+     }
+})
+
 // Job posting reducer
 const jobpostingReducer = createSlice({
     name: "jobposting",
@@ -39,7 +51,15 @@ const jobpostingReducer = createSlice({
             })
             .addCase(postjob.rejected, (state, action) => {
                 state.serverErrors = action.payload;
-            });
+            })
+            .addCase(displayJobs.fulfilled,(state,action)=>{
+                state.data=action.payload
+                state.serverErrors=null
+            })
+            .addCase(displayJobs.rejected,(state,action)=>{
+                state.serverErrors=action.payload
+                state.data=null
+            })
     }
 });
 

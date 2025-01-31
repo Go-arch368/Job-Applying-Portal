@@ -55,10 +55,7 @@ questionCltr.update = async (req, res) => {
         if (!question) {
             return res.status(404).json({ error: "Question not found" });
         }
-        res.json({
-            message: "Question updated successfully",
-            question
-        });
+       res.json(question)
     
     } catch (error) {
         console.error("Error updating question:", error);
@@ -76,11 +73,12 @@ questionCltr.getById = async(req,res)=>{
      if(!data){
         return res.status(400).json("recruiter data is not being found")
      }
-      const questions = await Question.findOne({jobId,createdBy:data._id}).populate("createdBy")
-      console.log(questions)
-      if(!questions){
-        return res.status(404).json("question not found for this job")
-      }
+      const questions = await Question.find({jobId}).populate("createdBy")
+     
+    if(questions.length==0){
+        return res.status(400).json("no questions found for this job")
+    }
+
       return res.status(200).json(questions)
     }
     catch(err){
@@ -91,13 +89,18 @@ questionCltr.getById = async(req,res)=>{
 
 questionCltr.deleteWithJob = async (req, res) => {
     try {
-        const { questionsId } = req.params;  
+        const { questionsId } = req.params;
+
+        // Validate ObjectId
+
         const question = await Question.findOneAndUpdate(
-            { "questions._id": questionsId }, 
-            { $pull: { questions: { _id: questionsId } } },  
-            { new: true }  
+            { "questions._id": questionsId },
+            { $pull: { questions: { _id: questionsId } } },
+            { new: true }
         );
-         console.log(question)
+
+       // console.log(question);
+
         if (!question) {
             return res.status(404).json({ error: "Question not found" });
         }
@@ -106,7 +109,6 @@ questionCltr.deleteWithJob = async (req, res) => {
             message: "Question deleted successfully",
             question
         });
-
     } catch (error) {
         console.error("Error deleting question:", error);
         res.status(500).json({ error: "Internal server error" });

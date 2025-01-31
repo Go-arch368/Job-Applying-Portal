@@ -6,6 +6,7 @@ import Home from "./Pages/Home";
 import Dashboard from "./Pages/Dashboard";
 import PostingJobs from "./Pages/PostingJobs";
 import CreateQuestions from "./Pages/CreateQuestions";
+import PostedJobs from "./Pages/PostedJobs";
 function App() {
   return (
     <div className="text-center">
@@ -18,6 +19,7 @@ function App() {
        <Route path="/verifyRecruiters" element={<VerifyingRecruiters/>}/>
        <Route path="/jobposting" element={<PostingJobs/>}/>
        <Route path="/create-questions/:jobId" element={<CreateQuestions/>}/>
+       <Route path="/jobposted" element={<PostedJobs/>}/>
      </Routes>
     </div>
   );

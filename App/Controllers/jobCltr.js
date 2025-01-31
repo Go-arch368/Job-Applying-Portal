@@ -79,29 +79,38 @@ jobCltr.getAll=async(req,res)=>{
         if(!recruiter){
             return res.status(400).json("no recruiter is being found")
         }
-        console.log(recruiter)
+       
        // console.log(question.questions)
         if(req.currentUser.role==="recruiter"){
-            const job = await Job.findOne({recruiterId:req.currentUser.userId}).lean()
-          // console.log(job);
-            if(!job){
+            const jobs = await Job.find({recruiterId:req.currentUser.userId}).lean()
+         // console.log(job);
+            if(!jobs){
                 return res.status(400).json("No job posting is found for this recruiter")
             }
-            const question = await Question.findOne({createdBy:recruiter._id})
-            //console.log(question)
-            if(!question){
+            const questions = await Question.find({createdBy:recruiter._id})
+            if(!questions){
                 return res.status(400).json("no quesitions is found for these job")
             }
+        //    const questionData = question.map((ele)=>ele.questions).flat()
+        //    const viewQuestions =  questionData.map((ele)=>ele.questionText)
+        //    console.log(viewQuestions)
+
+           const jobsWithQuestions = jobs.map((job) => {
+            const matchedQuestions = questions
+                .filter((q) => q.jobId.toString() === job._id.toString())
+                .flatMap((q)=>q.questions.map((ele)=>ele.questionText)) // Match job ID
+                 // Extract question qtexts
+
+            return {
+                ...job,
+                assignedQuestions: matchedQuestions
+            };
+        });
+           console.log(jobsWithQuestions)
+     
        
-            job.assignedQuestions = question
-            const ques = await Question.findById(job.assignedQuestions)
-            job.assignedQuestions=ques
-           // console.log(job)
-           const jobresponse = {
-            ...job,
-            assignedQuestions:ques.questions
-           }
-            return res.status(200).json(jobresponse)
+         
+            return res.status(200).json(jobsWithQuestions)
         }
         else if(req.currentUser.role=="admin"){
             const fetchAll = await Job.find()
