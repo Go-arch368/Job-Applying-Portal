@@ -15,6 +15,9 @@ const jobposting = new Schema ({
         required:true,
         ref:"Recruiter"
     },
+    noofOpenings:{
+        type:Number,required:true
+    },
     assignedQuestions:[{
         type:Schema.Types.ObjectId, ref:"Question"
     }],
@@ -27,8 +30,8 @@ const jobposting = new Schema ({
     experienceRequired:{type:String},
     salary:{type:String,required:true},
     createdAt:{type:Date,default:Date.now()},
-    deadline:{type:String}
-    
+    deadline:{type:String},
+    clicks:{type:Number,default:0}
 })
 
 const Job = model ("Job",jobposting)

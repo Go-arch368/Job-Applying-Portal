@@ -11,7 +11,12 @@ const router = express.Router()
 router.post("/jobposting",authenticateUser,authorizeUser(["recruiter"]),jobCltr.posting)
 router.get("/job/:jobId/questions",authenticateUser,authorizeUser(["recruiter","candidate"]),jobCltr.gettingQuestions)//using in the job application portal
 router.get("/jobs",authenticateUser,authorizeUser(["recruiter","admin"]),jobCltr.getAll)
+router.put("/jobs/:jobId",authenticateUser,authorizeUser(["recruiter"]),jobCltr.updateJob)
+router.delete("/jobs/:jobId",authenticateUser,authorizeUser(["recruiter"]),jobCltr.deleteJob)
 //candidate can able to search for an job :
 router.get("/job",authenticateUser,authorizeUser(["candidate"]),jobCltr.searching)
+//count the clicks
+router.put("/:jobId/click",authenticateUser,jobCltr.incrementJobclicks)
+router.get("/job/:jobId",authenticateUser,jobCltr.getjobDetails)
 
 export default router

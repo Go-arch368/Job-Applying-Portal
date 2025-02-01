@@ -1,14 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Components/Navbar";
-import { useState } from "react";
-import { postjob } from "../redux/slices/jobpostingSlice";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { postjob,updateJobDetails } from "../redux/slices/jobpostingSlice";
+import {  useNavigate } from "react-router-dom";
 
 export default function PostingJobs() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    // const {data} = useSelector((state)=>state.jobposting)
-    // console.log(data)
+    const {editJobId,data} = useSelector((state)=>state.jobposting)
+    console.log(data)
+    console.log(editJobId)
     const [jobDetails, setJobDetails] = useState({
         jobtitle: "",
         salary: "",
@@ -23,22 +24,38 @@ export default function PostingJobs() {
     const [clientErrors, setClientErrors] = useState({});
     
     const openings = ["parttime", "fulltime", "freelance", "internship"];
+
+    useEffect(()=>{
+       if(editJobId){
+           const jobDetails = data.find((ele)=>ele._id==editJobId)
+           console.log(jobDetails.jobtype)
+           if(jobDetails){
+              setJobDetails({
+                jobtitle: jobDetails.jobtitle,
+                salary: jobDetails.salary,
+                jobtype: jobDetails.jobtype,
+                noofOpenings: jobDetails.noofOpenings,
+                description: jobDetails.description,
+                skillsrequired: jobDetails.skillsrequired,  
+                experienceRequired: jobDetails.experienceRequired,
+                deadline: jobDetails.deadline
+              })
+           }
+       }
+    },[editJobId])
     
     function validation() {
         let errors = {};
         if (!jobDetails.jobtitle) errors.jobtitle = "Job title is required";
-
         if (!jobDetails.salary) errors.salary = "Salary is required";
-
         if (!jobDetails.noofOpenings) errors.noofOpenings = "Number of openings is required";
-
         if (!jobDetails.description) errors.description = "Description is required";
-
-        if (!jobDetails.skillsrequired.length) errors.skillsrequired = "Skills are required";
-
+        if (!jobDetails.skillsrequired) errors.skillsrequired = "Skills are required";
         if (!jobDetails.experienceRequired) errors.experienceRequired = "Experience is required";
-
         if (!jobDetails.deadline) errors.deadline = "Deadline is required";
+        else if(new Date(jobDetails.deadline)<Date.now()){
+            errors.deadline = "Deadline should be greater than today"
+        }
 
         return errors;
     }
@@ -51,7 +68,7 @@ export default function PostingJobs() {
             jobtype: "",
             noofOpenings: "",
             description: "",
-            skillsrequired: [],
+            skillsrequired: "",
             experienceRequired: "",
             deadline: ""
         });
@@ -63,15 +80,22 @@ export default function PostingJobs() {
         if (Object.keys(errors).length !== 0) {
             setClientErrors(errors);
         } else {
-            setClientErrors({});
-            dispatch(postjob({ jobDetails, resetForm ,navigate}))
+            if(editJobId){
+                dispatch(updateJobDetails({editJobId,jobDetails,navigate})).unwrap()
+                resetForm()
+            }
+            else{
+                setClientErrors({});
+                dispatch(postjob({ jobDetails, resetForm ,navigate}))
+            }
+          
         }
     }
 
     return (
         <div>
             <Navbar />
-            <h1>Posting Jobs</h1>
+            <h1>{editJobId?"Edit Jobs":"Posting Jobs"}</h1>
             <form onSubmit={handlePost}>
                 <div>
                     <label>Job title</label>
@@ -138,8 +162,8 @@ export default function PostingJobs() {
                     <input
                         type="text"
                         className="border"
-                        value={jobDetails.skillsrequired.join(", ")}
-                        onChange={(e) => setJobDetails({ ...jobDetails, skillsrequired: e.target.value.split(",") })}
+                        value={jobDetails.skillsrequired?jobDetails.skillsrequired.join(","):""}
+                        onChange={(e) => setJobDetails({ ...jobDetails,  skillsrequired: e.target.value ? e.target.value.split(",").map(skill => skill.trim()) : [] })}
                     />
                     {clientErrors.skillsrequired && <span style={{ color: "red" }}>{clientErrors.skillsrequired}</span>}
                 </div>
@@ -168,7 +192,7 @@ export default function PostingJobs() {
                 
                 <div>
                     <button type="submit" className="border p-2 bg-blue-700 text-white px-5 mt-3 rounded-lg">
-                        Post Job
+                        {editJobId?"Edit Job":" Post Job"}
                     </button>
                 </div>
             </form>

@@ -13,7 +13,7 @@ jobCltr.posting = async (req, res) => {
         return res.status(400).json({ error: errors.array() });
     }
 
-    const { jobtitle, description, experienceRequired, salary, jobtype, deadline, skillsrequired } = req.body;
+    const { jobtitle, description, experienceRequired, salary, jobtype, deadline, skillsrequired,noofOpenings } = req.body;
     console.log(req.body)
 
     if (!["parttime", "fulltime", "freelance", "internship"].includes(jobtype)) {
@@ -33,12 +33,14 @@ jobCltr.posting = async (req, res) => {
             description,
             location: recruiter.location,
             companyname: recruiter.companyname,
+            noofOpenings,
             experienceRequired,
             skillsrequired,
             salary,
             recruiterId: req.currentUser.userId,
             jobtype,
             deadline,
+            clicks:0
         });
 
         return res.status(201).json(jobPosting);
@@ -48,7 +50,37 @@ jobCltr.posting = async (req, res) => {
     }
 };
 
+jobCltr.updateJob=async(req,res)=>{
+    try{
+        const {jobId} = req.params
+        const updateData = req.body
+        const updatejob = await Job.findByIdAndUpdate(jobId,updateData,{new:true,runValidators:true})
+        console.log(updatejob)
+        if(!updatejob){
+            return res.status(400).json({error:"update job is not being found"})
+        }
+        return res.status(200).json(updatejob)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
 
+jobCltr.deleteJob=async(req,res)=>{
+    try{
+       const {jobId} = req.params
+       const deleteJob = await Job.findByIdAndDelete(jobId,{new:true})
+       if(!deleteJob){
+         return res.status(500).json({error:"Your job is not found"})
+       }
+       return res.status(200).json(deleteJob)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({error:"something went wrong"})
+    }
+}
 
 
 jobCltr.gettingQuestions = async(req,res)=>{
@@ -173,5 +205,36 @@ jobCltr.searching=async(req,res)=>{
         return res.status(500).json("something went wrong")
     }
 }
+
+jobCltr.incrementJobclicks=async(req,res)=>{
+    try{
+        const jobId =req.params
+        const job = await Job.findByIdAndUpdate(jobId,{$inc:{clicks:1}},{new:true})
+        if(!job){
+            return res.status(400).json({error:"no jobs found"})
+        }
+        return res.json(job)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.getjobDetails=async(req,res)=>{
+    try{
+        const {jobId} = req.params
+        const job = await Job.findById(jobId)
+        if(!job){
+            return res.status(400).json(job)
+        }
+        return res.status(200).json(job)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
 
 export default jobCltr

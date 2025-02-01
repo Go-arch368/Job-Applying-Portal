@@ -35,14 +35,44 @@ export const displayJobs = createAsyncThunk("/jobposting/displayJobs",async(_,{r
      }
 })
 
+export const updateJobDetails = createAsyncThunk("/jobposting/updateJobDetails",async({editJobId,jobDetails,navigate},{rejectWithValue})=>{
+    try{
+       const response = await axios.put(`/api/jobs/${editJobId}`,jobDetails,{headers:{Authorization:localStorage.getItem("token")}})
+       console.log(response.data)
+       navigate("/jobposted")
+       return response.data
+    }
+    catch(err){
+        console.log(err)
+        return rejectWithValue(err)
+    }
+})
+
+export const deletingJob =createAsyncThunk("/jobposting/deletingJob",async({id},{rejectWithValue})=>{
+    try{
+      const response = await axios.delete(`/api/jobs/${id}`,{headers:{Authorization:localStorage.getItem("token")}})
+      console.log(response.data)
+      return response.data
+    }
+    catch(err){
+      console.log(err)
+      return rejectWithValue(err)
+    }
+})
+
 // Job posting reducer
 const jobpostingReducer = createSlice({
     name: "jobposting",
     initialState: {
         data: [],
         serverErrors: null,
+        editJobId:null
     },
-    reducers: {},
+    reducers: {
+      setEditJobId:(state,action)=>{
+        state.editJobId =action.payload
+      }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(postjob.fulfilled, (state, action) => {
@@ -60,7 +90,25 @@ const jobpostingReducer = createSlice({
                 state.serverErrors=action.payload
                 state.data=null
             })
+            .addCase(updateJobDetails.fulfilled,(state,action)=>{
+                const index = state.data.findIndex((ele)=>ele._id===action.payload._id)
+                state.data[index] = action.payload
+                state.editJobId=null
+            })
+           .addCase(updateJobDetails.rejected,(state,action)=>{
+               state.serverErrors =action.payload
+               state.data=null
+           })
+           .addCase(deletingJob.fulfilled,(state,action)=>{
+              const deleteDocument = state.data.filter((ele)=>ele._id!==action.payload._id)
+              state.data=deleteDocument
+              state.serverErrors=null
+           })
+           .addCase(deletingJob.rejected,(state,action)=>{
+              state.serverErrors=action.payload
+              state.data=null
+           })
     }
 });
-
+export const {setEditJobId} = jobpostingReducer.actions
 export default jobpostingReducer.reducer;

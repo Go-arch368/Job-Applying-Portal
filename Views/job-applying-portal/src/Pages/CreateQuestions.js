@@ -72,6 +72,9 @@ export default function CreateQuestions() {
 
   return (
     <div>
+    <h1>Provide Questions</h1>
+    <h1>Give atleast 6 questoins so the candidates can able send the video format of the answers for beloved questions so you can evaluate easily and select</h1>
+    <h2>while applying for an job candidates while see the question in an video format so it will be easily you to accept or reject.</h2>
       <h1>{editId?"Edit Questions":"Add Questions"}</h1>
       <input
         type="text"
