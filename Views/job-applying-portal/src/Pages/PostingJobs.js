@@ -52,6 +52,7 @@ export default function PostingJobs() {
         if (!jobDetails.description) errors.description = "Description is required";
         if (!jobDetails.skillsrequired) errors.skillsrequired = "Skills are required";
         if (!jobDetails.experienceRequired) errors.experienceRequired = "Experience is required";
+        if(!jobDetails.location) errors.location = "location place is required"
         if (!jobDetails.deadline) errors.deadline = "Deadline is required";
         else if(new Date(jobDetails.deadline)<Date.now()){
             errors.deadline = "Deadline should be greater than today"
@@ -66,6 +67,7 @@ export default function PostingJobs() {
             jobtitle: "",
             salary: "",
             jobtype: "",
+            location:"",
             noofOpenings: "",
             description: "",
             skillsrequired: "",
@@ -133,6 +135,11 @@ export default function PostingJobs() {
                         placeholder="Enter salary"
                     />
                     {clientErrors.salary && <span style={{ color: "red" }}>{clientErrors.salary}</span>}
+                </div>
+
+                <div>
+                    <label>Location</label>
+                    <input type="text" className="border" value={jobDetails.location} onChange={(e)=>setJobDetails({...jobDetails,location:e.target.value})} placeholder="enter your location"/>    
                 </div>
                 
                 <div>

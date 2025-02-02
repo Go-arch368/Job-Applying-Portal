@@ -31,7 +31,7 @@ function handleDelete(id){
           Posted Jobs
         </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {data?.map((ele, index) => (
             <div
               key={index}

@@ -13,7 +13,7 @@ jobCltr.posting = async (req, res) => {
         return res.status(400).json({ error: errors.array() });
     }
 
-    const { jobtitle, description, experienceRequired, salary, jobtype, deadline, skillsrequired,noofOpenings } = req.body;
+    const { jobtitle, description, experienceRequired, salary, jobtype, deadline, skillsrequired,noofOpenings,location } = req.body;
     console.log(req.body)
 
     if (!["parttime", "fulltime", "freelance", "internship"].includes(jobtype)) {
@@ -31,7 +31,7 @@ jobCltr.posting = async (req, res) => {
         const jobPosting = await Job.create({
             jobtitle,
             description,
-            location: recruiter.location,
+            location,
             companyname: recruiter.companyname,
             noofOpenings,
             experienceRequired,
@@ -157,42 +157,39 @@ jobCltr.getAll=async(req,res)=>{
 
 jobCltr.searching=async(req,res)=>{
     try{
-        const {title,location} = req.query
+        const {jobtitle,location} = req.query
         //console.log(title)
         //console.log(location)
     
         let query={}
-        if(title){
-            query.title={$regex:title,$options:"i"}
+        if(jobtitle){
+            query.jobtitle={$regex:new RegExp(jobtitle,"i")}
         }
         if(location){
-            query.location={$regex:location,$options:"i"}
+            query.location={$regex:new RegExp(location,"i")}
         }
-        //console.log(query)
-        if(!title&&!location){
+        if(!jobtitle&&!location){
             return res.status(400).json("atleast one field needed to be filled")
         }
-       
+        
         const jobs = await Job.find({...query})
         
-        //console.log(jobs)
-       
-      
         if(jobs.length==0){
             return  res.status(400).json("no documents found")
         }
 
       const gettingQuestions = await Promise.all(
         jobs.map(async(job)=>{
-            const questions = await Question.findOne({jobId:job._id})
-
+            const questions = await Question.find({jobId:job._id})
+            const data = questions.map(q=>q.questions).flat()
+            console.log(data.map((ele)=>ele.questionText))
             const recruiter = await Recruiter.findOne({userId:job.recruiterId})
       
             return {
 
                 ...job.toObject(),
 
-                assignedQuestions:questions.questions,  recruiterId:recruiter
+                assignedQuestions:data.map((ele)=>ele.questionText),  recruiterId:recruiter
               
             }
         })

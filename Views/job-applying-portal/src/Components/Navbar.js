@@ -59,13 +59,21 @@ export default function Navbar() {
                      <li>
                   <Link to="/jobposted" className="text-gray-700 hover:text-blue-500">Posted Jobs</Link>
                 </li>
-                
+
                     <li>
                     <Link to="/jobposting" className="text-gray-700 hover:text-blue-500">Posting Job</Link>
                 </li>
               
                 </>
               
+              )}
+
+              {user.role==="candidate"&&(
+                <>
+                 <li>
+                  <Link to="/searchJobs" className="text-gray-700 hover:text-blue-500">Search Jobs</Link>
+                 </li>
+                </>
               )}
 
              
