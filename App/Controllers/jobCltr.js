@@ -157,22 +157,21 @@ jobCltr.getAll=async(req,res)=>{
 
 jobCltr.searching=async(req,res)=>{
     try{
-        const {jobtitle,location} = req.query
-        //console.log(title)
-        //console.log(location)
-    
+        const {jobtitle,location} =req.query
+        console.log("Received query parameters:", jobtitle, location); 
         let query={}
         if(jobtitle){
-            query.jobtitle={$regex:new RegExp(jobtitle,"i")}
+         query.jobtitle={$regex:jobtitle,$options:"i"}
         }
         if(location){
-            query.location={$regex:new RegExp(location,"i")}
+         query.location={$regex:location,$options:"i"}
         }
+        console.log("Generated query:", query);  
+ 
         if(!jobtitle&&!location){
-            return res.status(400).json("atleast one field needed to be filled")
-        }
-        
-        const jobs = await Job.find({...query})
+         return res.status(404).json({message:"Atleast fill one input field"})
+        }       
+        const jobs=await Job.find({...query})
         
         if(jobs.length==0){
             return  res.status(400).json("no documents found")

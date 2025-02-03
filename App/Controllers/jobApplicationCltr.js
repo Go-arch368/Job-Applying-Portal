@@ -46,7 +46,7 @@ cloudinary.config({
 
 jobAppCltr.submitApplication = async (req, res) => {
     try {
-        const { jobId } = req.body;
+        const { jobId } = req.params;
 
         if (!req.files||!req.files["resume"]) {
             return res.status(400).json({ error: "Resume file is required" });
@@ -80,6 +80,9 @@ jobAppCltr.submitApplication = async (req, res) => {
             return res.status(400).json({ error: "Job not found" });
         }
 
+        console.log(job)
+
+
      
         const questions = await Question.find({ jobId });
         if (!questions.length) {
@@ -111,10 +114,12 @@ jobAppCltr.submitApplication = async (req, res) => {
             return res.status(400).json({ message: "You have already applied for this job" });
         }
 
+        const findingCandidate = await User.findById({_id:req.currentUser.userId})
+        console.log(findingCandidate)
        
         const newApplication = new JobApplication({
-            jobId,
-            applicantId: req.currentUser.userId,
+            jobId:job._id,
+            applicantId:findingCandidate,
             answeredQuestions: randomQuestions.map((q)=>(
                 {
                     questionId:q.questionId,

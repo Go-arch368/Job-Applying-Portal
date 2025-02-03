@@ -7,7 +7,7 @@ import upload from "../App/Middlewares/Multer.js";
 const router = express.Router();
 
 router.post(
-    "/apply",
+    "/apply/:jobId",
     authenticateUser,
     authorizeUser(["candidate"]),
     upload.fields([

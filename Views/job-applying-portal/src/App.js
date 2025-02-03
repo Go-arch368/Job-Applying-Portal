@@ -8,6 +8,7 @@ import PostingJobs from "./Pages/PostingJobs";
 import CreateQuestions from "./Pages/CreateQuestions";
 import PostedJobs from "./Pages/PostedJobs";
 import SearchJobs from "./Pages/SearchJobs";
+import ApplyJobs from "./Pages/ApplyJobs";
 function App() {
   return (
     <div className="text-center">
@@ -22,6 +23,7 @@ function App() {
        <Route path="/create-questions/:jobId" element={<CreateQuestions/>}/>
        <Route path="/jobposted" element={<PostedJobs/>}/>
        <Route path="/searchJobs" element={<SearchJobs/>}/>
+       <Route path="/apply/:jobId" element={<ApplyJobs/>} />
      </Routes>
     </div>
   );

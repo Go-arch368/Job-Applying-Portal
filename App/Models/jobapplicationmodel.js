@@ -8,7 +8,7 @@ const jobapplicationSchema = new Schema({
     },
     applicantId:{
         type:Schema.Types.ObjectId,
-        ref:"Candidate",
+        ref:"User",
         required:true
     },
    videoUrl:{

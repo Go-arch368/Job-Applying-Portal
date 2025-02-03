@@ -2,6 +2,7 @@ import Navbar from "../Components/Navbar";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { searchingJobs } from "../redux/slices/jobapplySlice";
+import { Link } from "react-router-dom";
 
 export default function SearchJobs() {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ export default function SearchJobs() {
     location: ""
   });
   const [error, setError] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   const { data, serverError } = useSelector((state) => state.jobapplying);
   console.log(data);
@@ -22,8 +24,8 @@ export default function SearchJobs() {
       setError("Please provide at least one detail.");
       return;
     }
-    
-    // Dispatch the async action
+
+ 
     dispatch(
       searchingJobs({
         jobtitle: jobtitle.trim(),
@@ -32,7 +34,7 @@ export default function SearchJobs() {
     )
       .unwrap()
       .then(() => {
-        setError(null); // Clear error if the search is successful
+        setError(null); 
       })
       .catch((err) => {
         console.log(err);
@@ -40,50 +42,104 @@ export default function SearchJobs() {
       });
   }
 
-  return (
-    <div>
-      <Navbar />
-      <h1>This is the search job component</h1>
-      <form className="mt-5" onSubmit={handleSubmit}>
+  const handleJobClick = (job) => {
+    setSelectedJob(job);
+  };
+
+ return(
+   <div>
+    <Navbar/>
+    <div class="container mx-auto px-20 py-10">
+ 
+  <div class="flex justify-center mb-8">
+    <div class="">
+      <form onSubmit={handleSubmit} class="flex h-10 border-gray-950" >
         <input
           type="search"
           value={search.jobtitle}
-          className="border"
           onChange={(e) => setSearch({ ...search, jobtitle: e.target.value })}
-          placeholder="Job title, keywords"
+          placeholder="Search for jobs by title or company"
+          class="w-full p-1 border-2 border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <input
           type="search"
           value={search.location}
-          className="border"
           onChange={(e) => setSearch({ ...search, location: e.target.value })}
           placeholder="Location"
+          class="w-full p-1 border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
-        <button type="submit" className="border text-white bg-blue-500">
+        <button
+          type="submit"
+          class="px-8 py-4 bg-blue-600 text-white text-lg font-semibold  hover:bg-blue-700 flex items-center"
+        >
           Search
         </button>
       </form>
+         <div> {serverError && (
+        <p class="text-red-500 mb-4">{serverError}</p>
+      )}</div>
+    </div>
+  </div> 
 
-      {serverError && <span style={{ color: "red" }}>{serverError}</span>}
-      {error && <span style={{ color: "red" }}>{error}</span>}
-
+  <div class="flex gap-8">
+   
+    <div class="w-full lg:w-2/3 h-[500px] overflow-y-auto border-r-2  pr-4 ">
+     
       <div>
-        {data?.map((ele) => (
-          <div className="border p-3 max-w-sm shadow-md rounded-lg border-blue-300 hover:border-blue-900 ml-16 mt-4" key={ele._id}>
-            <h1 className="text-gray-900 font-bold">{ele.jobtitle}</h1>
-            <h2 className="text-gray-600">{ele.companyname}</h2>
-            <h2 className="text-gray-600">{ele.location}</h2>
-            <p>
-              <strong>Salary:</strong>{" "}
-              <span className="text-green-500 font-bold bg-green-100">{ele.salary} per year</span>
-            </p>
-            <p>
-              <strong>Job Type:</strong>{" "}
-              <span className="text-green-500 font-bold bg-green-100">{ele.jobtype}</span>
-            </p>
+        {data?.map((job) => (
+          <div
+            key={job._id}
+            class="bg-white rounded-lg p-4 mb-4 shadow-md cursor-pointer transform transition-all hover:scale-105 border-2 border-gray-400"
+            onClick={() => handleJobClick(job)}
+          >
+            <h1 class="text-xl font-semibold text-gray-800">{job.jobtitle}</h1>
+            <p class="text-sm text-gray-600">{job.companyname}</p>
+            <p class="text-sm text-gray-600">{job.location}</p>
+            <p class="font-bold text-blue-500">{job.salary}</p>
+            <p class="font-bold text-blue-500">{job.jobtype}</p>
           </div>
         ))}
       </div>
     </div>
-  );
+
+    {/* <!-- Right Section: Detailed Job View --> */}
+    {selectedJob && (
+      <div class="lg:w-2/3 w-full p-6 bg-gray-50 rounded-lg shadow-md pl-4">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">{selectedJob.jobtitle}</h1>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Company:</strong> {selectedJob.companyname}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Location:</strong> {selectedJob.location}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Salary:</strong> {selectedJob.salary}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Job Type:</strong> {selectedJob.jobtype}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Description:</strong> {selectedJob.description}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Experience Required:</strong> {selectedJob.experienceRequired}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Skills Required:</strong> {selectedJob.skillsrequired.join(', ')}
+        </p>
+        <p class="text-lg text-gray-700 mb-2">
+          <strong>Deadline:</strong> {selectedJob.deadline}
+        </p>
+
+        <button class="mt-4 py-2 px-6 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
+         <Link to={`/apply/${selectedJob._id}`}>Apply Now</Link> 
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
+
+   </div>
+ )
 }

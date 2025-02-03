@@ -38,7 +38,8 @@ export default function PostingJobs() {
                 description: jobDetails.description,
                 skillsrequired: jobDetails.skillsrequired,  
                 experienceRequired: jobDetails.experienceRequired,
-                deadline: jobDetails.deadline
+                deadline: jobDetails.deadline,
+                location:jobDetails.location
               })
            }
        }
