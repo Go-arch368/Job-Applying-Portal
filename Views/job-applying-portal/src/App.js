@@ -9,6 +9,7 @@ import CreateQuestions from "./Pages/CreateQuestions";
 import PostedJobs from "./Pages/PostedJobs";
 import SearchJobs from "./Pages/SearchJobs";
 import ApplyJobs from "./Pages/ApplyJobs";
+import CandidateList from "./Pages/CandidateList";
 function App() {
   return (
     <div className="text-center">
@@ -24,6 +25,7 @@ function App() {
        <Route path="/jobposted" element={<PostedJobs/>}/>
        <Route path="/searchJobs" element={<SearchJobs/>}/>
        <Route path="/apply/:jobId" element={<ApplyJobs/>} />
+       <Route path="/candidateList/:jobId" element={<CandidateList/>}/>
      </Routes>
     </div>
   );

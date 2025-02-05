@@ -11,7 +11,7 @@ export default function authenticateUser(req,res,next){
             userId:tokenDetails.userId,
             role:tokenDetails.role
         }
-        console.log(req.currentUser.userId)
+       // console.log(req.currentUser.userId)
         next()
       }
       catch(err){

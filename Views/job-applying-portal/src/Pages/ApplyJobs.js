@@ -1,154 +1,227 @@
-import {  useDispatch,useSelector } from "react-redux"
-import {useState,useEffect,useRef} from "react"
-import { useParams } from "react-router-dom"
-import Webcam from "react-webcam"
+import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import Webcam from "react-webcam";
+import { applyingjob } from "../redux/slices/jobapplySlice";
 
-export default function ApplyJobs(){
-    const {jobId} = useParams()
-    console.log(jobId)
-    const  {data} = useSelector(state=>state.jobapplying)
-    const findingQuestions = data.filter((ele)=>ele._id===jobId).map((ele)=>ele.assignedQuestions)
-     console.log(findingQuestions.flat())
+export default function ApplyJobs() {
+    const dispatch = useDispatch();
+    const { jobId } = useParams();
+    const [selectedQuestions, setSelectedQuestions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [resume, setResume] = useState(null);
+    const [isRecording, setIsRecording] = useState(false);
+    const [videoBlob, setVideoBlob] = useState(null);
+    const [videoUrl, setVideoUrl] = useState(null);
+    const [timestamps, setTimestamps] = useState([]);
+    const [recordTime, setRecordTime] = useState(0);
+    const [recordingCompleted, setRecordingCompleted] = useState(false);
 
-     const flatQuestions = findingQuestions?findingQuestions.flat():[]
-     console.log(flatQuestions)
+    const webcamRef = useRef(null);
+    const mediaRecorderRef = useRef(null);
+    const videoChunks = useRef([]);
+    const timerRef = useRef(null);
+    const shuffleDone = useRef(false);
+    const mediaStreamRef = useRef(null);
+    const { data, applying, serverError } = useSelector((state) => state.jobapplying);
+    console.log(data)
+    const findingQuestions = data?.filter((ele) => ele._id.toString() == jobId).map((ele) => ele.assignedQuestions);
+    console.log(findingQuestions)
+    const flatQuestions = findingQuestions ? findingQuestions.flat() : [];
 
-     const getRandomQuestions = ()=>{
-        if(flatQuestions.length<3) return flatQuestions
-        const shuffledQuestions = [...flatQuestions]
-        for(let i=shuffledQuestions.length-1;i>=0;i--){
-            const j = Math.floor(Math.random()*(i+1))
-            [shuffledQuestions[i],shuffledQuestions[j]]=[shuffledQuestions[j],shuffledQuestions[i]]
+    useEffect(() => {
+        if (flatQuestions.length > 0 && !shuffleDone.current) {
+            setSelectedQuestions(shuffleQuestions(flatQuestions));
+            shuffleDone.current = true;
         }
-        return shuffledQuestions.slice(0,3)
-     }
+    }, [flatQuestions]);
 
-     const [selectedQuestions,setSelectedQuestions] = useState([])
-     const [currentQuestionIndex,setCurrentQuestionIndex] = useState(0)
-     const [resume,setResume] = useState(null)
-     const [isRecording,setIsRecording] = useState(false)
-     const [videoBlob,setVideoBlob] = useState(null)
-     const [videoUrl,setVideoUrl] = useState(null)
-     const [timestamps,setTimestamps] = useState([])
-
-     const webcamRef = useRef(null)
-     const mediaRecorderRef = useRef(null)
-     const videoChunks = useRef([])
-
-     useEffect(()=>{
-        if(flatQuestions){
-            const randomQuestions = getRandomQuestions()
-            setSelectedQuestions(randomQuestions)
+    function shuffleQuestions(questions) {
+        let shuffled = [...questions];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
-     },[flatQuestions])
+        return shuffled.slice(0, 3);
+    }
+
+    function handleFileChange(e) {
+        const selectedResume = e.target.files[0];
+        setResume(selectedResume);
+        console.log(selectedQuestions)
+    }
+
+    function handleStartRecording() {
+        setIsRecording(true);
+        setRecordTime(0);
+        setRecordingCompleted(false);
+        videoChunks.current = [];
+
+        const videoStream = webcamRef.current?.video?.srcObject;
+        if (!videoStream) return;
+
+        mediaRecorderRef.current = new MediaRecorder(videoStream);
+        mediaRecorderRef.current.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                videoChunks.current.push(event.data);
+            }
+        };
+
+        mediaRecorderRef.current.onstop = () => {
+            const videoBlob = new Blob(videoChunks.current, { type: "video/webm" });
+            setVideoBlob(videoBlob);
+            setVideoUrl(URL.createObjectURL(videoBlob));
+
+            if (mediaStreamRef.current) {
+                mediaStreamRef.current.getTracks().forEach(track => track.stop());
+                mediaStreamRef.current = null;
+            }
+            setRecordingCompleted(true);
+        };
+
+        mediaRecorderRef.current.start();
+        timerRef.current = setInterval(() => {
+            setRecordTime((prev) => prev + 1);
+        }, 1000);
+    }
+
+    function handleStopRecording() {
+        setIsRecording(false);
     
-    function handleFileChange(e){
-        setResume(e.target.files[0])
-    }
-
-    function handleStartRecording(){
-        setIsRecording(true)
-        videoChunks.current=[]
-        const stream = webcamRef.current.stream
-        mediaRecorderRef.current = new MediaRecorder(stream)
-        mediaRecorderRef.current.ondataavailable = (event)=>{
-            videoChunks.current.push(event.data)
+        // Stop the media recorder
+        if (mediaRecorderRef.current) {
+            mediaRecorderRef.current.stop();
         }
-        mediaRecorderRef.current.onstop = ()=>{
-            const videoBlob = new Blob(videoChunks.current,{type:"video/webm"})
-            setVideoBlob(videoBlob)
-            setVideoUrl(URL.createObjectURL(videoBlob))
+        
+    
+        clearInterval(timerRef.current);
+    
+        
+        if (webcamRef.current && webcamRef.current.video.srcObject) {
+            const tracks = webcamRef.current.video.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+            webcamRef.current.video.srcObject = null; 
         }
-        mediaRecorderRef.current.start()
+        
+        setRecordingCompleted(true);
     }
-    function handleStopRecording(){
-       setIsRecording(false)
-       mediaRecorderRef.current.stop()
-    }
+    
 
-    function handleNextQuestion(){
-        if(currentQuestionIndex<selectedQuestions.length-1){
-            const currentTimestamp =  webcamRef.current.getInternalPlayer()?.currentTime||0
-           setTimestamps((prevTimestamps)=>[
-            ...prevTimestamps,{questionIndex:selectedQuestions[currentQuestionIndex],timestamp:currentTimestamp}
-           ])
-           setCurrentQuestionIndex(prevIndex=>prevIndex+1)
+    function handleNextQuestion() {
+        if (currentQuestionIndex < selectedQuestions.length - 1) {
+            setTimestamps((prevTimestamps) => [
+                ...prevTimestamps,
+                { questionIndex: currentQuestionIndex, timestamp: recordTime },
+            ]);
+            setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
         }
     }
 
-   async function handleSubmitApplication(e){
-        e.preventDefault()
-        if(!resume||!videoBlob){
-            alert("please upload your resume and complete the video interview")
-            return
+    async function handleSubmitApplication(e) {
+        e.preventDefault();
+        if (!resume || !videoBlob) {
+            alert("Please upload your resume and complete the video interview");
+            return;
         }
-        const formData = new FormData()
-        formData.append("resume",resume)
-        formData.append("video",videoBlob)
-       
-   } 
 
-    return(
-        <div>
-            <h1>Applying Jobs</h1>
-            <div>
-                <h2>Upload Resume</h2>
-                <input type="file" accept=".pdf,.docx" onChange={handleFileChange}/>
-            </div>
-            {/* {selectedQuestions.map((ele)=>(
-                <p>{ele}</p>
-            ))} */}
-            {selectedQuestions.length>0&&(
-                <div>
+        const answeredQuestions = selectedQuestions.map((question, index) => {
+            const timestamp = index === 0 ? "0" : timestamps[index - 1].timestamp;
+            return {
+                questionText: question,
+                startingTimeStamps: timestamp,
+            };
+        });
 
-                    <h3>{selectedQuestions[currentQuestionIndex]}</h3>
-                    <Webcam
-                    audio={true}
-                    ref={webcamRef}
-                    screenshotFormat="image/jpeg"
-                    videoConstraints={{ facingMode: 'user' }}
-                    width="400"
-                    />
+        const formData = new FormData();
+        formData.append("resume", resume);
+        formData.append("video", videoBlob, "interview-video.webm");
+        formData.append("answeredQuestions", JSON.stringify(answeredQuestions));
 
-                <div>
-                    {!isRecording?(
-                       <button onClick={handleStartRecording}>Start Recording</button>
-                    ):(
-                        <button onClick={handleStopRecording}>Stop Recording</button>
+        dispatch(applyingjob({ jobId, formData })).unwrap()
+            .then(() => {
+                alert("Successfully applied");
+            });
+    }
+
+    return (
+        <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+            <h1 className="text-2xl font-semibold text-center mb-4">Apply for Job</h1>
+            {serverError && <p className="text-red-500 text-center">{serverError}</p>}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Left Column (Application Form Section) */}
+                <div className="md:col-span-2 flex flex-col">
+                    <div className="mb-4">
+                        <h2 className="font-semibold">Upload Resume</h2>
+                        <input type="file" accept=".pdf,.docx" onChange={handleFileChange} className="mt-2 p-2 border rounded w-full" />
+                    </div>
+
+                    {selectedQuestions.length > 0 && (
+                        <div className="mb-4">
+                            {isRecording && <h3 className="text-lg font-medium mb-2">{selectedQuestions[currentQuestionIndex]}</h3>}
+
+                            <Webcam
+                                audio
+                                ref={webcamRef}
+                                screenshotFormat="image/jpeg"
+                                videoConstraints={{ facingMode: "user" }}
+                                className="rounded-lg border mb-2"
+                                width="50%"
+                                videoStyle={{ maxWidth: '60%', margin: 'auto' }} // Reduced width for video
+                            />
+
+                            <div className="flex space-x-4 justify-center mt-2">
+                                {!isRecording && !recordingCompleted && (
+                                    <button onClick={handleStartRecording} className="bg-green-500 text-white px-4 py-2 rounded">Start Recording</button>
+                                )}
+{currentQuestionIndex < selectedQuestions.length - 1 && (
+                        <button onClick={handleNextQuestion} className="bg-blue-500 text-white px-4 py-2 rounded w-full mt-4">Next Question</button>
                     )}
-                 </div>
+                                {isRecording && (
+                                    <button onClick={handleStopRecording} className="bg-red-500 text-white px-4 py-2 rounded">Stop Recording</button>
+                                )}
+                            </div>
 
-                 {currentQuestionIndex<selectedQuestions.length-1&&(
-                    <button onClick={handleNextQuestion}>Next</button>
-                 )}
-
-                 </div>
-            )}
-
-                 {currentQuestionIndex===selectedQuestions.length-1&&(
-                <button onClick={handleSubmitApplication}>Submit Application</button>
-              )} 
-
-
-             {/* {timestamps.map((entry,index)=>(
-                <div>
-
-                </div>
-             ))} */}
-
-             {timestamps.length>0&&(
-                <div>
-                    <h4>Timestamps</h4>
-                    {timestamps.map((entry,index)=>(
-                        <div key={index}>
-                            <p>Question:{entry.questionIndex}:{entry.timestamp.toFixed(2)}s</p>
+                            <p className="text-gray-700 mt-2">Recording Time: {recordTime}s</p>
                         </div>
-                    ))}
+                    )}
+
+                    {videoUrl && (
+                        <div className="mb-4">
+                            <h3 className="font-semibold">Recorded Video</h3>
+                            <video src={videoUrl} controls className="rounded-lg border w-full"></video>
+                        </div>
+                    )}
+
+                   
+
+                    {currentQuestionIndex === selectedQuestions.length - 1 && (
+                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">Submit Application</button>
+                    )}
+                     
+                    <div className="mt-4">
+                        <h4 className="font-semibold">Timestamps</h4>
+                        <p>Question 1 : 0</p>
+                        {timestamps.map((entry, index) => (
+                            <p key={index} className="text-gray-600">Question {entry.questionIndex + 2}: {entry.timestamp}s</p>
+                        ))}
+                    </div>
                 </div>
-             )}
 
+              
+                <div className="flex items-center justify-center h-screen">
+  <div className="flex flex-col justify-center items-start border p-6 rounded-lg shadow-lg bg-white w-96">
+    <h2 className="text-xl font-semibold mb-4">Job Details</h2>
+    {data.map( (ele) => ele._id == jobId && (
+          <div key={ele._id} className="mt-4">
+            <p><strong>Job Title:</strong> {ele.jobtitle}</p>
+            <p><strong>Location:</strong> {ele.location}</p>
+            <p><strong>Salary:</strong> {ele.salary}</p>
+          </div>
+        ))} </div>
+</div>
+
+            </div>
         </div>
-    )
+    );
 }
-
-

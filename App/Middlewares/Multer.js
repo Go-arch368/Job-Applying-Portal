@@ -1,35 +1,33 @@
-import multer from 'multer';
-import fs from 'fs/promises';
-import path from 'path';
+import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../../Config/cloudinary.js";
 
-const storage = multer.diskStorage({
-    destination: async (req, file, cb) => {
-        try {
-            const uploadDir = './uploads';
-            await fs.mkdir(uploadDir, { recursive: true });
-            cb(null, uploadDir);
-        } catch (err) {
-            cb(err, null);
-        }
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-        const ext = path.extname(file.originalname); // Extract file extension
-        const baseName = path.basename(file.originalname, ext); // Extract filename without extension
-        cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    let folder = "job-applications";
+    let resource_type = "auto"; // Auto-detect
+
+    if (file.mimetype.startsWith("image/")) {
+      folder = "job-applications/images";
+    } else if (file.mimetype.startsWith("video/")) {
+      folder = "job-applications/videos";
+      resource_type = "video";
+    } else if (file.mimetype === "application/pdf") {
+      folder = "job-applications/resumes";
+      resource_type = "raw";
+    } else {
+      throw new Error("Unsupported file type");
     }
+
+    return {
+      folder,
+      resource_type,
+      public_id: `${file.fieldname}-${Date.now()}`,
+    };
+  },
 });
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 500 * 1024 * 1024 }, // 100 MB limit
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only PDF files are allowed'), false);
-        }
-    }
-});
+const upload = multer({ storage });
 
 export default upload;

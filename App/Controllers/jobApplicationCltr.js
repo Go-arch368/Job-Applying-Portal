@@ -4,17 +4,13 @@ import Candidate from "../Models/candidatemodel.js";
 const jobAppCltr ={}
 import { validationResult } from "express-validator";  
 import Question from "../Models/questionmodel.js"; 
-import cloudinary from "cloudinary"
+import cloudinary from "../../Config/cloudinary.js";
 import fs from "fs"
 import jobCltr from "./jobCltr.js";
 import User from "../Models/userSchema.js";
 
 
-cloudinary.config({
-    cloud_name: "ds6mdqjnx",
-    api_key: "875581487565256",
-    api_secret: "5ul0eiEziuZQaksO0dD0js8EDss"
-}) 
+
 
 // jobAppCltr.uploadVideo=async(req,res)=>{
 //   try{
@@ -47,94 +43,74 @@ cloudinary.config({
 jobAppCltr.submitApplication = async (req, res) => {
     try {
         const { jobId } = req.params;
+        const { answeredQuestions } = req.body;
+        let parsedAnswers = JSON.parse(answeredQuestions);
+        console.log(parsedAnswers);
 
-        if (!req.files||!req.files["resume"]) {
+        if (!req.files?.["resume"]?.[0]) {
             return res.status(400).json({ error: "Resume file is required" });
         }
-
+    
         const resume = req.files["resume"][0];
-
-        const video = req.files["video"]?req.files["video"][0]:null;
-
-        console.log("Uploaded file:", resume);
-
+    
+        // Upload resume to Cloudinary
         const resumeUpload = await cloudinary.uploader.upload(resume.path, {
-            resource_type: "raw", 
+            resource_type: "raw",
             folder: "job-applications/resumes",
             public_id: `resume-${Date.now()}`,
         });
-
+    
+        // Handle video upload
+        const video = req.files?.["video"]?.[0];
         let videoUrl = null;
-        if (video){
-            const videoUpload = await cloudinary.uploader.upload(video.path, {
-                resource_type: "video", 
-                folder: "job-applications/videos",
-                public_id: `video-${Date.now()}`,
-            });
-           videoUrl=videoUpload.secure_url
+    
+        if (video?.mimetype?.startsWith("video/")) {
+            try {
+                const videoUpload = await cloudinary.uploader.upload(video.path, {
+                    resource_type: "auto",
+                    folder: "job-applications/videos",
+                    public_id: `video-${Date.now()}`,
+                });
+    
+                videoUrl = videoUpload.secure_url;
+            } catch (error) {
+                console.error("Error uploading video:", error.message);
+                return res.status(500).json({ error: "Error uploading video" });
+            }
         }
-      
-      
+    
+        // Check if job exists
         const job = await Job.findById(jobId);
         if (!job) {
             return res.status(400).json({ error: "Job not found" });
         }
-
-        console.log(job)
-
-
-     
-        const questions = await Question.find({ jobId });
-        if (!questions.length) {
-            return res.status(400).json({ error: "No questions found for this job" });
-        }
-
-        const randomQuestions = questions[0].questions
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 3)
-            .map((q)=>({
-                questionId:q._id,
-                questionText:q.text
-            }))
-
-          console.log(randomQuestions)  
-        if (!req.currentUser || !req.currentUser.userId) {
-            return res.status(400).json({ error: "User ID is missing from request" });
-        }
-
-     
-        
-
-        
+    
+        // Prevent duplicate applications
         const existingApplication = await JobApplication.findOne({
             jobId,
             applicantId: req.currentUser.userId,
         });
+    
         if (existingApplication) {
             return res.status(400).json({ message: "You have already applied for this job" });
         }
-
-        const findingCandidate = await User.findById({_id:req.currentUser.userId})
-        console.log(findingCandidate)
-       
+    
+        const user = await User.findById( req.currentUser.userId );
+        console.log(user)
+        // Create job application
         const newApplication = new JobApplication({
-            jobId:job._id,
-            applicantId:findingCandidate,
-            answeredQuestions: randomQuestions.map((q)=>(
-                {
-                    questionId:q.questionId,
-                    questionText:q.questionText
-                }
-            )),
+            jobId: job._id,
+            applicantId: user,
+            answeredQuestions: parsedAnswers.map(answer => ({
+                questionText: answer.questionText,
+                startingTimestamp: answer.startingTimeStamps,
+            })),
             resumeUrl: resumeUpload.secure_url,
-            videoUrl
+            videoUrl: videoUrl,
         });
-
-       
+    
         await newApplication.save();
-
         return res.status(201).json(newApplication);
-
     } catch (err) {
         console.error("Error in submitApplication:", err.message, err.stack);
         return res.status(500).json({ error: "An unexpected error occurred" });

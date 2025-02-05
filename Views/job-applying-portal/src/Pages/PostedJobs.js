@@ -1,8 +1,9 @@
 import Navbar from "../Components/Navbar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 import { displayJobs, setEditJobId ,deletingJob} from "../redux/slices/jobpostingSlice";
+
 
 export default function PostedJobs() {
   const dispatch = useDispatch();
@@ -23,6 +24,8 @@ function handleDelete(id){
     }
 } 
 
+
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
@@ -31,7 +34,7 @@ function handleDelete(id){
           Posted Jobs
         </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {data?.map((ele, index) => (
             <div
               key={index}
@@ -100,10 +103,10 @@ function handleDelete(id){
 
         
               <div className="flex justify-between mt-4">
+                <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700" ><Link to={`/candidateList/${ele._id}`}>CandidateList</Link></button>
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                  onClick={() => {
-                    dispatch(setEditJobId(ele._id));
+                  onClick={() => {  dispatch(setEditJobId(ele._id));
                     navigate("/jobposting");
                   }}
                 >
@@ -115,6 +118,7 @@ function handleDelete(id){
                 >
                   Delete
                 </button>
+
               </div>
             </div>
           ))}

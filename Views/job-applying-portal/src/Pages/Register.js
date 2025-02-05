@@ -92,9 +92,8 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Role Selection Buttons */}
             <div className="flex gap-4">
-              <button
-                type="button"
-                className={`w-1/2 p-2 border rounded-md ${
+              <button type="button"
+            className={`w-1/2 p-2 border rounded-md ${
                   users.role === "candidate"
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200"

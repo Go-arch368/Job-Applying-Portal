@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../Config/axios";
 
-export const getRecruiters = createAsyncThunk(
-  "adminVerify/getRecruiters",
-  async (_, { rejectWithValue }) => {
+export const getRecruiters = createAsyncThunk( "adminVerify/getRecruiters", async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("/api/verify/recruiter", {
         headers: { Authorization: localStorage.getItem("token") },
@@ -15,9 +13,7 @@ export const getRecruiters = createAsyncThunk(
   }
 );
 
-export const updateVerificationStatus = createAsyncThunk(
-  "adminVerify/updateVerificationStatus",
-  async ({ _id, isVerified }, { rejectWithValue }) => {
+export const updateVerificationStatus = createAsyncThunk( "adminVerify/updateVerificationStatus",async ({ _id, isVerified }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
         `/api/verify/recruiter/${_id}`, { isVerified }, { headers: { Authorization: localStorage.getItem("token") } } );

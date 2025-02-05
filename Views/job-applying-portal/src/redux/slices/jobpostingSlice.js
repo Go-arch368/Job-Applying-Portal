@@ -6,10 +6,8 @@ export const postjob = createAsyncThunk(
     "jobposting/postjob",
     async ({ jobDetails, resetForm ,navigate }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(
-                "/api/jobposting",
-                jobDetails,
-                { headers: { Authorization: localStorage.getItem("token") } }
+            const response = await axios.post( "/api/jobposting", jobDetails,
+                   { headers: { Authorization: localStorage.getItem("token") } }
             );
             resetForm()
             const jobId = response.data._id

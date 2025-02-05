@@ -17,8 +17,8 @@ router.post(
     jobAppCltr.submitApplication
 );
 
-router.get("/applications",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.getAppliedJobs)
-router.get("/job/:jobId/applicants",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.registeredUsers)
+router.get("/applications",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.getAppliedJobs)//get applied jobs canidate
+router.get("/job/:jobId/applicants",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.registeredUsers)//recruiter will get the candidate for the particular job
 router.put("/job/verify/:id", authenticateUser, authorizeUser(["recruiter"]), jobAppCltr.verify);
 router.post("/candidate/saved-jobs",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.saveJobs)
 router.get("/job/saved", authenticateUser,authorizeUser(["candidate"]), jobAppCltr.gettingSaved);

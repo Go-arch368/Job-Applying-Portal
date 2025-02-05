@@ -2,12 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../Config/axios";
 
 
-export const addQtn = createAsyncThunk(
-  "questions/addQtn",
-  async ({ newQuestion, jobId }, { rejectWithValue }) => {
+export const addQtn = createAsyncThunk("questions/addQtn", async ({ newQuestion, jobId }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "/api/question",
+      const response = await axios.post("/api/question",
         {
           jobId,
           questions: [{ questionText: newQuestion }],
@@ -23,9 +20,7 @@ export const addQtn = createAsyncThunk(
   }
 );
 
-export const getQtn = createAsyncThunk(
-  "questions/getQtn",
-  async ({ jobId }, { rejectWithValue }) => {
+export const getQtn = createAsyncThunk( "questions/getQtn", async ({ jobId }, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/api/questions/${jobId}`, {
         headers: { Authorization: localStorage.getItem("token") },
@@ -51,9 +46,7 @@ export const updateQuestions = createAsyncThunk("questions/updateQuestions",asyn
     }
 })
 
-export const deleteQuestions = createAsyncThunk(
-    "questions/deleteQuestions",
-    async ({ id }, { rejectWithValue }) => {
+export const deleteQuestions = createAsyncThunk( "questions/deleteQuestions", async ({ id }, { rejectWithValue }) => {
       try {
         const response = await axios.delete(`/api/questions/${id}`, {
           headers: { Authorization: localStorage.getItem("token") },

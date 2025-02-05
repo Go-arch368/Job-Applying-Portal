@@ -12,20 +12,15 @@ const jobapplicationSchema = new Schema({
         required:true
     },
    videoUrl:{
-       type:String,
-       required:true
+       type:String
     }, 
     resumeUrl:{
         type:String,
         required:true
     },
-    answeredQuestions:[{
-        questionId:{
-           type:String,requried:true
-        },
-        questionText:{
-            type:String,requried:true
-        }
+    answeredQuestions: [{
+        questionText: { type: String, required: true },
+        startingTimestamp: { type: Number, required: true } // Correct field name should be 'startingTimestamp'
     }],
     status:{
         type:String,

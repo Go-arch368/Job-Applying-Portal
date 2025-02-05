@@ -83,7 +83,7 @@ export default function SearchJobs() {
 
   <div class="flex gap-8">
    
-    <div class="w-full lg:w-2/3 h-[500px] overflow-y-auto border-r-2  pr-4 ">
+    <div class="w-full lg:w-1/3 h-[500px] overflow-y-auto border-r-2  pr-4 ">
      
       <div>
         {data?.map((job) => (

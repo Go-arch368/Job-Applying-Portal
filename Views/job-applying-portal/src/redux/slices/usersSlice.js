@@ -4,7 +4,6 @@ import axios from "../Config/axios.js"
 export const userRegister = createAsyncThunk("users/userRegister",async({users,resetForm},{rejectWithValue})=>{
     try{
         const response = await axios.post("/api/users",users)
-     
             resetForm()
             console.log(response.data.token)
            localStorage.setItem("token",response.data.token)
