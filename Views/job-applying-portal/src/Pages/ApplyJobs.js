@@ -16,6 +16,7 @@ export default function ApplyJobs() {
     const [timestamps, setTimestamps] = useState([]);
     const [recordTime, setRecordTime] = useState(0);
     const [recordingCompleted, setRecordingCompleted] = useState(false);
+    const [error,setError] = useState(null)
 
     const webcamRef = useRef(null);
     const mediaRecorderRef = useRef(null);
@@ -140,13 +141,17 @@ export default function ApplyJobs() {
         dispatch(applyingjob({ jobId, formData })).unwrap()
             .then(() => {
                 alert("Successfully applied");
-            });
+            })
+            .catch((error)=>{
+                console.log(error.response?.data.message)
+                setError(error.reponse?.data.message)
+            })
     }
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h1 className="text-2xl font-semibold text-center mb-4">Apply for Job</h1>
-            {serverError && <p className="text-red-500 text-center">{serverError}</p>}
+       
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Left Column (Application Form Section) */}
@@ -194,11 +199,11 @@ export default function ApplyJobs() {
                     )}
 
                    
-
                     {currentQuestionIndex === selectedQuestions.length - 1 && (
-                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">Submit Application</button>
+                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">Submit Details</button>
                     )}
-                     
+                         {serverError && <p className="text-red-500 text-center">{serverError}</p>}
+
                     <div className="mt-4">
                         <h4 className="font-semibold">Timestamps</h4>
                         <p>Question 1 : 0</p>

@@ -63,6 +63,9 @@ export default function Navbar() {
                     <li>
                     <Link to="/jobposting" className="text-gray-700 hover:text-blue-500">Posting Job</Link>
                 </li>
+                <li>
+                  <Link to="/jobdetails" className="text-gray-700 hover:text-blue-500">Job Details</Link>
+                </li>
               
                 </>
               

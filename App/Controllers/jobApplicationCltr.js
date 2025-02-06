@@ -167,6 +167,7 @@ jobAppCltr.verify = async(req,res)=>{
     try{
        const id = req.params.id
        const body =req.body
+       console.log(body)
        const values = ["pending","accepted","rejected"]
        if(!values.includes(body.status)){
         return res.status(400).json("the given status is not being provided")
@@ -247,6 +248,47 @@ jobAppCltr.deletingJobId=async(req,res)=>{
         console.log(err)
         return res.status(500).json("internal server error")
     }
+}
+
+jobAppCltr.getAccepted =async(req,res)=>{
+  try{
+     const {jobId} = req.params
+     console.log(jobId)
+     const identifyjobs = await Job.findById(jobId)
+     console.log(identifyjobs)
+     if(!identifyjobs){
+        return res.status(400).json({error:"job not found"})
+     }
+     const acceptedCandidates = await JobApplication.find({jobId,status:"accepted"}).populate("applicantId")
+     console.log(acceptedCandidates)
+     if(acceptedCandidates.length==0){
+        return res.status(400).json({error:"no accepted candidates "})
+     }
+    return res.status(200).json(acceptedCandidates)
+  }
+  catch(err){
+    console.log(err)
+    return res.status(500).json({err:"something went wrong"})
+  }
+}
+
+jobAppCltr.getRejected = async(req,res)=>{
+    try{
+        const {jobId} = req.params
+        const identifyjobs = await Job.findById(jobId)
+        if(!identifyjobs){
+           return res.status(400).json({error:"job not found"})
+        }
+        const rejectedCandidates =await JobApplication.find({jobId,status:"rejected"}).populate("applicantId")
+        if(rejectedCandidates.length==0){
+           return res.status(400).json({error:"no candidates found"})
+        }
+       return res.status(200).json(rejectedCandidates)
+     }
+     catch(err){
+       console.log(err)
+       return res.status(500).json({err:"something went wrong"})
+     }
 }
 
 export default jobAppCltr

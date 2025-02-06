@@ -14,7 +14,7 @@ export default function VerifyingRecruiters() {
   function handleClick(ele) {
     const verify = window.confirm("Are you Sure your want to verify?")
     if(verify){
-        dispatch(updateVerificationStatus({ _id: ele._id, isVerified: true }))
+        dispatch(updateVerificationStatus({ _id: ele._id, isVerified: true })).unwrap()
       .then(()=>dispatch(getRecruiters()))
     }
   }

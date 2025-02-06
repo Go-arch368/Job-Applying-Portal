@@ -10,6 +10,11 @@ import PostedJobs from "./Pages/PostedJobs";
 import SearchJobs from "./Pages/SearchJobs";
 import ApplyJobs from "./Pages/ApplyJobs";
 import CandidateList from "./Pages/CandidateList";
+import JobDetails from "./Pages/JobDetails";
+import AcceptedCandidates from "./Components/AcceptedCandidates";
+import RejectedCandidates from "./Components/RejectedCanidates";
+
+
 function App() {
   return (
     <div className="text-center">
@@ -26,6 +31,10 @@ function App() {
        <Route path="/searchJobs" element={<SearchJobs/>}/>
        <Route path="/apply/:jobId" element={<ApplyJobs/>} />
        <Route path="/candidateList/:jobId" element={<CandidateList/>}/>
+       <Route path="/jobdetails" element={<JobDetails/>}/>
+       <Route path="/accepted/:jobId" element={<AcceptedCandidates/>}/>
+       <Route path="/rejected/:jobId" element={<RejectedCandidates/>}/>
+
      </Routes>
     </div>
   );

@@ -90,25 +90,13 @@ export default function Register() {
 
         {!showRecruiterForm ? (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Role Selection Buttons */}
             <div className="flex gap-4">
-              <button type="button"
-            className={`w-1/2 p-2 border rounded-md ${
-                  users.role === "candidate"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                }`}
-                onClick={() => setUsers({ ...users, role: "candidate" })}
+              <button type="button"  className={`w-1/2 p-2 border rounded-md ${users.role === "candidate" ? "bg-blue-500 text-white" : "bg-gray-200" }`}
+                   onClick={() => setUsers({ ...users, role: "candidate" })}
               >
                 Register as Candidate
               </button>
-              <button
-                type="button"
-                className={`w-1/2 p-2 border rounded-md ${
-                  users.role === "recruiter"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                }`}
+              <button type="button" className={`w-1/2 p-2 border rounded-md ${users.role === "recruiter"? "bg-blue-500 text-white": "bg-gray-200" }`}
                 onClick={() => setUsers({ ...users, role: "recruiter" })}
               >
                 Register as Recruiter
@@ -118,7 +106,7 @@ export default function Register() {
               <span className="text-red-500">{clientErrors.role}</span>
             )}
 
-            {/* Form Fields */}
+           
             {users.role && (
               <>
                 <div>
@@ -183,8 +171,6 @@ export default function Register() {
                         </span>
                       ))}
                 </div>
-
-                {/* Submit Button */}
                 <div>
                   <button
                     className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
