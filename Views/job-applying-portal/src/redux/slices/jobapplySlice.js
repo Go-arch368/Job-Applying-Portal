@@ -85,38 +85,57 @@ export const getRejected = createAsyncThunk("jobapplying/getRejected",async({job
   }
 })
 
+export const getApplied = createAsyncThunk("/jobapplying/getapplied",async(_,{rejectWithValue})=>{
+  try{
+     const response = await axios.get("/api/applied/jobs",{headers:{Authorization:localStorage.getItem("token")}})
+     console.log(response.data)
+     return response.data
+  }
+  catch(err){
+    console.log(err.response.data.error)
+    return rejectWithValue(err.response.data.error)
+  }
+})
 
 const jobapplyReducer = createSlice({
   name: "jobapplying",
   initialState: {
     data: [], // 🔹 Ensure `data` is an array
     applying: [],
-    accepted:[],
+    accepted:[],//user for search and applying a job
     rejected:[],
+    applied:[],
     //updatingCandidates:[],
     serverError: null,
+    searchError:null,
+    isloading:false
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(searchingJobs.fulfilled, (state, action) => {
         state.data = action.payload;
-        state.serverError = null;
+        state.searchError = null;
         state.applying=[]
       })  
       .addCase(searchingJobs.rejected, (state, action) => {
-        state.serverError = action.payload;
+        state.searchError = action.payload;
         state.data = [];
         state.applying=[]
       })
+      .addCase(applyingjob.pending,(state,action)=>{
+        state.isloading=true
+      })
       .addCase(applyingjob.fulfilled, (state, action) => {
         state.applying = action.payload;
+        state.isloading=false
         state.serverError = null;
         state.data=[]
       })
       .addCase(applyingjob.rejected, (state, action) => {
         state.serverError = action.payload;
         state.applying = [];
+        state.isloading=false
         state.data=[]
       })
       .addCase(getCandidates.fulfilled,(state,action)=>{
@@ -175,7 +194,22 @@ const jobapplyReducer = createSlice({
       state.applying=[]
       state.data=[]
     })
+    .addCase(getApplied.fulfilled,(state,action)=>{
+      state.applied = action.payload
+      state.data=[]
+      state.applying=[]
+      state.accepted=[]
+      state.serverError=null
+    })
+    .addCase(getApplied.rejected,(state,action)=>{
+      state.serverError=action.payload
+      state.data=[]
+      state.applying=[]
+      state.applied=[]
+    })
   }
-});
+})
+
+
 
 export default jobapplyReducer.reducer;

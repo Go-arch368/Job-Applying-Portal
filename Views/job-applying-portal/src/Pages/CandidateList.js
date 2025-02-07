@@ -75,7 +75,7 @@ export default function CandidateList() {
 
             <h3 className="mt-4 font-semibold">Actions</h3>
             {ele.status === "pending" ? (
-              <div className="flex gap-4 mt-2">
+              <div className="flex gap-4 mt-2 justify-center">
                 <button
                   className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition"
                   onClick={() => handleAction(ele._id, "accepted")}

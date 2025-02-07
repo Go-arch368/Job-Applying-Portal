@@ -82,7 +82,7 @@ candidateCltr.posting = async (req, res) => {
 };
 
 
-export default candidateCltr;
+
 
 candidateCltr.getById=async(req,res)=>{
     try{
@@ -203,3 +203,5 @@ candidateCltr.update=async(req,res)=>{
       return res.status(500).json({err:"something went wrong"})
     }
 }  
+
+export default candidateCltr;

@@ -21,9 +21,8 @@ export const userLogin =createAsyncThunk("users/userLogin",async({users,resetFor
       const response = await axios.post("/api/login",users)
         console.log(response.data)
         localStorage.setItem("token",response.data.token)
-        await dispatch(userRole())
         resetForm()
-        return response.data
+        return response.data.user
       
     }
     catch(err){
@@ -48,6 +47,8 @@ export const userRole = createAsyncThunk("users/userRole",async(_,{rejectWithVal
 })
 
 
+
+
 const usersSlice = createSlice({
     name:"users",
     initialState:{
@@ -56,7 +57,7 @@ const usersSlice = createSlice({
         serverErrors:null
     },
     reducers:{
-
+        
     },
     extraReducers:(builder)=>{
         builder.addCase(userRegister.fulfilled,(state,action)=>{
@@ -65,12 +66,12 @@ const usersSlice = createSlice({
         builder.addCase(userRegister.rejected,(state,action)=>{
            return {...state,isloggedIn:false,user:null,serverErrors:action.payload}
         })
-     /*    builder.addCase(userLogin.fulfilled,(state,action)=>{
+        builder.addCase(userLogin.fulfilled,(state,action)=>{
            return {...state,isloggedIn:true,user:action.payload} 
         })
         builder.addCase(userLogin.rejected,(state,action)=>{
             return {...state,isloggedIn:false,user:null,serverErrors:action.payload}
-        })  */
+        })  
         builder.addCase(userRole.fulfilled,(state,action)=>{
             return {...state,isloggedIn:true,user:action.payload}
         })

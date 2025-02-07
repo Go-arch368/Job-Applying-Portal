@@ -13,9 +13,24 @@ import CandidateList from "./Pages/CandidateList";
 import JobDetails from "./Pages/JobDetails";
 import AcceptedCandidates from "./Components/AcceptedCandidates";
 import RejectedCandidates from "./Components/RejectedCanidates";
+import AppliedJobs from "./Pages/AppliedJobs";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { userRole } from "./redux/slices/usersSlice";
+
 
 
 function App() {
+  const dispatch = useDispatch()
+  const {isloggedIn} = useSelector((state)=>state.users)
+  useEffect(()=>{
+    dispatch(userRole())
+  },[dispatch])
+
+  if(!isloggedIn&&localStorage.getItem("token")){
+    return <p style={{color:"red"}}>loading...</p>
+  }
+
   return (
     <div className="text-center">
       
@@ -34,7 +49,7 @@ function App() {
        <Route path="/jobdetails" element={<JobDetails/>}/>
        <Route path="/accepted/:jobId" element={<AcceptedCandidates/>}/>
        <Route path="/rejected/:jobId" element={<RejectedCandidates/>}/>
-
+       <Route path="/appliedjobs" element={<AppliedJobs/>}/>
      </Routes>
     </div>
   );

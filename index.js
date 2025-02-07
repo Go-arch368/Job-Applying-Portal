@@ -7,6 +7,7 @@ import resumebuilderRouter from "./Routes/resumebuilderRoute.js"
 import jobRouter from "./Routes/jobRouter.js"
 import questionRouter from "./Routes/questionRoutes.js"
 import jobApplicationRouter from "./Routes/jobApplicationRouter.js"
+import interviewRouter from "./Routes/interviewRoute.js"
 import  dotenv from "dotenv";
 import cors from "cors"
 const app=express()
@@ -25,6 +26,7 @@ app.use("/api",resumebuilderRouter)
 app.use("/api",jobRouter)
 app.use("/api",questionRouter)
 app.use("/api",jobApplicationRouter)
+app.use("/api",interviewRouter)
 
 app.listen(port,()=>{
     console.log(`${port} has been successfully registered`)

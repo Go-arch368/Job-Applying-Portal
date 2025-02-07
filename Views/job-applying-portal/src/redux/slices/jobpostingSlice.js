@@ -58,13 +58,30 @@ export const deletingJob =createAsyncThunk("/jobposting/deletingJob",async({id},
     }
 })
 
+export const acceptInterview = createAsyncThunk("/jobposting/acceptInterview",async({jobId,form},{rejectWithValue})=>{
+    try{
+      const response = await axios.post("/api/schedule",{jobId,...form},{headers:{Authorization:localStorage.getItem("token")}})
+      console.log(response.data)
+      return response.data
+    }
+    catch(err){
+        console.log(err.response.data.error)
+        return rejectWithValue(err.response.data.error)
+    }
+})
+
+
+
 // Job posting reducer
 const jobpostingReducer = createSlice({
     name: "jobposting",
     initialState: {
         data: [],
         serverErrors: null,
-        editJobId:null
+        editJobId:null,
+       scheduling:[],
+        isloading:false,
+        schedulingError:null
     },
     reducers: {
       setEditJobId:(state,action)=>{
@@ -104,7 +121,24 @@ const jobpostingReducer = createSlice({
            })
            .addCase(deletingJob.rejected,(state,action)=>{
               state.serverErrors=action.payload
-              state.data=null
+              state.data=[]
+           })
+           .addCase(acceptInterview.pending,(state,action)=>{
+             state.isloading=true
+           })
+           .addCase(acceptInterview.fulfilled,(state,action)=>{
+            state.scheduling=action.payload
+            state.serverErrors=null
+            state.data=[]
+            state.schedulingError=null
+            state.isloading=false
+           })
+           .addCase(acceptInterview.rejected,(state,action)=>{
+            state.schedulingError=action.payload
+            state.scheduling=[]
+            state.serverErrors=null
+            state.data=[]
+            state.isloading=false
            })
     }
 });

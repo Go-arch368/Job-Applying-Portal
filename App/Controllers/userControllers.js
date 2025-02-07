@@ -58,7 +58,7 @@ userCltr.loginUser=async(req,res)=>{
       }
 
     const tokenData = jwt.sign({userId:user._id,role:user.role},"Secret@123",{expiresIn:"7d"})
-      return res.json({token:tokenData})
+      return res.json({token:tokenData,user})
     }
     catch(err){
         console.log(err)

@@ -12,6 +12,7 @@ import User from "../Models/userSchema.js";
 
 
 
+
 // jobAppCltr.uploadVideo=async(req,res)=>{
 //   try{
 //      const file = req.file
@@ -121,6 +122,10 @@ jobAppCltr.submitApplication = async (req, res) => {
 jobAppCltr.getAppliedJobs=async(req,res)=>{
     try{
         const getappliedjobs = await JobApplication.find({applicantId:req.currentUser.userId}).populate("jobId")
+        if(!getappliedjobs){
+            return res.status(400).json({error:"no applied jobs found"})
+        }
+        console.log(getappliedjobs)
         return res.status(200).json(getappliedjobs) 
     }
     catch(err){
@@ -290,5 +295,7 @@ jobAppCltr.getRejected = async(req,res)=>{
        return res.status(500).json({err:"something went wrong"})
      }
 }
+
+
 
 export default jobAppCltr

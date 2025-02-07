@@ -24,7 +24,7 @@ export default function ApplyJobs() {
     const timerRef = useRef(null);
     const shuffleDone = useRef(false);
     const mediaStreamRef = useRef(null);
-    const { data, applying, serverError } = useSelector((state) => state.jobapplying);
+    const { data, applying, serverError,isloading } = useSelector((state) => state.jobapplying);
     console.log(data)
     const findingQuestions = data?.filter((ele) => ele._id.toString() == jobId).map((ele) => ele.assignedQuestions);
     console.log(findingQuestions)
@@ -200,7 +200,7 @@ export default function ApplyJobs() {
 
                    
                     {currentQuestionIndex === selectedQuestions.length - 1 && (
-                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">Submit Details</button>
+                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">{isloading?"submitting":"submit"}</button>
                     )}
                          {serverError && <p className="text-red-500 text-center">{serverError}</p>}
 

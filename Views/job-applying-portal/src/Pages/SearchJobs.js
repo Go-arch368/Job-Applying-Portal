@@ -13,9 +13,9 @@ export default function SearchJobs() {
   const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
 
-  const { data, serverError } = useSelector((state) => state.jobapplying);
+  const { data, searchError } = useSelector((state) => state.jobapplying);
   console.log(data);
-  console.log(serverError);
+  console.log(searchError);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -75,8 +75,8 @@ export default function SearchJobs() {
           Search
         </button>
       </form>
-         <div> {serverError && (
-        <p class="text-red-500 mb-4">{serverError}</p>
+         <div> {searchError && (
+        <p class="text-red-500 mb-4">{searchError}</p>
       )}</div>
     </div>
   </div> 

@@ -8,16 +8,12 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { user, serverErrors, isloggedIn } = useSelector((state) => state.users);
 
-/* 
-//   console.log("Is Logged In:", isloggedIn);
-//   console.log("User:", user);
-//   console.log("Server Errors:", serverErrors); */
 
   function handleClick(e) {
     e.preventDefault();
     localStorage.removeItem("token");
     navigate("/login")
-    //dispatch(logout()); // Update Redux state
+   
   }
 
   
@@ -75,6 +71,9 @@ export default function Navbar() {
                 <>
                  <li>
                   <Link to="/searchJobs" className="text-gray-700 hover:text-blue-500">Search Jobs</Link>
+                 </li>
+                 <li>
+                  <Link to="/appliedjobs" className="text-gray-700 hover:text-blue-500">Applied Jobs</Link>
                  </li>
                 </>
               )}

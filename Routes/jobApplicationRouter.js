@@ -17,7 +17,7 @@ router.post(
     jobAppCltr.submitApplication
 );
 
-router.get("/applications",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.getAppliedJobs)//get applied jobs canidate
+router.get("/applied/jobs",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.getAppliedJobs)//get applied jobs canidate
 router.get("/job/:jobId/applicants",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.registeredUsers)//recruiter will get the candidate for the particular job
 router.put("/job/verify/:id", authenticateUser, authorizeUser(["recruiter"]),jobAppCltr.verify);
 router.post("/candidate/saved-jobs",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.saveJobs)
@@ -25,7 +25,10 @@ router.get("/job/saved", authenticateUser,authorizeUser(["candidate"]), jobAppCl
 router.delete("/candidate/saved-jobs/:jobId",authenticateUser,authorizeUser(["candidate"]),jobAppCltr.deletingJobId)
 //get the accepted candidates
 router.get("/job/:jobId/accepted",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.getAccepted)
-router.get("/job/:jobId/rejected",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.getRejected)
 //get the rejected candidates
+router.get("/job/:jobId/rejected",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.getRejected)
+//get applied jobs of the candidate
+
+
 
 export default router;
