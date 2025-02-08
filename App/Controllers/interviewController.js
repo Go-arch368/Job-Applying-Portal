@@ -23,6 +23,8 @@ interviewCltr.scheduleInterview = async (req, res) => {
     if (jobApplicants.length === 0) {
       return res.status(400).json({ error: "No accepted applicants found" });
     }
+
+
     
     const applicantIds = jobApplicants.map((ele)=>ele.applicantId)
     if(applicantIds.length==0){
@@ -38,6 +40,8 @@ interviewCltr.scheduleInterview = async (req, res) => {
         mode
     })
     await newInterview.save()
+
+    
 
     const applicantData = await User.find({ _id: { $in: applicantIds } },"email" );
     console.log(applicantData)
@@ -74,6 +78,19 @@ HR Team`
   }
 };
 
+interviewCltr.interviewDetails = async(req,res)=>{
+  try{
+     const interviews = await Interview.find({applicants:req.currentUser.userId}).populate({path:"jobId",select:"jobtitle companyname"})
+     if(!interviews){
+        return res.status(400).json({error:"interviews not being found"})
+     }
+     res.status(200).json(interviews)
+  }
+  catch(err){
+    console.log(err)
+    return res.status(500).json("somethig went wrong")
+  }
+}
 
 
 

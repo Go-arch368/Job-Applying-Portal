@@ -5,7 +5,7 @@ const jobAppCltr ={}
 import { validationResult } from "express-validator";  
 import Question from "../Models/questionmodel.js"; 
 import cloudinary from "../../Config/cloudinary.js";
-import fs from "fs"
+import fs, { accessSync } from "fs"
 import jobCltr from "./jobCltr.js";
 import User from "../Models/userSchema.js";
 
@@ -121,12 +121,39 @@ jobAppCltr.submitApplication = async (req, res) => {
 
 jobAppCltr.getAppliedJobs=async(req,res)=>{
     try{
-        const getappliedjobs = await JobApplication.find({applicantId:req.currentUser.userId}).populate("jobId")
-        if(!getappliedjobs){
+        const {search=""} = req.query
+        const {sortby="jobtitle"} = req.query
+        const {order="asc"} = req.query
+        const {page=1} = req.query
+        const {limit=4} = req.query
+        const pageNum = Number(page)
+        const limitNum = Number(limit)
+        const searchQuery = {applicantId:req.currentUser.userId}
+        const sortQuery = {}
+        sortQuery[sortby] = order === "asc"?1:-1
+
+        if(search){
+            searchQuery["jobId"] = {
+                $in:await Job.find({jobtitle:{$regex:search,$options:"i"}}).select("_id")
+            }
+        }
+
+        const getappliedjobs = await JobApplication.find(searchQuery)
+                                    .populate("jobId")
+                                    .sort(sortQuery)
+                                    .skip((pageNum-1)*limitNum)
+                                    .limit(limitNum)
+        if(getappliedjobs.length==0){
             return res.status(400).json({error:"no applied jobs found"})
         }
-        console.log(getappliedjobs)
-        return res.status(200).json(getappliedjobs) 
+        const total =await JobApplication.countDocuments({applicantId:req.currentUser.userId})
+         res.json({
+            data:getappliedjobs,
+            total,
+            pageNum,
+            totalPages:Math.ceil(total/limitNum)
+         })
+      
     }
     catch(err){
         console.log(err)

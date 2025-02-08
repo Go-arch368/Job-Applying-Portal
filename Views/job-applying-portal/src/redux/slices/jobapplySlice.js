@@ -68,8 +68,8 @@ export const getAccepted = createAsyncThunk("jobapplying/getAccepted",async({job
     return response.data
   }
   catch(err){
-    console.log(err)
-    return rejectWithValue(err.response.data.error)
+    console.log(err?.response?.data?.error)
+    return rejectWithValue(err?.response?.data?.error)
   }
 })
 
@@ -85,9 +85,21 @@ export const getRejected = createAsyncThunk("jobapplying/getRejected",async({job
   }
 })
 
-export const getApplied = createAsyncThunk("/jobapplying/getapplied",async(_,{rejectWithValue})=>{
+export const getApplied = createAsyncThunk("/jobapplying/getapplied",async({search,sortby,order,page,limit},{rejectWithValue})=>{
   try{
-     const response = await axios.get("/api/applied/jobs",{headers:{Authorization:localStorage.getItem("token")}})
+     const params={}
+     if(search)params.search =search
+     if(sortby)params.sortby = sortby
+     if(order)params.order=order
+     if(page)params.page=page
+     if(limit)params.limit=limit
+
+     const response = await axios.get("/api/applied/jobs",{
+      params:Object.keys(params).length?params:undefined,
+      headers:{
+        Authorization:localStorage.getItem("token")
+      }
+     })
      console.log(response.data)
      return response.data
   }
@@ -97,6 +109,17 @@ export const getApplied = createAsyncThunk("/jobapplying/getapplied",async(_,{re
   }
 })
 
+export const fetchCalendarInterviews = createAsyncThunk("/jobapplying/fetchCalendarInterviews",async(_,{rejectWithValue})=>{
+  try{
+    const response = await axios.get("/api/scheduled/interviews",{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data)
+    return response.data
+  }
+  catch(err){
+    console.log(err)
+    return rejectWithValue(err.response.data.error)
+  }
+})
 const jobapplyReducer = createSlice({
   name: "jobapplying",
   initialState: {
@@ -105,6 +128,8 @@ const jobapplyReducer = createSlice({
     accepted:[],//user for search and applying a job
     rejected:[],
     applied:[],
+    interviews:[],
+    interviewError:null,
     //updatingCandidates:[],
     serverError: null,
     searchError:null,
@@ -206,6 +231,14 @@ const jobapplyReducer = createSlice({
       state.data=[]
       state.applying=[]
       state.applied=[]
+    })
+    .addCase(fetchCalendarInterviews.fulfilled,(state,action)=>{
+       state.interviews=action.payload
+       state.interviewError=null
+    })
+    .addCase(fetchCalendarInterviews.rejected,(state,action)=>{
+      state.interviewError = action.payload
+      state.interviews=null
     })
   }
 })

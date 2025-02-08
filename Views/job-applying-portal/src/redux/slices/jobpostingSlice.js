@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "../Config/axios";
 
-// Async action to post a job
+
 export const postjob = createAsyncThunk(
     "jobposting/postjob",
     async ({ jobDetails, resetForm ,navigate }, { rejectWithValue }) => {
@@ -127,7 +127,7 @@ const jobpostingReducer = createSlice({
              state.isloading=true
            })
            .addCase(acceptInterview.fulfilled,(state,action)=>{
-            state.scheduling=action.payload
+            state.scheduling=Array.isArray(action.payload) ? action.payload : [action.payload]; 
             state.serverErrors=null
             state.data=[]
             state.schedulingError=null

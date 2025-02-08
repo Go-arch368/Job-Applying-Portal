@@ -200,7 +200,7 @@ export default function ApplyJobs() {
 
                    
                     {currentQuestionIndex === selectedQuestions.length - 1 && (
-                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">{isloading?"submitting":"submit"}</button>
+                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">{isloading?"submitting":"submitted"}</button>
                     )}
                          {serverError && <p className="text-red-500 text-center">{serverError}</p>}
 

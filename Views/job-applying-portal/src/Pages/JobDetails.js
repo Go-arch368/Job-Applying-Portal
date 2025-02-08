@@ -12,7 +12,6 @@ export default function JobDetails() {
   }, [dispatch]); 
 
   const { data } = useSelector((state) => state.jobposting); 
-
   console.log(data);
 
   return (

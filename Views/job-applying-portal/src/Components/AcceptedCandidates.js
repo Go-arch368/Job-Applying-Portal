@@ -41,7 +41,7 @@ export default function AcceptedCandidates() {
 
   useEffect(() => {
     dispatch(getAccepted({ jobId }));
-  }, []);
+  }, [dispatch, jobId]);
 
   function handleInterview() {
     setShowForm(true);
@@ -133,9 +133,7 @@ export default function AcceptedCandidates() {
                     >
                       <option value="">Select</option>
                       {modeOptions.map((ele) => (
-                        <option key={ele} value={ele}>
-                          {ele}
-                        </option>
+                        <option key={ele} value={ele}>{ele}</option>
                       ))}
                     </select>
                     {clientErrors.mode && <span className="text-red-500 text-sm">{clientErrors.mode}</span>}
@@ -146,7 +144,7 @@ export default function AcceptedCandidates() {
                   <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
                     Send Details
                   </button>
-                  {scheduling && <span className="text-red-500 text-sm ml-2">{scheduling}</span>}
+                  {scheduling?.message && <span className="text-red-500 text-sm ml-2">{scheduling.message}</span>}
                 </div>
               </form>
             )}
@@ -158,4 +156,3 @@ export default function AcceptedCandidates() {
     </div>
   );
 }
-    

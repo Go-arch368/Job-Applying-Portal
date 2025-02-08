@@ -6,5 +6,5 @@ import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
 const router = express.Router()
 
 router.post("/schedule",authenticateUser,authorizeUser(["recruiter"]),interviewCltr.scheduleInterview)
-
+router.get("/scheduled/interviews",authenticateUser,authorizeUser(["candidate"]),interviewCltr.interviewDetails)
 export default router

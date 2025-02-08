@@ -75,6 +75,9 @@ export default function Navbar() {
                  <li>
                   <Link to="/appliedjobs" className="text-gray-700 hover:text-blue-500">Applied Jobs</Link>
                  </li>
+                 <li>
+                  <Link to="/candidate-calendar" className="text-gray-700 hover:text-blue-500">CandidateCalendar</Link>
+                 </li>
                 </>
               )}
 
