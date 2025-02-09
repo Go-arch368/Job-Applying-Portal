@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { userRole } from "./redux/slices/usersSlice";
 import CandidateCalendar from "./Pages/CandidateCalendar";
+import JobFair from "./Pages/Admin/jobFair";
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
        <Route path="/rejected/:jobId" element={<RejectedCandidates/>}/>
        <Route path="/appliedjobs" element={<AppliedJobs/>}/>
        <Route path="/candidate-calendar" element={<CandidateCalendar/>}/>
+       <Route path="/jobFair" element={<JobFair/>}/>
      </Routes>
     </div>
   );

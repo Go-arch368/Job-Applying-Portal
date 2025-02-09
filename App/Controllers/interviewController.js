@@ -30,8 +30,22 @@ interviewCltr.scheduleInterview = async (req, res) => {
     if(applicantIds.length==0){
         return res.status(400).json({ error: "No valid applicant IDs found" });
     }
-   
-    const newInterview = new Interview({
+
+    const existingInterview = await Interview.findOne({jobId:job._id})
+    if(existingInterview){
+        const newApplicants = applicantIds.filter((id)=>!existingInterview.applicants.includes(id))
+        if(newApplicants.length==0){
+          return res.status(500).json({error:"All selected candidates are already scheduled for an interview"})
+        }
+        existingInterview.applicants.push(...newApplicants);
+        existingInterview.date =date
+        existingInterview.time=time
+        existingInterview.location=location
+        existingInterview.time=time
+        existingInterview.mode=mode
+        await existingInterview.save()
+    }else{
+      const newInterview = new Interview({
         jobId,
         applicants:applicantIds,
         date,
@@ -40,8 +54,7 @@ interviewCltr.scheduleInterview = async (req, res) => {
         mode
     })
     await newInterview.save()
-
-    
+    }
 
     const applicantData = await User.find({ _id: { $in: applicantIds } },"email" );
     console.log(applicantData)
