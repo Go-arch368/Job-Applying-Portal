@@ -18,7 +18,8 @@ const jobFairSchema = new Schema({
     }],
     jobs:[
         {type:mongoose.Schema.ObjectId,ref:"Job"}
-    ]
+    ],
+    jobApply:{type:String,enum:[true,false]}
 })
 
 const JobFair = model("JobFair",jobFairSchema)

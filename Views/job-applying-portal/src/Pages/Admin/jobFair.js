@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "../../Components/Navbar";
 import Sidebar from "./Sidebar";
 import Dashboard from "./Dashboard";
 import CreateJobFair from "./CreateJobFair";
@@ -8,18 +7,21 @@ import RegisteredCandidates from "./RegisteredCandidates";
 import RegisteredRecruiters from "./RegisteredRecruiters";
 
 export default function JobFair() {
-    const [activeTab, setActiveTab] = useState("dashboard"); // Fixed typo
+  const [activeTab, setActiveTab] = useState("dashboard"); 
 
-    return (
-        <div className="flex"> {/* Added flex to make sidebar and content side by side */}
-        <Sidebar setActiveTab={setActiveTab} />
-        <div className="flex-1 p-5"> {/* Added flex-1 to take remaining space */}
-            {activeTab === "dashboard" && <Dashboard />}
-            {activeTab === "create" && <CreateJobFair />}
-            {activeTab === "manage" && <ManageJobFair />}
-            {activeTab === "recruiters" && <RegisteredRecruiters />}
-            {activeTab === "candidates" && <RegisteredCandidates />}
-        </div>
+  return (
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} />
+
+      {/* Main Content */}
+      <div className="ml-64 flex-1 p-5"> 
+        {activeTab === "dashboard" && <Dashboard />}
+        {activeTab === "create" && <CreateJobFair />}
+        {activeTab === "manage" && <ManageJobFair />}
+        {activeTab === "recruiters" && <RegisteredRecruiters />}
+        {activeTab === "candidates" && <RegisteredCandidates />}
+      </div>
     </div>
-    );
+  );
 }

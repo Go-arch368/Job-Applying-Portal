@@ -55,6 +55,7 @@ export default function Navbar() {
                     JobFair
                   </Link>
                   </li>
+                 
                 </>
               )}
 
@@ -71,6 +72,9 @@ export default function Navbar() {
                   <Link to="/jobdetails" className="text-gray-700 hover:text-blue-500">Job Details</Link>
                 </li>
               
+              <li>
+                <Link to="/recruiterjobfair" className="text-gray-700 hover:text-blue-500">Apply JobFair</Link>
+              </li>
                 </>
               
               )}
@@ -85,6 +89,9 @@ export default function Navbar() {
                  </li>
                  <li>
                   <Link to="/candidate-calendar" className="text-gray-700 hover:text-blue-500">CandidateCalendar</Link>
+                 </li>
+                 <li>
+                  <Link to="/candidate-jobFair" className="text-gray-700 hover:text-blue-500">JobFair signups</Link>
                  </li>
                 </>
               )}

@@ -17,7 +17,7 @@ export default function ApplyJobs() {
     const [recordTime, setRecordTime] = useState(0);
     const [recordingCompleted, setRecordingCompleted] = useState(false);
     const [error,setError] = useState(null)
-
+    
     const webcamRef = useRef(null);
     const mediaRecorderRef = useRef(null);
     const videoChunks = useRef([]);

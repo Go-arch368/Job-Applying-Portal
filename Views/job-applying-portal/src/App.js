@@ -19,6 +19,10 @@ import { useEffect } from "react";
 import { userRole } from "./redux/slices/usersSlice";
 import CandidateCalendar from "./Pages/CandidateCalendar";
 import JobFair from "./Pages/Admin/jobFair";
+import CreateJobFair from "./Pages/Admin/CreateJobFair";
+import ManageJobFair from "./Pages/Admin/ManageJobFairs";
+import RecruiterjobFair from "./Pages/RecruiterjobFair";
+import CandidatejobFair from "./Pages/CandidatejobFair";
 
 
 function App() {
@@ -53,6 +57,10 @@ function App() {
        <Route path="/appliedjobs" element={<AppliedJobs/>}/>
        <Route path="/candidate-calendar" element={<CandidateCalendar/>}/>
        <Route path="/jobFair" element={<JobFair/>}/>
+       <Route path="/createjobFair" element={<CreateJobFair/>} />
+       <Route path="/managejobfair" element={<ManageJobFair/>} />
+       <Route path="/recruiterjobfair" element={<RecruiterjobFair/>}/>
+       <Route path="/candidate-jobFair" element={<CandidatejobFair/>}/>
      </Routes>
     </div>
   );

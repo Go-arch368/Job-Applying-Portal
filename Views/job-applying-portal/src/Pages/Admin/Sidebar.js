@@ -1,16 +1,30 @@
-export default function Sidebar({setActiveTab}){
-    
-    return(
-        <div className="flex flex-col items-start gap-8 ">
-            
-        {/*  <h1>This is the sidebar component</h1> */}
-            <ul className=" bg-gray-500 text-white text-center pb-8 w-64 h-screen rounded-lg">
-                <li onClick={()=>setActiveTab("dashboard")} className="block mb-8 mt-4 cursor-pointer">Dashboard</li>
-                <li onClick={()=>setActiveTab("create")} className="block mb-8 cursor-pointer">Create JobFair</li>
-                <li onClick={()=>setActiveTab("manage")} className="block mb-8 cursor-pointer">Manage JobFair</li>
-                <li onClick={()=>setActiveTab("recruiters")} className="block mb-8 cursor-pointer">Registered Recruiters</li>
-                <li onClick={()=>setActiveTab("candidates")} className="block mb-8 cursor-pointer">Registered Candidates</li>
-            </ul>
-        </div>
-    )
-}
+const Sidebar = ({ activeTab, setActiveTab }) => {
+    const menuItems = [
+      { id: "dashboard", label: "Dashboard" },
+      { id: "create", label: "Create JobFair" },
+      { id: "manage", label: "Manage JobFair" },
+      { id: "recruiters", label: "Registered Recruiters" },
+      { id: "candidates", label: "Registered Candidates" },
+    ];
+  
+    return (
+      <nav className="fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white shadow-xl flex flex-col p-6">
+        <ul className="flex flex-col gap-4">
+          {menuItems.map((item) => (
+            <li
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`cursor-pointer py-3 px-4 rounded-lg text-md text-center duration-300 ease-in-out hover:bg-gray-700 hover:text-gray-300 ${
+                activeTab === item.id ? "bg-blue-600 text-white" : ""
+              }`}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+  
+  export default Sidebar;
+  
