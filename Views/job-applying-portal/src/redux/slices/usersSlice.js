@@ -21,6 +21,8 @@ export const userLogin =createAsyncThunk("users/userLogin",async({users,resetFor
       const response = await axios.post("/api/login",users)
         console.log(response.data)
         localStorage.setItem("token",response.data.token)
+        localStorage.setItem("userId",response.data.user._id)
+         console.log(localStorage.getItem("userId"))
         resetForm()
         return response.data.user
       

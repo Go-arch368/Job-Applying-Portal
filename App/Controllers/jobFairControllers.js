@@ -54,7 +54,7 @@ jobFairCltr.candidateDetails = async(req,res)=>{
        }
 
       const existingUser = jobFair.candidates.some((ele)=>ele.userId.toString()===user._id.toString())
-      
+
       if(existingUser){
          return res.status(400).json({error:"you have already applied for this job"})
       }
@@ -87,6 +87,24 @@ jobFairCltr.getAlljobs=async(req,res)=>{
         console.log(err)
         return res.status(500).json("something went wrong")
     }
+}
+
+jobFairCltr.getAllCandidates=async(req,res)=>{
+    try{
+        console.log("hi") 
+        const {jobFairId} = req.params
+        console.log(jobFairId)
+        const jobFair = await JobFair.findById(jobFairId)
+        if(!jobFair){
+         return res.status(400).json("jobfair not found")
+        }
+        console.log(jobFair.candidates)
+        res.json(jobFair.candidates)
+     }
+     catch(err){
+         console.log(err)
+         return res.status(500).json("something went wrong")
+     }
 }
 
 jobFairCltr.getAllJobFair = async(req,res)=>{

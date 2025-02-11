@@ -65,7 +65,18 @@ export default function CreateJobFair(){
                 dispatch(updateEvent({formData,editId,navigate}))
             }
             else{
-                dispatch(createEvent({formData}))
+                dispatch(createEvent({formData})).unwrap()
+                try{
+                    alert("successfully created")
+                    setFormData({
+                        name: "",
+                        date: "",
+                        location: "",
+                        description: ""
+                    })
+                }catch(error){
+                    console.log(error)
+                } 
             }
         }
        

@@ -6,6 +6,7 @@ import jobpostingReducer from './slices/jobpostingSlice'
 import questionReducer from "./slices/questionSlice"
 import jobapplyReducer from "./slices/jobapplySlice"
 import jobFairReducer from "./slices/jobFairSlice"
+import profileReducer from "./slices/profileSlice"
 const store = configureStore({
     reducer:{
        users:usersReducer,
@@ -13,8 +14,9 @@ const store = configureStore({
        adminVerify:adminVerifyReducer,
        jobposting:jobpostingReducer,
        questions:questionReducer,
-       jobapplying:jobapplyReducer,
-       jobFair:jobFairReducer
+       jobapplying:jobapplyReducer, 
+       jobFair:jobFairReducer,
+       profile:profileReducer
     }
 })
 

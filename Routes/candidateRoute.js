@@ -8,8 +8,8 @@ import upload from "../App/Middlewares/Multer.js"
 
 const router = express.Router()
 
-router.post("/candidate", authenticateUser, authorizeUser(["candidate"]), upload.array("resume", 5), checkSchema(candidateValidator), candidateCltr.posting)
-//router.post("/candidate/upload",authenticateUser,authorizeUser(["candidate"]),upload.array("resume",5),candidateCltr.upload)
+router.post("/candidate", authenticateUser, authorizeUser(["candidate"]), upload.array("resume", 5) , candidateCltr.posting)
+router.post("/candidate/upload-profile",authenticateUser,authorizeUser(["candidate"]),upload.single("profilePicture"),candidateCltr.uploadProfilePicture)
 router.get("/candidate/:id",authenticateUser,candidateCltr.getById)
 router.put("/candidate/:id",authenticateUser,authorizeUser(["candidate"]),upload.array("resume",5),checkSchema(candidateValidator),candidateCltr.update)
 

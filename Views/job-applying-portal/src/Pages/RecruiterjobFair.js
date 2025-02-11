@@ -21,6 +21,8 @@ export default function RecruiterjobFair() {
   console.log(recRegister)
   console.log(registeredAll)
 
+  const today = new Date()
+
   function handleRegister(ele) {
        setRegister(true);
        setId(ele._id)
@@ -57,15 +59,18 @@ export default function RecruiterjobFair() {
     <div className="bg-gray-100 relative">
       <Navbar />
 
-      {/* Dimming effect when register is true */}
+ 
       {(register||recruiterRegistered) && (
         <div className="fixed inset-0 bg-black opacity-50 z-10"></div>
       )}
 
       <div className={`grid grid-cols-2 gap-4 p-10 ${register ? "opacity-20 pointer-events-none" : ""}`}>
         {data.length > 0 ? (
-          data.map((ele) => (
-            <div key={ele._id} className="p-4 border rounded-lg shadow bg-white">
+          data.map((ele) => {
+                const jobDate = new Date(ele.date)
+                const isExpired = jobDate<today
+                return (
+            <div key={ele._id} className={`p-4 border rounded-lg shadow bg-white ${isExpired?"opacity-50 grayscale bg-gray-100" : "bg-white"}`}>
               <h1 className="font-bold text-lg">Name: {ele.name}</h1>
               <h2 className="text-gray-700">Description: {ele.description}</h2>
               <h2 className="text-gray-700">
@@ -73,23 +78,30 @@ export default function RecruiterjobFair() {
               </h2>
               <h2 className="text-gray-700">Location: {ele.location}</h2>
               <h3>
-                Status: {new Date(ele.date) < new Date() ? "Expired" : <p className="text-green-500 inline">{ele.status}</p>}
-              </h3>
+                  Status:{" "}
+                  {isExpired ? (
+                    <span className="text-red-500 font-semibold">Expired</span>
+                  ) : (
+                    <span className="text-green-500">{ele.status}</span>
+                  )}
+                </h3>
 
               <div className="mt-4 flex gap-2 justify-center">
                 <button
                   className="border bg-orange-400 text-white px-4 py-1 rounded"
                   onClick={() => handleRegister(ele)}
+                  disabled={isExpired}
                 >
                   Register
                 </button>
-                <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={()=>handleRecruiterRegistered(ele._id)}>
+                <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={()=>handleRecruiterRegistered(ele._id)} disabled={isExpired}>
                   Recruiters Registered
                 </button>
               </div>
             </div>
-          ))
-        ) : (
+                )
+ } ))
+         : (
           <p className="text-center text-gray-500">No job fairs available</p>
         )}
       </div>

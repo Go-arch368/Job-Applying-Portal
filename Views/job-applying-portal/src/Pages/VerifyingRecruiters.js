@@ -27,10 +27,11 @@ export default function VerifyingRecruiters() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen py-8">
-    <Navbar />
+    <div>
+      <Navbar />
+    <div className="bg-gray-100 min-h-screen py-3">    
     <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
-      <h1 className="text-3xl font-semibold text-center mb-6 text-gray-700">Recruiters Verifying Portal</h1>
+      <h1 className="text-3xl font-semibold text-center mb-3 text-gray-700">Recruiters Verifying Portal</h1>
       <div className="space-y-4">
         {data?.length !== 0 &&
           data.map((ele) => (
@@ -77,7 +78,7 @@ export default function VerifyingRecruiters() {
       </div>
     </div>
   </div>
-  
+  </div>
   );
 }
 

@@ -5,10 +5,9 @@ const candidateSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User', 
   },
+  profilePicture:{type:String},
   mobile: {
     type: Number,
-    required: true,
- 
   },
   education: [
     {

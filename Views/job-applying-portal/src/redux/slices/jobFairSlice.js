@@ -87,6 +87,18 @@ export const candidatejobFair = createAsyncThunk("/jobFair/candidatejobFair",asy
     }
 })
 
+export const displayCandidates =  createAsyncThunk("/jobFair/displayCandidates",async({id},{rejectWithValue})=>{
+    try{
+       const response = await axios.get(`/api/getCandidates/${id}`,{headers:{Authorization:localStorage.getItem("token")}})
+       console.log(response.data)
+       return response.data
+    }
+    catch(err){
+        console.log(err.response.data.error)
+        return rejectWithValue(err.response.data.error)
+    }
+})
+
 const jobFairReducer = createSlice({
     name:"jobFair",
     initialState:{
@@ -97,7 +109,8 @@ const jobFairReducer = createSlice({
         registeredAll:[],
         candidateRegistered:[],
         isLoading:false,
-        candidateError:null
+        candidateError:null,
+        allCandidates:[]
     },
     reducers:{
          jobFaireditId:(state,action)=>{
@@ -168,6 +181,14 @@ const jobFairReducer = createSlice({
            state.candidateError=action.payload
            state.candidateRegistered=[]
            state.isLoading=false
+        })
+        builder.addCase(displayCandidates.fulfilled,(state,action)=>{
+            state.allCandidates=action.payload
+            state.serverErrors=null
+        })
+        builder.addCase(displayCandidates.rejected,(state,action)=>{
+            state.serverErrors=action.payload
+            state.allCandidates=[]
         })
     }
 })

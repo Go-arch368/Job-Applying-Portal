@@ -11,44 +11,31 @@ cloudinary.config({
 });
 
 candidateCltr.posting = async (req, res) => {
+    // const errors = validationResult(req);
+    // if (!errors.isEmpty()) {
+    //     return res.status(400).json({ error: errors.array() });
+    // }
 
-    const errors= validationResult(req)
-    if(!errors.isEmpty()){
-        return res.status(404).json({error:errors.array()})
-    }
-   
     try {
-        const { mobile, education, skills, certification, saveJobs } = req.body
-        let newEducation, newSkills, newCertification, newSavedJobs;
-        console.log(req.body)
-        try {
-            newEducation = JSON.parse(education);
-            newSkills = JSON.parse(skills);
-            newCertification = JSON.parse(certification);
-            newSavedJobs = JSON.parse(saveJobs);
-        } catch (parseError) {
-            console.error("JSON parse error:", parseError.message);
-            return res.status(400).json({ error: "Invalid JSON in request body." });
-        }
-         if (!req.files || req.files.length === 0) {
+        // Check if files are uploaded
+        if (!req.files || req.files.length === 0) {
             return res.status(400).json({ error: "No files uploaded." });
-        } 
+        }
 
-       // console.log(req.files);  
-
+      
         const resumeFiles = await Promise.all(
             req.files.map(async (file) => {
                 try {
-                  
                     const result = await cloudinary.uploader.upload(file.path, {
                         resource_type: "auto",
                         folder: "resumes",
                     });
+
+            
                     fs.unlink(file.path, (err) => {
-                        if (err) {
-                            console.error("Failed to delete local file", err);
-                        }
+                        if (err) console.error("Failed to delete local file", err);
                     });
+
                     return {
                         filename: result.public_id,
                         filepath: result.secure_url,
@@ -59,35 +46,60 @@ candidateCltr.posting = async (req, res) => {
                 }
             })
         );
-        
-        const candidate = new Candidate({
-            userId: req.currentUser.userId,
-            mobile,
-            education:newEducation,
-            skills:newSkills,
-            certification:newCertification,
-            saveJobs:newSavedJobs,
-            resumeUpload: resumeFiles,
-        });
 
        
+        const candidate = new Candidate({
+            resumeUpload: resumeFiles, 
+        });
+
         await candidate.save();
-       const populatedCandidate = await Candidate.findById(candidate._id).populate("userId");
-        console.log(populatedCandidate)
+
+  
+        const populatedCandidate = await Candidate.findById(candidate._id).populate("userId");
+
         return res.status(201).json(populatedCandidate);
     } catch (err) {
         console.error("Error saving candidate", err);
         return res.status(500).json({ error: "Something went wrong" });
-    } 
+    }
 };
 
-
+candidateCltr.uploadProfilePicture=async(req,res)=>{
+    try {
+        if (!req.file) {
+          return res.status(400).json({ error: "No file uploaded" });
+        }
+    
+        // ✅ Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "profile_pictures",
+          width: 300,
+          height: 300,
+          crop: "fill",
+        });
+    
+        // ✅ Update Candidate Profile
+        const candidate = await Candidate.findOneAndUpdate(
+          { userId: req.currentUser.userId},
+          { profilePicture: result.secure_url },
+          { new: true }
+        );
+    
+        if (!candidate) {
+          return res.status(404).json({ error: "Candidate profile not found" });
+        }    
+        res.json({ message: "Profile picture uploaded successfully", candidate });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+      }
+}
 
 
 candidateCltr.getById=async(req,res)=>{
     try{
         const id = req.params.id
-        const candidate = await Candidate.findById(id) //populate savedJobs when after working job posting and job applicatoins
+        const candidate = await Candidate.findOne({userId:id}) //populate savedJobs when after working job posting and job applicatoins
         if(!candidate){
             return res.status(404).json({error:"Candidate not found"})
         }
@@ -119,9 +131,11 @@ candidateCltr.update=async(req,res)=>{
         return res.status(404).json({error:errors.array()})
     }
     try{
-        const { mobile, education, skills, certification, saveJobs } = req.body
+
+        const { mobile, education, skills, certification,  } = req.body
         const id = req.params.id
-        const candidate = await Candidate.findById(id)
+        const candidate = await Candidate.findOne({userId:id})
+        console.log(candidate)
         if(!candidate){
             return res.status(404).json("candidate id is not found")
         }
@@ -166,34 +180,34 @@ candidateCltr.update=async(req,res)=>{
              candidate.certification = [...candidate.certification, ...newCertification]
         }
 
-        const resumeFiles = await Promise.all(
-            req.files.map(async (file) => {
-                try {
+        // const resumeFiles = await Promise.all(
+        //     req.files.map(async (file) => {
+        //         try {
                   
-                    const result = await cloudinary.uploader.upload(file.path, {
-                        resource_type: "auto",
-                        folder: "resumes",
-                    });
+        //             const result = await cloudinary.uploader.upload(file.path, {
+        //                 resource_type: "auto",
+        //                 folder: "resumes",
+        //             });
 
                    
-                    fs.unlink(file.path, (err) => {
-                        if (err) {
-                            console.error("Failed to delete local file", err);
-                        }
-                    });
+        //             fs.unlink(file.path, (err) => {
+        //                 if (err) {
+        //                     console.error("Failed to delete local file", err);
+        //                 }
+        //             });
 
-                    return {
-                        filename: result.public_id,
-                        filepath: result.secure_url,
-                    };
-                } catch (uploadError) {
-                    console.error("Cloudinary upload failed", uploadError);
-                    throw new Error("File upload to Cloudinary failed.");
-                }
-            })
-        );
+        //             return {
+        //                 filename: result.public_id,
+        //                 filepath: result.secure_url,
+        //             };
+        //         } catch (uploadError) {
+        //             console.error("Cloudinary upload failed", uploadError);
+        //             throw new Error("File upload to Cloudinary failed.");
+        //         }
+        //     })
+        // );
         //candidate.resumeUpload.push(...resumeFiles)
-        candidate.resumeUpload = [...candidate.resumeUpload, ...resumeFiles]
+        // candidate.resumeUpload = [...candidate.resumeUpload, ...resumeFiles]
         await candidate.save()
         return res.json(candidate)
 

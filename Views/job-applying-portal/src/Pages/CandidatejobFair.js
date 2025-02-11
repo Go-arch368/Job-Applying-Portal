@@ -8,13 +8,14 @@ export default function CandidatejobFair() {
     const dispatch = useDispatch();
     const [recruiterRegistered, setRecruiterRegistered] = useState(false);
     const [candidateErrors, setCandidateErrors] = useState({}); 
-    const [candidates, setCandidates] = useState({});
+    
 
     useEffect(() => {
         dispatch(getAll());
     }, [dispatch]);
 
     const { data, registeredAll, candidateRegistered } = useSelector((state) => state.jobFair);
+    const today = new Date()
     console.log(candidateRegistered);
 
     function handleRegister(id) {
@@ -23,7 +24,7 @@ export default function CandidatejobFair() {
             .unwrap()
             .then(() => {
                 alert("successfully registered")
-                setCandidates((prev) => ({ ...prev, [id]: true }));
+              
             })
             .catch((error) => {
                 setCandidateErrors((prev) => ({ ...prev, [id]: error }));
@@ -44,8 +45,11 @@ export default function CandidatejobFair() {
 
             <div className="grid grid-cols-2 gap-4 p-10">
                 {data.length > 0 ? (
-                    data.map((ele) => (
-                        <div key={ele._id} className="p-4 border rounded-lg shadow bg-white">
+                    data.map((ele) =>{ 
+                        const jobDate = new Date(ele.date)
+                        const isExpired = jobDate<new Date()
+                        return(
+                        <div key={ele._id} className={`p-4 border rounded-lg shadow bg-white ${isExpired?"opacity-30 grayscale-50 bg-gray-100 ":"bg-white"}`}>
                             <h1 className="font-bold text-lg">Name: {ele.name}</h1>
                             <h2 className="text-gray-700">Description: {ele.description}</h2>
                             <h2 className="text-gray-700">
@@ -53,24 +57,30 @@ export default function CandidatejobFair() {
                             </h2>
                             <h2 className="text-gray-700">Location: {ele.location}</h2>
                             <h3>
-                                Status: {new Date(ele.date) < new Date() ? "Expired" : <p className="text-green-500 inline">{ele.status}</p>}
-                            </h3>
+                                
+                                {isExpired ? (
+                                    <span className="text-red-500 font-semibold">Expired</span>
+                                ) : (
+                                    <span className="text-green-500">{ele.status}</span>
+                                )}
+                                </h3>
 
                             <div className="mt-4 flex gap-2 justify-center">
                                 <button
                                     className="border bg-orange-400 text-white px-4 py-1 rounded"
                                     onClick={() => handleRegister(ele._id)}
+                                    disabled={isExpired}
                                 >
-                                    {candidateRegistered[ele._id] ? "Registered" : "Register"}
+                                   Register
                                 </button>
 
-                                <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={() => handleRecruiterRegistered(ele._id)}>
-                                    Recruiters Registered
+                                <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={() => handleRecruiterRegistered(ele._id)} disabled={isExpired}>
+                                    Companies Registered
                                 </button>
                             </div>
                             {candidateErrors[ele._id] && <p style={{ color: "red" }}>{candidateErrors[ele._id]}</p>}
                         </div>
-                    ))
+  )})
                 ) : (
                     <p className="text-center text-gray-500">No job fairs available</p>
                 )}
