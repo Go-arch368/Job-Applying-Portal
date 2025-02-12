@@ -18,12 +18,10 @@ const candidateSchema = new Schema({
       cgpa: { type: Number },
     },
   ],
-  resumeUpload: [
-    {
-      filename: { type: String, required: true },
-      filepath: { type: String, required: true },
-    },
-  ], 
+  resumeUpload: {
+    filename: { type: String, required: true },
+    filepath: { type: String, required: true },
+},
   skills: [
     {
       skillName: String,
