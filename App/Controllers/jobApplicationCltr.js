@@ -219,52 +219,59 @@ jobAppCltr.verify = async(req,res)=>{
 
 jobAppCltr.saveJobs = async (req, res) => {
     try {
+        console.log("hi")
         const { jobId } = req.body; // Extract `jobId` from `req.body`
         console.log(jobId);
-
         if (!jobId) {
-            return res.status(400).json("jobId is required");
+            return res.status(400).json({error:"jobId is required"});
         }
-
         const candidate = await Candidate.findOne({ userId: req.currentUser.userId });
         console.log(candidate);
-
         if (!candidate) {
-            return res.status(400).json("Candidate not found");
+            return res.status(400).json({error:"Candidate not found"});
         }
-
         // Check if the job is already saved
         if (candidate.saveJobs.includes(jobId)) {
-            return res.status(400).json("This job is already saved");
+            return res.status(400).json({error:"This job is already saved"});
         }
-
         // Push the `jobId` to `saveJobs` array
         candidate.saveJobs.push(jobId);
         await candidate.save();
 
-        return res.status(201).json(candidate);
+        return res.status(201).json({candidate,datasaving:"saved"});
     } catch (err) {
         console.log(err);
         return res.status(500).json("Something went wrong");
     }
 };
 
-jobAppCltr.gettingSaved=async(req,res)=>{
-    try{
-        const candidate = await Candidate.findOne({userId:req.currentUser.userId})
-        if(!candidate){
-            return res.status(400).json("candidate is required")
+jobAppCltr.gettingSaved = async (req, res) => {
+    try {
+        const candidate = await Candidate.findOne({ userId:req.currentUser.userId});
+        console.log(candidate)
+        if (!candidate) {
+            return res.status(400).json({ error: "Candidate is required" });
         }
-        const savedIds = candidate.saveJobs
-        const displayingJobs = await Promise.all(savedIds.map((ele)=>Job.findById(ele)))
-        return res.status(200).json(displayingJobs)    
-    }
-    catch(err){
-        console.log(err);
-        return res.status(500).json("Something went wrong"); 
-    }
-}
+    
+        if (!candidate.saveJobs || candidate.saveJobs.length === 0) {
+            return res.status(200).json([]); // No saved jobs
+        }
 
+        // Ensure all job IDs are valid ObjectIds
+        // const validJobIds = candidate.saveJobs.filter((jobId) => mongoose.Types.ObjectId.isValid(jobId));
+
+        // if (validJobIds.length === 0) {
+        //     return res.status(400).json({ message: "No valid saved job IDs found" });
+        // }
+
+        const displayingJobs = await Promise.all(candidate.saveJobs.map((jobId) => Job.findById(jobId)));
+
+        return res.status(200).json(displayingJobs);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+};
 jobAppCltr.deletingJobId=async(req,res)=>{
     try{
          const {jobId} = req.params

@@ -25,6 +25,7 @@ import RecruiterjobFair from "./Pages/RecruiterjobFair";
 import CandidatejobFair from "./Pages/CandidatejobFair";
 import ProfileCandidate from "./Pages/ProfileCandidate";
 import SaveJobs from "./Pages/SaveJobs";
+import ProfileRecruiter from "./Pages/ProfileRecruiter";
 
 function App() {
   const dispatch = useDispatch()
@@ -64,6 +65,7 @@ function App() {
        <Route path="/candidate-jobFair" element={<CandidatejobFair/>}/>
        <Route path="/candidateProfile" element={<ProfileCandidate/>}/>
        <Route path="/saved-jobs" element={<SaveJobs/>}/>
+       <Route path="/recruiterProfile" element={<ProfileRecruiter/>}/>
      </Routes>
     </div>
   );

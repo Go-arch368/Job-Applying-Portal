@@ -70,6 +70,37 @@ export default function Navbar() {
                       Apply JobFair
                     </Link>
                   </li>
+                  <li className="relative">
+                <FaUserCircle
+                  className="text-gray-700 text-3xl cursor-pointer"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                />
+               {dropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                        <ul className="text-gray-700 text-center">
+                          <li
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                            onClick={() => navigate("/recruiterProfile")}
+                          >
+                            <FaUser/> Profile
+                          </li>
+                          {/* <li
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                            onClick={() => navigate("/saved-jobs")}
+                          >
+                            <FaSave /> Saved Jobs
+                          </li> */}
+                          <li
+                            className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer flex items-center gap-2"
+                            onClick={handleLogout}
+                          >
+                            <FaSignOutAlt /> Logout
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+              </li>
+                  
                 </>
               )}
 
@@ -95,9 +126,7 @@ export default function Navbar() {
                       JobFair Signups
                     </Link>
                   </li>
-                </>
-              )}
-
+             
             
               <li className="relative">
                 <FaUserCircle
@@ -129,6 +158,8 @@ export default function Navbar() {
                       </div>
                     )}
               </li>
+              </>
+              )}
             </>
           ) : (
             <>

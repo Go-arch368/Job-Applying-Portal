@@ -44,10 +44,10 @@ export const uploadProfilePicture = createAsyncThunk("profile/uploadProfilePictu
 export const uploadResume = createAsyncThunk("profile/uploadResume",async({resume},{rejectWithValue})=>{
     try{
         const formData = new FormData()
-        formData.append("resumeUpload",resume)
+        formData.append("resume",resume)
         const response = await axios.post("/api/candidate",formData,{headers:{"Content-Type":"multipart/form-data",Authorization:localStorage.getItem("token")}})
-        console.log(response.data.resumeUpload);
-        return response.data.resumeUpload; 
+        console.log(response.data.resumeUrl);
+        return response.data.resumUrl; 
         
     }
     catch(err){
@@ -86,6 +86,7 @@ const profileReducer = createSlice({
         })
         builder.addCase(uploadProfilePicture.rejected,(state,action)=>{
             state.serverError=action.payload
+            state.data={}
         })
         builder.addCase(uploadResume.fulfilled, (state, action) => {
             state.data = { ...state.data, resumeUpload: action.payload };

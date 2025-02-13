@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import validator from "validator";
 import { useDispatch } from "react-redux";
 import { recruiterData } from "../redux/slices/recruiterSlice";
 import { useNavigate } from "react-router-dom";

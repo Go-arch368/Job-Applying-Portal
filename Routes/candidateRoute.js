@@ -8,7 +8,7 @@ import upload from "../App/Middlewares/Multer.js"
 
 const router = express.Router()
 
-router.post("/candidate", authenticateUser, authorizeUser(["candidate"]), upload.single("resumeUpload") , candidateCltr.posting)
+router.post("/candidate",authenticateUser,authorizeUser(["candidate"]),upload.fields([{ name: "resume", maxCount: 1 }]),candidateCltr.posting);
 router.post("/candidate/upload-profile",authenticateUser,authorizeUser(["candidate"]),upload.single("profilePicture"),candidateCltr.uploadProfilePicture)
 router.get("/candidate/:id",authenticateUser,candidateCltr.getById)
 router.put("/candidate/:id",authenticateUser,authorizeUser(["candidate"]),candidateCltr.update)

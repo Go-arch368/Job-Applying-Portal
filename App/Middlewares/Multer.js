@@ -8,6 +8,9 @@ const storage = new CloudinaryStorage({
     let folder = "job-applications";
     let resource_type = "auto"; // Auto-detect
 
+    //console.log("Uploading file:", file.originalname); // Log file name
+    //console.log("File MIME type:", file.mimetype); 
+    
     if (file.mimetype.startsWith("image/")) {
       folder = "job-applications/images";
     } else if (file.mimetype.startsWith("video/")) {
@@ -24,10 +27,12 @@ const storage = new CloudinaryStorage({
       folder,
       resource_type,
       public_id: `${file.fieldname}-${Date.now()}`,
+      
     };
   },
 });
 
 const upload = multer({ storage });
+//console.log("upload",upload)
 
 export default upload;

@@ -24,9 +24,9 @@ interviewCltr.scheduleInterview = async (req, res) => {
       return res.status(400).json({ error: "No accepted applicants found" });
     }
 
-
     
     const applicantIds = jobApplicants.map((ele)=>ele.applicantId)
+    console.log(applicantIds)
     if(applicantIds.length==0){
         return res.status(400).json({ error: "No valid applicant IDs found" });
     }
@@ -35,7 +35,7 @@ interviewCltr.scheduleInterview = async (req, res) => {
     if(existingInterview){
         const newApplicants = applicantIds.filter((id)=>!existingInterview.applicants.includes(id))
         if(newApplicants.length==0){
-          return res.status(500).json({error:"All selected candidates are already scheduled for an interview"})
+          return res.status(400).json({error:"All selected candidates are already scheduled for an interview"})
         }
         existingInterview.applicants.push(...newApplicants);
         existingInterview.date =date

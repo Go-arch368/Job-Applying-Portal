@@ -12,38 +12,40 @@ import cloudinary from "cloudinary";
 
 candidateCltr.posting = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: "No file uploaded." });
-        }
+        console.log("Uploaded files:", req.files);
 
-        console.log("File received:", req.file);
+        // if (!req.files?.["resume"]?.[0]) {
+        //     return res.status(400).json({ error: "Resume file is required" });
+        // }
 
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            resource_type: "auto",
-            folder: "resumes",
-        });
+        // const resume = req.files["resume"][0]; // ✅ Consistent with previous implementation
+    
+        // const resumeUpload = await cloudinary.uploader.upload(resume.path, {
+        //     resource_type: "raw",
+        //     folder: "job-applications/resumes",
+        //     public_id: `resume-${Date.now()}`,
+        //     format: "pdf",
+        // });
 
- 
-        const userId = req.currentUser.userId; 
+        // console.log("Cloudinary Upload Result:", resumeUpload);
+
+        const userId = req.currentUser.userId;
         let candidate = await Candidate.findOne({ userId });
 
         if (!candidate) {
             return res.status(404).json({ error: "Candidate not found." });
         }
 
-        // Update candidate's resume
-        candidate.resumeUpload = {
-            filename: result.public_id,
-            filepath: result.secure_url,
-        };
-
+        candidate.resumeUpload = req.files.resume[0].path;
         await candidate.save();
 
-        console.log("Updated candidate:", candidate);
+        return res.status(200).json({
+            message: "Resume uploaded successfully",
+            resumeUrl: candidate.resumeUpload,
+        });
 
-        return res.status(200).json({ message: "Resume uploaded successfully", resumeUpload: candidate.resumeUpload });
     } catch (uploadError) {
-        console.error("Cloudinary upload failed:", uploadError);
+        console.error("Cloudinary Upload Failed:", uploadError);
         return res.status(500).json({ error: "File upload to Cloudinary failed." });
     }
 };

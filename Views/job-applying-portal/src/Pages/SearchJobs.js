@@ -1,7 +1,7 @@
 import Navbar from "../Components/Navbar";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { searchingJobs } from "../redux/slices/jobapplySlice";
+import { searchingJobs ,saveJobs} from "../redux/slices/jobapplySlice";
 import { Link } from "react-router-dom";
 
 export default function SearchJobs() {
@@ -13,7 +13,9 @@ export default function SearchJobs() {
   const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
 
-  const { data, searchError } = useSelector((state) => state.jobapplying);
+  const { data, searchError,savedJobs,savedError} = useSelector((state) => state.jobapplying);
+  console.log(savedJobs)
+  console.log(savedError)
   console.log(data);
   console.log(searchError);
 
@@ -42,9 +44,16 @@ export default function SearchJobs() {
       });
   }
 
-  const handleJobClick = (job) => {
+  function handleJobClick(job){
     setSelectedJob(job);
   };
+
+  function handleSaveJobs(id){
+      console.log(id)
+      dispatch(saveJobs({id}))
+    
+  }
+  
 
  return(
    <div>
@@ -130,10 +139,19 @@ export default function SearchJobs() {
         <p class="text-lg text-gray-700 mb-2">
           <strong>Deadline:</strong> {selectedJob.deadline}
         </p>
-
+       <div className="flex gap-3 justify-center">
         <button class="mt-4 py-2 px-6 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
          <Link to={`/apply/${selectedJob._id}`}>Apply Now</Link> 
         </button>
+        <button 
+            className="mt-4 py-2 px-6 bg-green-400 text-white font-semibold rounded-md hover:bg-green-700" 
+            onClick={() => handleSaveJobs(selectedJob._id)}
+          >
+          save
+          </button>
+
+        </div>
+        {savedError&&<p className="text-red-400">{savedError}</p>}
       </div>
     )}
   </div>

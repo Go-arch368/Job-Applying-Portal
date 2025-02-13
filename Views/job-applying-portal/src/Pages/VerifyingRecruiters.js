@@ -6,7 +6,7 @@ import { getRecruiters, updateVerificationStatus ,deleteRecruiter} from "../redu
 export default function VerifyingRecruiters() {
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.adminVerify);
-
+   console.log(data)
   useEffect(() => {
     dispatch(getRecruiters());
   }, [dispatch]);

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../Config/axios";
 
 
+
 export const searchingJobs = createAsyncThunk( "jobapplying/searchingJobs", async ({ jobtitle, location }, { rejectWithValue }) => {
     try {
       const response = await axios.get("/api/job", {
@@ -120,6 +121,44 @@ export const fetchCalendarInterviews = createAsyncThunk("/jobapplying/fetchCalen
     return rejectWithValue(err.response.data.error)
   }
 })
+
+export const saveJobs = createAsyncThunk("/jobapplying/saveJobs",async({id},{rejectWithValue})=>{
+  try{
+    const response = await axios.post("/api/candidate/saved-jobs",{jobId:id},{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data)
+    return response.data
+  }
+  catch(err){
+    console.log(err?.response?.data?.error)
+    return rejectWithValue(err?.response?.data?.error)
+  }
+})
+
+export const getSaved = createAsyncThunk("/jobapplying/getSaved",async(_,{rejectWithValue})=>{
+  try{
+    const response = await axios.get("/api/savedjobs",{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data)
+    return response.data
+  }
+  catch(err){
+    console.log(err?.response?.data?.error)
+    return rejectWithValue(err?.response?.data?.error)
+  }
+})
+
+export const unSaveJobs = createAsyncThunk("/jobapplying/unSaveJobs",async({id},{rejectWithValue})=>{
+  try{
+     const response = await axios.delete(`/api/candidate/saved-jobs/${id}`,{headers:{Authorization:localStorage.getItem("token")}})
+     console.log(response.data,id)
+     return id
+
+  }
+  catch(err){
+    console.log(err?.response?.data?.error)
+    return rejectWithValue(err?.response?.data?.error)
+  }
+})
+
 const jobapplyReducer = createSlice({
   name: "jobapplying",
   initialState: {
@@ -133,7 +172,9 @@ const jobapplyReducer = createSlice({
     //updatingCandidates:[],
     serverError: null,
     searchError:null,
-    isloading:false
+    isloading:false,
+    savedJobs:[],
+    savedError:null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -239,6 +280,29 @@ const jobapplyReducer = createSlice({
     .addCase(fetchCalendarInterviews.rejected,(state,action)=>{
       state.interviewError = action.payload
       state.interviews=null
+    })
+    .addCase(saveJobs.fulfilled,(state,action)=>{
+      state.savedJobs = action.payload
+      state.savedError = null
+    })
+    .addCase(saveJobs.rejected,(state,action)=>{
+       state.savedError = action.payload
+       state.savedJobs = null
+    })
+    .addCase(getSaved.fulfilled,(state,action)=>{
+       state.savedJobs = action.payload
+       state.savedError = null
+    })
+    .addCase(getSaved.rejected,(state,action)=>{
+      state.savedError = action.payload
+      state.savedJobs = null
+    })
+    .addCase(unSaveJobs.fulfilled,(state,action)=>{
+      const deletingId = state.savedJobs.filter((ele)=>ele._id!==action.payload)
+      state.savedJobs = deletingId
+    })
+    .addCase(unSaveJobs.rejected,(state,action)=>{
+       state.savedError = action.payload
     })
   }
 })
