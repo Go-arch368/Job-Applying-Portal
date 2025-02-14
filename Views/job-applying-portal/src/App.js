@@ -34,7 +34,7 @@ function App() {
     dispatch(userRole())
   },[dispatch])
 
-  if(!isloggedIn&&localStorage.getItem("token")){
+  if(localStorage.getItem("token")&&!isloggedIn){
     return <p style={{color:"red"}}>loading...</p>
   }
 

@@ -13,7 +13,11 @@ const recruiter = new Schema({
     },
     name:String,
     /*  email:String, */
-    description:String
+    description:String,
+    role:{type:[String]},
+    companyLogo:{type:String},
+    jobPosted:[{type:Schema.Types.ObjectId,ref:"Job"}],
+    
 },{timestamps:true})
 
 const Recruiter = model("Recruiter",recruiter)

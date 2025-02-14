@@ -2,6 +2,9 @@ import Recruiter from "../Models/recruitermodel.js";
 import { validationResult } from "express-validator";
 const recruiterCltr = {}
 import User from "../Models/userSchema.js"
+import cloudinary from "../../Config/cloudinary.js";
+import JobApplication from "../Models/jobapplicationmodel.js";
+import Job from "../Models/jobmodel.js";
 
 recruiterCltr.posting = async (req, res) => {
     const errors = validationResult(req);
@@ -93,5 +96,98 @@ recruiterCltr.getbyId=async(req,res)=>{
         return res.status(500).json("something went wrong")
     }
 }
+
+recruiterCltr.createRecruiter = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No file uploaded" });
+        }
+
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "profile_pictures",
+            width: 300,
+            height: 300,
+            crop: "fill"
+        });
+       
+        // const applicant = await Job.find({ recruiterId: req.currentUser.userId });
+        // console.log(applicant)
+        const recruiter = await Recruiter.findOne({ userId: req.currentUser.userId });
+
+        if (!recruiter) {
+            return res.status(404).json({ error: "Recruiter profile not found for this user" });
+        }
+
+        // recruiter.role = role;
+        recruiter.companyLogo = result?.secure_url || recruiter.companyLogo;
+        // recruiter.jobPosted = applicant
+
+        await recruiter.save();
+        return res.status(200).json( recruiter);
+
+    } catch (err) {
+        console.error("Error:", err);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+recruiterCltr.getRecruiterById = async(req,res)=>{
+     try{
+         const {id} = req.params
+         const recruiter = await Recruiter.findOne({userId:id})
+         const applicant = await Job.find({ recruiterId: req.currentUser.userId });
+         recruiter.jobPosted=applicant
+         if(!recruiter){
+            return res.status(400).json({error:'recruiter not found'})
+         }
+         res.status(200).json(recruiter)
+     }
+     catch(err){
+        console.log(err)
+        return res.status(500).json("someting went wrong")
+     }
+}
+
+recruiterCltr.updateData = async (req, res) => {
+    try {
+        const { id } = req.params; 
+        const updates = req.body
+        
+        // if (typeof updates === "string") {
+        //     updates = JSON.parse(updates); // Convert from string to object if needed
+        // }
+
+        const recruiter = await Recruiter.findOne({ userId: id });
+        if (!recruiter) {
+            return res.status(404).json({ error: "Recruiter not found" });
+        }
+
+      
+        Object.keys(updates).forEach((key) => {
+            recruiter[key] = updates[key];
+        });
+
+        // Handle file upload if exists
+        // if (req.file) {
+        //     const result = await cloudinary.uploader.upload(req.file.path, {
+        //         folder: "profile_pictures",
+        //         width: 300,
+        //         height: 300,
+        //         crop: "fill"
+        //     });
+        //     recruiter.companyLogo = result?.secure_url || recruiter.companyLogo;
+        // }
+
+        await recruiter.save();
+
+        return res.status(200).json({ message: "Profile updated successfully", recruiter });
+    } catch (err) {
+        console.error("Error:", err);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+
+
 
 export default recruiterCltr

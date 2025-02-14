@@ -5,6 +5,7 @@ import authenticateUser from "../App/Middlewares/AuthenticateUser.js"
 import idValidation from "../App/Validators/idValidation.js"
 import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
 import { checkSchema } from "express-validator"
+import upload from "../App/Middlewares/Multer.js"
 
 const router = express.Router()
 
@@ -13,4 +14,9 @@ router.get("/verify/recruiter",authenticateUser,authorizeUser(["admin"]),recruit
 router.put("/verify/recruiter/:id",authenticateUser,authorizeUser(["admin"]),checkSchema(idValidation),recruiterCltr.update)
 router.delete("/delete/recruiter/:id",authenticateUser,authorizeUser(["admin"]),checkSchema(idValidation),recruiterCltr.destroy)
 router.get("/getbyId/:id",authenticateUser,recruiterCltr.getbyId)
+//creating routes for profile model:
+router.post("/recruiter-profile",authenticateUser,authorizeUser(["recruiter"]),upload.single("companyLogo"),recruiterCltr.createRecruiter)
+router.get("/recruiter/:id",authenticateUser,authorizeUser(["recruiter"]),recruiterCltr.getRecruiterById)
+ router.put("/recruiter/:id",authenticateUser,authorizeUser(["recruiter"]),recruiterCltr.updateData)
+
 export default router

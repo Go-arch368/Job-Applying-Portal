@@ -124,11 +124,11 @@ export default function ProfileCandidate() {
         <h1 className="text-2xl font-bold mb-4">Update Candidate Profile</h1>
 
         <div className="flex flex-col items-center">
-            <img 
-                src={profile?.profilePicture ? profile?.profilePicture : "default-profile.png"} 
-                alt="Profile" 
-                className="w-32 h-32 rounded-full border-2 mb-4"
-            />
+                <img 
+                    src={profile?.profilePicture ? profile?.profilePicture : "default-profile.png"} 
+                    alt="Profile" 
+                    className="w-32 h-32 rounded-full border-2 mb-4"
+                />
 
             <form onSubmit={handleProfilePicUpload} encType="multipart/form-data" className="space-y-4">
                 <label className="block font-semibold">Upload Profile Picture:</label>
