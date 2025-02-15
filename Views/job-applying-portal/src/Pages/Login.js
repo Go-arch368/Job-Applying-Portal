@@ -14,7 +14,9 @@ export default function Login() {
         password: "",
     });
     const [clientErrors, setClientErrors] = useState({});
-    const [serverErrors,setServerErrors] = useState(null)
+    
+
+    const {serverErrors} = useSelector((state)=>state.users)
 
     // Watch for changes to isLoggedIn to trigger navigation
     /*  useEffect(() => {
@@ -53,16 +55,8 @@ export default function Login() {
             setClientErrors(errors);
         } else {
             setClientErrors({});
-            dispatch(userLogin({ users, resetForm }))
-            .unwrap() 
-            .then((response) => {
-                console.log("Login successful:", response);
-                navigate("/dashboard"); 
-            })
-            .catch((err)=>{
-                 console.log(err)
-                 setServerErrors(err)
-            })
+            dispatch(userLogin({ users, resetForm ,navigate}))
+            
         }
     }
 

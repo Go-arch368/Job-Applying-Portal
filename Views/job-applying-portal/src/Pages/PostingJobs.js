@@ -1,13 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Components/Navbar";
 import { useEffect, useState } from "react";
-import { postjob,updateJobDetails } from "../redux/slices/jobpostingSlice";
+import { postjob,updateJobDetails} from "../redux/slices/jobpostingSlice";
+import { recruiterDetails } from "../redux/slices/recruiterSlice";
 import {  useNavigate } from "react-router-dom";
 
 export default function PostingJobs() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {editJobId,data} = useSelector((state)=>state.jobposting)
+    const {editJobId,data,serverErrors} = useSelector((state)=>state.jobposting)
+    console.log(serverErrors);
+    const {recruiterData} = useSelector((state)=>state.recruiter)
+    
     console.log(data)
     console.log(editJobId)
     const [jobDetails, setJobDetails] = useState({
@@ -44,6 +48,10 @@ export default function PostingJobs() {
            }
        }
     },[editJobId])
+
+    useEffect(()=>{
+       dispatch(recruiterDetails())
+    },[dispatch])
     
     function validation() {
         let errors = {};
@@ -84,8 +92,8 @@ export default function PostingJobs() {
             setClientErrors(errors);
         } else {
             if(editJobId){
-                dispatch(updateJobDetails({editJobId,jobDetails,navigate})).unwrap()
-                resetForm()
+                dispatch(updateJobDetails({editJobId,jobDetails,navigate}))
+                // resetForm()
             }
             else{
                 setClientErrors({});
@@ -97,113 +105,151 @@ export default function PostingJobs() {
 
     return (
         <div>
-            <Navbar />
-            <h1>{editJobId?"Edit Jobs":"Posting Jobs"}</h1>
-            <form onSubmit={handlePost}>
-                <div>
-                    <label>Job title</label>
-                    <input
-                        type="text"
-                        className="border"
-                        value={jobDetails.jobtitle}
-                        onChange={(e) => setJobDetails({ ...jobDetails, jobtitle: e.target.value })}
-                        placeholder="Enter job title"
-                    />
-                    {clientErrors.jobtitle && <span style={{ color: "red" }}>{clientErrors.jobtitle}</span>}
-                </div>
-                
-                <div>
-                    <label>Job type</label>
-                    <select
-                        onChange={(e) => setJobDetails({ ...jobDetails, jobtype: e.target.value })}
-                        className="border"
-                    >
-                        <option value="choose">Choose</option>
-                        {openings.map((ele) => (
-                            <option value={ele} key={ele}>{ele}</option>
-                        ))}
-                    </select>
-                    {clientErrors.jobtype && <span style={{ color: "red" }}>{clientErrors.jobtype}</span>}
-                </div>
-                
-                <div>
-                    <label>Salary</label>
-                    <input
-                        type="text"
-                        className="border"
-                        value={jobDetails.salary}
-                        onChange={(e) => setJobDetails({ ...jobDetails, salary: e.target.value })}
-                        placeholder="Enter salary"
-                    />
-                    {clientErrors.salary && <span style={{ color: "red" }}>{clientErrors.salary}</span>}
-                </div>
+              <Navbar />
+           <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+          
+            <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 mt-6">
+                <h1 className="text-2xl font-semibold text-center text-gray-800 mb-4">
+                    {editJobId ? "Edit Job" : "Post a Job"}
+                </h1>
+                <form onSubmit={handlePost} className="space-y-4">
+                    
+                    {/* Job Title */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Job Title</label>
+                        <input
+                            type="text"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.jobtitle}
+                            onChange={(e) => setJobDetails({ ...jobDetails, jobtitle: e.target.value })}
+                            placeholder="Enter job title"
+                        />
+                        {clientErrors.jobtitle && <p className="text-red-500 text-sm mt-1">{clientErrors.jobtitle}</p>}
+                    </div>
 
-                <div>
-                    <label>Location</label>
-                    <input type="text" className="border" value={jobDetails.location} onChange={(e)=>setJobDetails({...jobDetails,location:e.target.value})} placeholder="enter your location"/>    
-                </div>
-                
-                <div>
-                    <label>No of Openings</label>
-                    <input
-                        type="number"
-                        className="border"
-                        value={jobDetails.noofOpenings}
-                        onChange={(e) => setJobDetails({ ...jobDetails, noofOpenings: e.target.value })}
-                    />
-                    {clientErrors.noofOpenings && <span style={{ color: "red" }}>{clientErrors.noofOpenings}</span>}
-                </div>
-                
-                <div>
-                    <label>Description</label>
-                    <textarea
-                        className="border"
-                        value={jobDetails.description}
-                        onChange={(e) => setJobDetails({ ...jobDetails, description: e.target.value })}
-                        placeholder="Enter job description"
-                    />
-                    {clientErrors.description && <span style={{ color: "red" }}>{clientErrors.description}</span>}
-                </div>
-                
-                <div>
-                    <label>Skills Required</label>
-                    <input
-                        type="text"
-                        className="border"
-                        value={jobDetails.skillsrequired?jobDetails.skillsrequired.join(","):""}
-                        onChange={(e) => setJobDetails({ ...jobDetails,  skillsrequired: e.target.value ? e.target.value.split(",").map(skill => skill.trim()) : [] })}
-                    />
-                    {clientErrors.skillsrequired && <span style={{ color: "red" }}>{clientErrors.skillsrequired}</span>}
-                </div>
-                
-                <div>
-                    <label>Experience Required</label>
-                    <input
-                        type="number"
-                        className="border"
-                        value={jobDetails.experienceRequired}
-                        onChange={(e) => setJobDetails({ ...jobDetails, experienceRequired: e.target.value })}
-                    />
-                    {clientErrors.experienceRequired && <span style={{ color: "red" }}>{clientErrors.experienceRequired}</span>}
-                </div>
-                
-                <div>
-                    <label>Deadline</label>
-                    <input
-                        type="date"
-                        className="border"
-                        value={jobDetails.deadline}
-                        onChange={(e) => setJobDetails({ ...jobDetails, deadline: e.target.value })}
-                    />
-                    {clientErrors.deadline && <span style={{ color: "red" }}>{clientErrors.deadline}</span>}
-                </div>
-                
-                <div>
-                    <button type="submit" className="border p-2 bg-blue-700 text-white px-5 mt-3 rounded-lg">
-                        {editJobId?"Edit Job":" Post Job"}
-                    </button>
-                </div>
-            </form>
+                    {/* Job Type */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Job Type</label>
+                        <select
+                            onChange={(e) => setJobDetails({ ...jobDetails, jobtype: e.target.value })}
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="choose">Choose</option>
+                            {openings.map((ele) => (
+                                <option value={ele} key={ele}>{ele}</option>
+                            ))}
+                        </select>
+                        {clientErrors.jobtype && <p className="text-red-500 text-sm mt-1">{clientErrors.jobtype}</p>}
+                    </div>
+
+                    {/* Salary */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Salary</label>
+                        <input
+                            type="text"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.salary}
+                            onChange={(e) => setJobDetails({ ...jobDetails, salary: e.target.value })}
+                            placeholder="Enter salary"
+                        />
+                        {clientErrors.salary && <p className="text-red-500 text-sm mt-1">{clientErrors.salary}</p>}
+                    </div>
+
+                    {/* Location */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Location</label>
+                        <input
+                            type="text"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.location}
+                            onChange={(e) => setJobDetails({ ...jobDetails, location: e.target.value })}
+                            placeholder="Enter location"
+                        />
+                    </div>
+
+                    {/* No. of Openings */}
+                    <div>
+                        <label className="block font-medium text-gray-700">No of Openings</label>
+                        <input
+                            type="number"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.noofOpenings}
+                            onChange={(e) => setJobDetails({ ...jobDetails, noofOpenings: e.target.value })}
+                        />
+                        {clientErrors.noofOpenings && <p className="text-red-500 text-sm mt-1">{clientErrors.noofOpenings}</p>}
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Description</label>
+                        <textarea
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.description}
+                            onChange={(e) => setJobDetails({ ...jobDetails, description: e.target.value })}
+                            placeholder="Enter job description"
+                            rows="4"
+                        />
+                        {clientErrors.description && <p className="text-red-500 text-sm mt-1">{clientErrors.description}</p>}
+                    </div>
+
+                    {/* Skills Required */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Skills Required</label>
+                        <input
+                            type="text"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.skillsrequired ? jobDetails.skillsrequired.join(", ") : ""}
+                            onChange={(e) => setJobDetails({ ...jobDetails, skillsrequired: e.target.value.split(",").map(skill => skill.trim()) })}
+                        />
+                        {clientErrors.skillsrequired && <p className="text-red-500 text-sm mt-1">{clientErrors.skillsrequired}</p>}
+                    </div>
+
+                    {/* Experience Required */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Experience Required (years)</label>
+                        <input
+                            type="number"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.experienceRequired}
+                            onChange={(e) => setJobDetails({ ...jobDetails, experienceRequired: e.target.value })}
+                        />
+                        {clientErrors.experienceRequired && <p className="text-red-500 text-sm mt-1">{clientErrors.experienceRequired}</p>}
+                    </div>
+
+                    {/* Deadline */}
+                    <div>
+                        <label className="block font-medium text-gray-700">Application Deadline</label>
+                        <input
+                            type="date"
+                            className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={jobDetails.deadline}
+                            onChange={(e) => setJobDetails({ ...jobDetails, deadline: e.target.value })}
+                        />
+                        {clientErrors.deadline && <p className="text-red-500 text-sm mt-1">{clientErrors.deadline}</p>}
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="text-center">
+                        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition">
+                            {editJobId ? "Edit Job" : "Post Job"}
+                        </button>
+                    </div>
+
+                    {/* Server Errors */}
+                    {serverErrors && <p className="text-red-600 text-center mt-3">{serverErrors}</p>}
+                </form>
+                {recruiterData.totalJobPosts<=recruiterData.jobPostingLimit &&(
+                    <div className="bg-yellow-200 text-black p-3 rounded-md mt-4">
+                        <div className="mt-2">
+                        <p >You have {recruiterData.totalJobPosts-recruiterData.jobPostingLimit} free job posts left. Upgrade now for unlimited postings!</p>
+                        </div>
+                        <div className="mt-2 ">
+                         <button className="bg-blue-600 text-white px-3 py-1 rounded-md ml-2 mb-3 ">Upgrade Now</button>
+                         </div>
+                    </div>
+                )}
+            </div>
+        </div>
         </div>
     );
 }

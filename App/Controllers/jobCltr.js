@@ -27,6 +27,19 @@ jobCltr.posting = async (req, res) => {
             return res.status(400).json({ error: "Recruiter not found" });
         }
 
+        if(recruiter.isSubscribed&&recruiter.subscriptionExpiry<new Date()){
+                recruiter.isSubscribed =false;
+                recruiter.subscriptionPlan="free";
+                recruiter.jobPostingLimit=5;
+                await recruiter.save()
+        }
+        
+        if(!recruiter.isSubscribed&&recruiter.totalJobPosts>=recruiter.jobPostingLimit){
+            return res.status(400).json({error:"Job posting limit reached. Subscribe to post more jobs"})
+        }
+
+       
+
         // Create the job posting
         const jobPosting = await Job.create({
             jobtitle,
@@ -42,6 +55,11 @@ jobCltr.posting = async (req, res) => {
             deadline,
             clicks:0
         });
+
+        if(!recruiter.isSubscribed){
+            await Recruiter.findByIdAndUpdate(recruiter._id,{$inc:{totalJobPosts:1}})
+        }
+        
 
         return res.status(201).json(jobPosting);
     } catch (err) {
@@ -204,8 +222,10 @@ jobCltr.searching=async(req,res)=>{
 
 jobCltr.incrementJobclicks=async(req,res)=>{
     try{
-        const jobId =req.params
+        const {jobId} =req.params
+        console.log(jobId)
         const job = await Job.findByIdAndUpdate(jobId,{$inc:{clicks:1}},{new:true})
+        console.log(job)
         if(!job){
             return res.status(400).json({error:"no jobs found"})
         }

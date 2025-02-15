@@ -2,6 +2,7 @@ import Navbar from "../Components/Navbar";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { searchingJobs ,saveJobs} from "../redux/slices/jobapplySlice";
+import { countJobClick } from "../redux/slices/jobpostingSlice";
 import { Link } from "react-router-dom";
 
 export default function SearchJobs() {
@@ -46,6 +47,10 @@ export default function SearchJobs() {
 
   function handleJobClick(job){
     setSelectedJob(job);
+   // console.log(job._id)
+    const id = job._id
+    console.log("count",id)
+    dispatch(countJobClick({id}))
   };
 
   function handleSaveJobs(id){
@@ -81,9 +86,11 @@ export default function SearchJobs() {
           type="submit"
           class="px-8 py-4 bg-blue-600 text-white text-lg font-semibold  hover:bg-blue-700 flex items-center"
         >
-          Search
+        Search
         </button>
+     
       </form>
+      {/* {error&&<p className="text-red-500">{error}</p>} */}
          <div> {searchError && (
         <p class="text-red-500 mb-4">{searchError}</p>
       )}</div>
@@ -92,7 +99,7 @@ export default function SearchJobs() {
 
   <div class="flex gap-8">
    
-    <div class="w-full lg:w-1/3 h-[500px] overflow-y-auto border-r-2  pr-4 ">
+    <div class="w-full lg:w-1/3 h-[500px] overflow-y-auto border-r-1  pr-4 ">
      
       <div>
         {data?.map((job) => (

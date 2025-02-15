@@ -26,6 +26,7 @@ import CandidatejobFair from "./Pages/CandidatejobFair";
 import ProfileCandidate from "./Pages/ProfileCandidate";
 import SaveJobs from "./Pages/SaveJobs";
 import ProfileRecruiter from "./Pages/ProfileRecruiter";
+import Statistics from "./Pages/Statistics";
 
 function App() {
   const dispatch = useDispatch()
@@ -66,6 +67,7 @@ function App() {
        <Route path="/candidateProfile" element={<ProfileCandidate/>}/>
        <Route path="/saved-jobs" element={<SaveJobs/>}/>
        <Route path="/recruiterProfile" element={<ProfileRecruiter/>}/>
+       <Route path="/statistics" element={<Statistics/>}/>
      </Routes>
     </div>
   );

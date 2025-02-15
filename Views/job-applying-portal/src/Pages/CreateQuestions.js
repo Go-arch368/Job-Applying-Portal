@@ -91,7 +91,7 @@ export default function CreateQuestions() {
        {editId?"edit question":"add question"} 
       </button>
   
-    {questionsArray.length >0&&questionsArray.map(ele => {
+    {questionsArray?.length >0&&questionsArray.map(ele => {
         return <p key={ele?._id}>{ele?.questionText}<button onClick={(e)=>handleEdit(ele?._id)} className="border bg-blue-500 p-2 px-4 rounded-xl text-white">Edit</button><button onClick={()=>{handleDelete(ele?._id)}} className="border bg-red-500 p-2 px-4 rounded-xl text-white">Delete</button></p>
     })
         

@@ -10,6 +10,7 @@ export const recruiterData =createAsyncThunk("recruiter/recruiterData",async({re
         headers:{Authorization:localStorage.getItem("token")}
       })
       console.log(localStorage.getItem("token"))
+      localStorage.removeItem("token")
       console.log(response.data)
       resetForm()
      
@@ -59,6 +60,18 @@ export const updateRecruiterUpload = createAsyncThunk("recruiter/updateRecruiter
   }
 })
 
+export const recruiterDetails = createAsyncThunk("recruiter/recruiterDetails",async(_,{rejectWithValue})=>{
+  try{
+    const response = await axios.get("/api/getrecruiter",{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data)
+    return response.data
+  }
+  catch(err){
+    console.log(err.response.data.error)
+    return rejectWithValue(err.response.data.error)
+  }
+})
+
 const recruiterSlice = createSlice({
     name:"recruiter",
     initialState:{
@@ -66,7 +79,9 @@ const recruiterSlice = createSlice({
         editId:null,
         serverErrors:null,
         profileData:{},
-        profileErrors:null
+        profileErrors:null,
+        recruiterData:{},
+        recruiterError:null
     },
     reducers:{
         
@@ -93,6 +108,14 @@ const recruiterSlice = createSlice({
          builder.addCase(updateRecruiterFile.rejected,(state,action)=>{
           state.profileErrors = action.payload
           state.profileData={}
+         })
+         builder.addCase(recruiterDetails.fulfilled,(state,action)=>{
+          state.recruiterData = action.payload
+          state.recruiterError=null
+         })
+         builder.addCase(recruiterDetails.rejected,(state,action)=>{
+           state.recruiterError = action.payload
+           state.recruiterData = {}
          })
     }
 })

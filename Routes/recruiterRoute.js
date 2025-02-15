@@ -17,6 +17,9 @@ router.get("/getbyId/:id",authenticateUser,recruiterCltr.getbyId)
 //creating routes for profile model:
 router.post("/recruiter-profile",authenticateUser,authorizeUser(["recruiter"]),upload.single("companyLogo"),recruiterCltr.createRecruiter)
 router.get("/recruiter/:id",authenticateUser,authorizeUser(["recruiter"]),recruiterCltr.getRecruiterById)
- router.put("/recruiter/:id",authenticateUser,authorizeUser(["recruiter"]),recruiterCltr.updateData)
-
+router.put("/recruiter/:id",authenticateUser,authorizeUser(["recruiter"]),recruiterCltr.updateData)
+//subscription route 
+router.post("/subscription/plan",authenticateUser,authorizeUser(["recruiter","admin"]),recruiterCltr.upgradeSubscription)
+//getting the details of recruiter
+router.get("/getrecruiter",authenticateUser,authorizeUser(["recruiter"]),recruiterCltr.getRecruiterDetails)
 export default router

@@ -17,7 +17,11 @@ const recruiter = new Schema({
     role:{type:[String]},
     companyLogo:{type:String},
     jobPosted:[{type:Schema.Types.ObjectId,ref:"Job"}],
-    
+    jobPostingLimit:{type:Number,default:5},
+    totalJobPosts:{type:Number,default:0},
+    isSubscribed:{type:Boolean,default:false},
+    subscriptionPlan:{type:String,enum:["free","basic","silver","gold"]},
+    subscriptionExpiry:{type:Date}
 },{timestamps:true})
 
 const Recruiter = model("Recruiter",recruiter)

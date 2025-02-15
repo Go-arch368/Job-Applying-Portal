@@ -16,7 +16,7 @@ export const userRegister = createAsyncThunk("users/userRegister",async({users,r
    } 
 })
 
-export const userLogin =createAsyncThunk("users/userLogin",async({users,resetForm},{dispatch,rejectWithValue})=>{
+export const userLogin =createAsyncThunk("users/userLogin",async({users,resetForm,navigate},{dispatch,rejectWithValue})=>{
     try{
       const response = await axios.post("/api/login",users)
         console.log(response.data)
@@ -24,11 +24,12 @@ export const userLogin =createAsyncThunk("users/userLogin",async({users,resetFor
         localStorage.setItem("userId",response.data.user._id)
          console.log(localStorage.getItem("userId"))
         resetForm()
+        navigate("/dashboard")
         return response.data.user
       
     }
     catch(err){
-     console.log(err)
+     console.log(err.response.data.error)
      return rejectWithValue(err.response.data.error)
     }
 })

@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-import { FaUserCircle,FaUser,FaSave,FaSignOutAlt } from "react-icons/fa";
+import { FaUserCircle,FaUser,FaSave,FaSignOutAlt,FaChartBar } from "react-icons/fa";
 import "../index.css";
+
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -45,6 +46,12 @@ export default function Navbar() {
                       JobFair
                     </Link>
                   </li>
+                  <li
+                  className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer flex items-center gap-2"
+                     onClick={handleLogout}
+                          >
+                            <FaSignOutAlt /> Logout
+                          </li>
                 </>
               )}
 
@@ -75,21 +82,23 @@ export default function Navbar() {
                   className="text-gray-700 text-3xl cursor-pointer"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 />
+                
                {dropdownOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg">
                         <ul className="text-gray-700 text-center">
                           <li
                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                            onClick={() => navigate("/recruiterProfile")}
+                            onClick={() => navigate("/recruiterProfile")} 
                           >
-                            <FaUser/> Profile
+                            <FaUser color="blue"/> Profile
                           </li>
-                          {/* <li
+                       <li
                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                            onClick={() => navigate("/saved-jobs")}
+                            onClick={() => navigate("/statistics")}
                           >
-                            <FaSave /> Saved Jobs
-                          </li> */}
+                           <FaChartBar  color="blue" /> Statistics
+                          </li>
+                       
                           <li
                             className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer flex items-center gap-2"
                             onClick={handleLogout}
@@ -169,6 +178,7 @@ export default function Navbar() {
               <li>
                 <Link to="/login" className="text-gray-700 hover:text-blue-500">Login</Link>
               </li>
+              
             </>
           )}
         </ul>

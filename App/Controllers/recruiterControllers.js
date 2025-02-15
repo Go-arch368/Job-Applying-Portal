@@ -187,7 +187,50 @@ recruiterCltr.updateData = async (req, res) => {
     }
 };
 
+recruiterCltr.upgradeSubscription = async(req,res) =>{
+    try{
+       const userId = req.currentUser.userId
+       const {plan} = req.body
+       const planDetails={
+          basic:{duration:30},
+          silver:{duration:60},
+          gold:{duration:180}
+       }
+       if(!planDetails[plan]){
+         return res.status(400).json({error:"Invalid subscription plan"})
+       }
+       const subscriptionExpiry = new Date()
+       subscriptionExpiry.setDate(subscriptionExpiry.getDate()+planDetails[plan].duration)
+       await Recruiter.findOneAndUpdate({userId},{
+        isSubscribed:true,
+        subscriptionPlan:plan,
+        subscriptionExpiry,
+        jobPostingLimit:Infinity
+       })
+     res.status(200).json("Subscription upgraded successfully! now you have unlimited job postings")
+    }
+    catch(err){
+      console.log(err)
+      return res.status(500).json("something went wrong")
+    }
+}
 
+recruiterCltr.getRecruiterDetails = async(req,res)=>{
+    try{
+        console.log("hi");
+        
+      console.log(req.currentUser.userId)
+      const recruiter = await Recruiter.findOne({userId:req.currentUser.userId})
+      if(!recruiter){
+        return res.status(400).json({error:"recruiter not found"})
+      }
+      return res.status(200).json(recruiter)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong ")
+    }
+}
 
 
 export default recruiterCltr

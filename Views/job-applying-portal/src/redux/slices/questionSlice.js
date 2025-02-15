@@ -28,8 +28,8 @@ export const getQtn = createAsyncThunk( "questions/getQtn", async ({ jobId }, { 
       console.log("Full API Response:", response.data);
       return response.data;
     } catch (err) {
-      console.log(err);
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch questions");
+      console.log(err.response.data);
+      return rejectWithValue(err.response?.data?.message);
     }
   }
 );

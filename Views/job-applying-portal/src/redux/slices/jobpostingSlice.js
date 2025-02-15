@@ -16,7 +16,7 @@ export const postjob = createAsyncThunk(
             return response.data;
           
         } catch (err) {
-            return rejectWithValue(err.response?.data || err.message);
+            return rejectWithValue(err.response?.data?.error || err.message);
         }
     }
 );
@@ -70,6 +70,20 @@ export const acceptInterview = createAsyncThunk("/jobposting/acceptInterview",as
     }
 })
 
+export const countJobClick = createAsyncThunk("/jobposting/countJobClick",async({id},{rejectWithValue})=>{
+    console.log(id);
+    
+    try{
+        const response = await axios.put(`/api/${id}/click`)
+        console.log(response.data)
+        return response.data
+    }
+    catch(err){
+        console.log(err.response)
+        return rejectWithValue(err.response.data.error)
+    }
+})
+
 
 
 // Job posting reducer
@@ -96,6 +110,7 @@ const jobpostingReducer = createSlice({
             })
             .addCase(postjob.rejected, (state, action) => {
                 state.serverErrors = action.payload;
+                
             })
             .addCase(displayJobs.fulfilled,(state,action)=>{
                 state.data=action.payload

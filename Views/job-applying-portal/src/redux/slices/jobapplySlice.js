@@ -13,7 +13,7 @@ export const searchingJobs = createAsyncThunk( "jobapplying/searchingJobs", asyn
       return response.data;
     } catch (err) {
       console.log(err);
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch jobs");
+      return rejectWithValue(err.response?.data);
     }
   }
 );
@@ -46,7 +46,7 @@ export const getCandidates = createAsyncThunk("jobapplying/getCandidates",async(
   }
   catch(err){
     console.log(err.response.data)
-    return rejectWithValue(err.response.data.message)
+    return rejectWithValue(err.response.data)
   }
 })
 

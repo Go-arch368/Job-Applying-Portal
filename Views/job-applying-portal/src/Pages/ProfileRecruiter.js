@@ -198,8 +198,8 @@ export default function ProfileRecruiter() {
                 alt="profile"
                 className="w-32 h-32 rounded-full border-4 border-gray-300 shadow-md"
               />
-              <h2 className="mt-4 text-xl font-semibold text-gray-800">{profileData.name}</h2>
-              <p className="text-gray-600">{profileData.email}</p>
+              <h2 className="mt-4 text-xl font-semibold text-gray-800">{profileData?.name}</h2>
+              <p className="text-gray-600">{profileData?.email}</p>
             </div>
             <div className="w-2/3 pl-6 space-y-3">
               <p><span className="font-semibold text-gray-800">Location:</span> {profileData.location}</p>
@@ -227,7 +227,7 @@ export default function ProfileRecruiter() {
                 <div className="flex gap-2">
                 {profileData?.jobPosted?.length ? (
                   profileData.jobPosted.map((ele, index) => (
-                    <span key={index} className="text-gray-700 text-blue-700 bg-blue-50 rounded-lg p-0">
+                    <span key={index} className="text-blue-700 bg-blue-50 rounded-lg p-0">
                       {ele.jobtitle}
                       
                     </span>
