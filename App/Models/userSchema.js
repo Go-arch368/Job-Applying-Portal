@@ -9,6 +9,12 @@ const userSchema = new Schema ({
         enum:["recruiter","candidate"],
         required:true
     },
+    subscriptionStatus:{
+        type:String,
+        enum:["active","expired","none"],
+        default:"none"
+    },
+    createdAt:{type:Date,default:Date.now}
     //  companyname:{type:String,required:function(){ return this.role=="recruiter"}},
     // isverified:{type:Boolean,required:function(){return this.role=="recruiter"}},
     // verificationDocument:{type:String} 

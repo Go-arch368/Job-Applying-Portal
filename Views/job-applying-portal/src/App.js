@@ -27,7 +27,9 @@ import ProfileCandidate from "./Pages/ProfileCandidate";
 import SaveJobs from "./Pages/SaveJobs";
 import ProfileRecruiter from "./Pages/ProfileRecruiter";
 import Statistics from "./Pages/Statistics";
-
+import SubscriptionPlans from "./Pages/SubscriptionPlans";
+import Success from "./Pages/Success";
+import Cancel from "./Pages/Cancel";
 function App() {
   const dispatch = useDispatch()
   const {isloggedIn} = useSelector((state)=>state.users)
@@ -68,6 +70,9 @@ function App() {
        <Route path="/saved-jobs" element={<SaveJobs/>}/>
        <Route path="/recruiterProfile" element={<ProfileRecruiter/>}/>
        <Route path="/statistics" element={<Statistics/>}/>
+       <Route path="/subscriptionpage" element={<SubscriptionPlans/>} />
+       <Route path="/success" element={<Success/>}/>
+       <Route path="/cancel" element={<Cancel/>}/>
      </Routes>
     </div>
   );

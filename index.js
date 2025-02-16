@@ -9,10 +9,12 @@ import questionRouter from "./Routes/questionRoutes.js"
 import jobApplicationRouter from "./Routes/jobApplicationRouter.js"
 import interviewRouter from "./Routes/interviewRoute.js"
 import jobFairRouter from "./Routes/jobFairRoute.js"
+import paymentRouter from "./Routes/paymentRoute.js"
 import  dotenv from "dotenv";
 import cors from "cors"
 const app=express()
-app.use(express.json())
+app.post("/api/webhooks", express.raw({ type: "application/json" }));
+app.use(express.json()); 
 app.use(cors())
 dotenv.config()
 const port =4010
@@ -29,6 +31,7 @@ app.use("/api",questionRouter)
 app.use("/api",jobApplicationRouter)
 app.use("/api",interviewRouter)
 app.use("/api",jobFairRouter)
+app.use("/api",paymentRouter)
 
 app.listen(port,()=>{
     console.log(`${port} has been successfully registered`)

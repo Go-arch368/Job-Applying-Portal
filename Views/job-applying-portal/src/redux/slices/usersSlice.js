@@ -56,7 +56,7 @@ const usersSlice = createSlice({
     name:"users",
     initialState:{
         isloggedIn:false,
-        user:null,
+        user:[],
         serverErrors:null
     },
     reducers:{

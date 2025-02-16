@@ -8,7 +8,7 @@ export default function CreateQuestions() {
   const dispatch = useDispatch();
   const [newQuestion, setNewQuestion] = useState("");
   const { jobId } = useParams();
-  const { data ,editId}  = useSelector((state) => state.questions);
+  const { data ,editId}  = useSelector((state) => state?.questions);
   
   const questionsArray = data?.map(ele => ele.questions).flat()
   console.log(questionsArray)
@@ -20,8 +20,8 @@ export default function CreateQuestions() {
 
   useEffect(()=>{
     if(editId){
-        const questionId = questionsArray.find((ele)=>ele._id===editId)
-        console.log(questionId.questionText)
+        const questionId = questionsArray?.find((ele)=>ele._id===editId)
+        console.log(questionId?.questionText)
         if(questionId){
 
             setNewQuestion(questionId?.questionText)
@@ -91,7 +91,7 @@ export default function CreateQuestions() {
        {editId?"edit question":"add question"} 
       </button>
   
-    {questionsArray?.length >0&&questionsArray.map(ele => {
+    {questionsArray?.length >0&&questionsArray?.map(ele => {
         return <p key={ele?._id}>{ele?.questionText}<button onClick={(e)=>handleEdit(ele?._id)} className="border bg-blue-500 p-2 px-4 rounded-xl text-white">Edit</button><button onClick={()=>{handleDelete(ele?._id)}} className="border bg-red-500 p-2 px-4 rounded-xl text-white">Delete</button></p>
     })
         

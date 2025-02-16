@@ -192,22 +192,25 @@ recruiterCltr.upgradeSubscription = async(req,res) =>{
        const userId = req.currentUser.userId
        const {plan} = req.body
        const planDetails={
-          basic:{duration:30},
-          silver:{duration:60},
-          gold:{duration:180}
+          basic:{duration:30,canViewStats:false,topOnSearch:false},
+          silver:{duration:60,canViewStats:false,topOnSearch:true},
+          gold:{duration:180,canViewStats:true,topOnSearch:true}
        }
        if(!planDetails[plan]){
          return res.status(400).json({error:"Invalid subscription plan"})
        }
        const subscriptionExpiry = new Date()
        subscriptionExpiry.setDate(subscriptionExpiry.getDate()+planDetails[plan].duration)
-       await Recruiter.findOneAndUpdate({userId},{
+    const updateRecruiter =  await Recruiter.findOneAndUpdate({userId},{
         isSubscribed:true,
         subscriptionPlan:plan,
         subscriptionExpiry,
-        jobPostingLimit:Infinity
-       })
-     res.status(200).json("Subscription upgraded successfully! now you have unlimited job postings")
+        jobPostingLimit:Infinity,
+        canViewStats:planDetails[plan].canViewStats,
+        topOnSearch:planDetails[plan].topOnSearch
+       },
+    )
+     res.status(200).json(updateRecruiter)
     }
     catch(err){
       console.log(err)

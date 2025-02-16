@@ -14,8 +14,8 @@ export const addQtn = createAsyncThunk("questions/addQtn", async ({ newQuestion,
       console.log("API Response:", response.data.questions);
       return response.data.questions;
     } catch (error) {
-      console.error(error);
-      return rejectWithValue(error.response?.data?.message || "Failed to add question");
+      console.error(error?.response?.data?.error);
+      return rejectWithValue(error.response?.data|| "Failed to add question");
     }
   }
 );

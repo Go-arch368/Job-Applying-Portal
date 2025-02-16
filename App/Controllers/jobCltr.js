@@ -2,6 +2,8 @@ import Job from "../Models/jobmodel.js";
 import Question from "../Models/questionmodel.js";
 import Recruiter from "../Models/recruitermodel.js";
 import { validationResult } from "express-validator";
+import User from "../Models/userSchema.js";
+import sendEmail from "../../Config/emailService.js";
 const jobCltr = {}
 
 
@@ -23,6 +25,9 @@ jobCltr.posting = async (req, res) => {
     try {
         // Find recruiter to get location and company name
         const recruiter = await Recruiter.findOne({ userId: req.currentUser.userId });
+        const user = await User.findById(recruiter.userId)
+        console.log(user.email)
+        //console.log(recruiter.email)
         if (!recruiter) {
             return res.status(400).json({ error: "Recruiter not found" });
         }
@@ -37,8 +42,6 @@ jobCltr.posting = async (req, res) => {
         if(!recruiter.isSubscribed&&recruiter.totalJobPosts>=recruiter.jobPostingLimit){
             return res.status(400).json({error:"Job posting limit reached. Subscribe to post more jobs"})
         }
-
-       
 
         // Create the job posting
         const jobPosting = await Job.create({
@@ -57,8 +60,23 @@ jobCltr.posting = async (req, res) => {
         });
 
         if(!recruiter.isSubscribed){
-            await Recruiter.findByIdAndUpdate(recruiter._id,{$inc:{totalJobPosts:1}})
+          recruiter.totalJobPosts+=1
+           await  recruiter.save()
         }
+
+        if(recruiter.totalJobPosts==3){
+            await sendEmail(user.email,
+                 "🚀 Running Out of Free Job Posts!", 
+                   "You have only 3 job posts left. Upgrade now to continue posting unlimited jobs. [Upgrade Now]"
+            )
+          }
+   
+          if(recruiter.totalJobPosts==5){
+           await sendEmail(user.email,
+                "⚠️ No Free Job Posts Left!", 
+                   "You've used all your free job posts. Upgrade now to continue posting. [Upgrade Now]"
+           )
+          }
         
 
         return res.status(201).json(jobPosting);
@@ -189,17 +207,28 @@ jobCltr.searching=async(req,res)=>{
         if(!jobtitle&&!location){
          return res.status(404).json({message:"Atleast fill one input field"})
         }       
-        const jobs=await Job.find({...query})
-        
+        const filtering=await Job.find({...query}).populate({path:"recruiterId",select:"subscriptionPlan"})
+                                                  .sort({
+                                                    "recruiterId.subscriptionPlan":-1,
+                                                    createdAt:-1
+                                                    })
+        const jobs = filtering.filter((ele)=>new Date(new Date(ele.deadline))>=new Date())
+        console.log(filtering)
+        //console.log(jobs)
         if(jobs.length==0){
             return  res.status(400).json("no documents found")
         }
+
+        const priorityOrder = { gold: 1, silver: 2, basic: 3, free: 4 };
+        jobs.sort((a, b) => {
+            return priorityOrder[a.recruiterId.subscriptionPlan] - priorityOrder[b.recruiterId.subscriptionPlan];
+        });
 
       const gettingQuestions = await Promise.all(
         jobs.map(async(job)=>{
             const questions = await Question.find({jobId:job._id})
             const data = questions.map(q=>q.questions).flat()
-            console.log(data.map((ele)=>ele.questionText))
+            //console.log(data.map((ele)=>ele.questionText))
             const recruiter = await Recruiter.findOne({userId:job.recruiterId})
       
             return {

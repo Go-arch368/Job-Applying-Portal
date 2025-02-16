@@ -62,3 +62,7 @@ const datamapping=[
 
 const value = datamapping.map((ele)=>ele.jobtitle)
 console.log(value)
+
+const sorting =[45,34,12,98,1,87]
+const details = sorting.sort((a,b)=>a-b)
+console.log(details)

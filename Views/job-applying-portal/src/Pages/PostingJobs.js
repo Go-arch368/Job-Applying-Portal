@@ -3,7 +3,7 @@ import Navbar from "../Components/Navbar";
 import { useEffect, useState } from "react";
 import { postjob,updateJobDetails} from "../redux/slices/jobpostingSlice";
 import { recruiterDetails } from "../redux/slices/recruiterSlice";
-import {  useNavigate } from "react-router-dom";
+import {  useNavigate,Link } from "react-router-dom";
 
 export default function PostingJobs() {
     const dispatch = useDispatch();
@@ -238,13 +238,13 @@ export default function PostingJobs() {
                     {/* Server Errors */}
                     {serverErrors && <p className="text-red-600 text-center mt-3">{serverErrors}</p>}
                 </form>
-                {recruiterData.totalJobPosts<=recruiterData.jobPostingLimit &&(
+                {!editJobId&&recruiterData.totalJobPosts<=recruiterData.jobPostingLimit &&(
                     <div className="bg-yellow-200 text-black p-3 rounded-md mt-4">
                         <div className="mt-2">
                         <p >You have {recruiterData.totalJobPosts-recruiterData.jobPostingLimit} free job posts left. Upgrade now for unlimited postings!</p>
                         </div>
                         <div className="mt-2 ">
-                         <button className="bg-blue-600 text-white px-3 py-1 rounded-md ml-2 mb-3 ">Upgrade Now</button>
+                         <button className="bg-blue-600 text-white px-3 py-1 rounded-md ml-2 mb-3 "><Link to="/subscriptionpage">Upgrade Now</Link></button>
                          </div>
                     </div>
                 )}
