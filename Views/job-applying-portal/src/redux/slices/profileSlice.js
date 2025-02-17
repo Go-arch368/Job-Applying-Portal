@@ -47,7 +47,7 @@ export const uploadResume = createAsyncThunk("profile/uploadResume",async({resum
         formData.append("resume",resume)
         const response = await axios.post("/api/candidate",formData,{headers:{"Content-Type":"multipart/form-data",Authorization:localStorage.getItem("token")}})
         console.log(response.data.resumeUrl);
-        return response.data.resumUrl; 
+        return response.data.resumeUrl; 
         
     }
     catch(err){

@@ -72,6 +72,18 @@ export const recruiterDetails = createAsyncThunk("recruiter/recruiterDetails",as
   }
 })
 
+export const selectSubscription = createAsyncThunk("recrutier/selectSubscription",async({plan},{rejectWithValue})=>{
+  try{
+  const response = await axios.post("/api/subscribe",{plan},{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data) 
+    return response.data
+  }
+  catch(err){
+    console.log(err)
+    return rejectWithValue(err.response.data.error)
+  }
+})
+
 const recruiterSlice = createSlice({
     name:"recruiter",
     initialState:{
@@ -81,7 +93,9 @@ const recruiterSlice = createSlice({
         profileData:{},
         profileErrors:null,
         recruiterData:{},
-        recruiterError:null
+        recruiterError:null,
+        sessionUrl:"",
+        sessionError:null
     },
     reducers:{
         
@@ -117,6 +131,14 @@ const recruiterSlice = createSlice({
            state.recruiterError = action.payload
            state.recruiterData = {}
          })
+        builder.addCase(selectSubscription.fulfilled,(state,action)=>{
+          state.sessionUrl = action.payload
+          state.sessionError = null
+        })
+        builder.addCase(selectSubscription.rejected,(state,action)=>{
+          state.sessionError=action.payload
+          state.sessionUrl = null
+        })
     }
 })
 

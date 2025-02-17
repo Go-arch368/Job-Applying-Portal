@@ -134,7 +134,9 @@ recruiterCltr.createRecruiter = async (req, res) => {
 recruiterCltr.getRecruiterById = async(req,res)=>{
      try{
          const {id} = req.params
-         const recruiter = await Recruiter.findOne({userId:id})
+         const recruiter = await Recruiter.findOne({userId:id}).populate("userId")
+         console.log(recruiter);
+         
          const applicant = await Job.find({ recruiterId: req.currentUser.userId });
          recruiter.jobPosted=applicant
          if(!recruiter){
@@ -193,7 +195,7 @@ recruiterCltr.upgradeSubscription = async(req,res) =>{
        const {plan} = req.body
        const planDetails={
           basic:{duration:30,canViewStats:false,topOnSearch:false},
-          silver:{duration:60,canViewStats:false,topOnSearch:true},
+          silver:{duration:90,canViewStats:false,topOnSearch:true},
           gold:{duration:180,canViewStats:true,topOnSearch:true}
        }
        if(!planDetails[plan]){

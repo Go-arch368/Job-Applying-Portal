@@ -126,7 +126,7 @@ export const saveJobs = createAsyncThunk("/jobapplying/saveJobs",async({id},{rej
   try{
     const response = await axios.post("/api/candidate/saved-jobs",{jobId:id},{headers:{Authorization:localStorage.getItem("token")}})
     console.log(response.data)
-    return response.data
+    return response.data  
   }
   catch(err){
     console.log(err?.response?.data?.error)

@@ -50,8 +50,9 @@ export default function ProfileCandidate() {
     function handleResumeUpload(e) {
         e.preventDefault();
         if (!resume) return;
-        dispatch(uploadResume({resume})).unwrap()
+        
         try{
+            dispatch(uploadResume({resume})).unwrap()
             alert("successfully uploaded resume")
         }
         catch(err){

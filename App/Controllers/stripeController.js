@@ -1,5 +1,6 @@
 import Stripe from "stripe"
 import dotenv from "dotenv"
+import nodemailer from "nodemailer"
 import Recruiter from "../Models/recruitermodel.js";
 import User from "../Models/userSchema.js";
 dotenv.config()
@@ -9,7 +10,9 @@ const paymentController = {}
 
 paymentController.createCheckoutSession = async (req, res) => {
     try {
-      const { plan } = req.body; // Plan: "basic" or "premium"
+      console.log("hi")
+      const { plan } = req.body; 
+      console.log(plan)
       const userId = req.currentUser.userId; // User from auth middleware
   
       const email = await User.findById(userId)
@@ -47,7 +50,32 @@ paymentController.createCheckoutSession = async (req, res) => {
             }
           }
       });
+
+      const transporter = nodemailer.createTransport({
+        service:"Gmail",
+        auth:{
+          user:process.env.EMAIL,
+          pass:process.env.APP_PASSWORD
+        }
+      })
       
+      const mailOptions = {
+        from:process.env.EMAIL,
+        to:email.email,
+        subject:"Subscription Confirmation",
+        text:`Hello ${email.name},\n\nYour subscrption to ${plan} is successful!  🎉\n\nThank you for subscribing.\n\nBest,\nYour Team`,
+      }
+
+      transporter.sendMail(mailOptions,(error,info)=>{
+        if(error){
+          console.log("Error sending email:", error);
+          
+        }
+        else{
+          console.log("Email send:", info.response);
+          
+        }
+      })
   
       res.json({ sessionUrl: session.url ,plan });
     } catch (error) {
@@ -58,7 +86,6 @@ paymentController.createCheckoutSession = async (req, res) => {
 
 paymentController.webhooks = async (req, res) => {
     console.log("running");
-    
     const sig = req.headers["stripe-signature"];
 
     if (!sig) {

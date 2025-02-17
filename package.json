@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently --kill-others-on-fail \"nodemon index.js\" \"stripe listen --forward-to http://localhost:4010/api/webhooks\""
   },
   "type": "module",
   "author": "",
@@ -25,5 +26,8 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^6.10.0",
     "stripe": "^17.6.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

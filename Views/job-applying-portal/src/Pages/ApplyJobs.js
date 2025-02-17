@@ -119,6 +119,7 @@ export default function ApplyJobs() {
     }
 
     async function handleSubmitApplication(e) {
+      
         e.preventDefault();
         if (!resume || !videoBlob) {
             alert("Please upload your resume and complete the video interview");
@@ -146,6 +147,7 @@ export default function ApplyJobs() {
                 console.log(error.response?.data.message)
                 setError(error.reponse?.data.message)
             })
+   
     }
 
     return (

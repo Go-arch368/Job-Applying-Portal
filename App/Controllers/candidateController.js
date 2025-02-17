@@ -30,13 +30,16 @@ candidateCltr.posting = async (req, res) => {
         // console.log("Cloudinary Upload Result:", resumeUpload);
 
         const userId = req.currentUser.userId;
+        
+        
         let candidate = await Candidate.findOne({ userId });
-
+        
         if (!candidate) {
             return res.status(404).json({ error: "Candidate not found." });
         }
 
         candidate.resumeUpload = req.files.resume[0].path;
+        console.log(req.files)
         await candidate.save();
 
         return res.status(200).json({
@@ -63,7 +66,7 @@ candidateCltr.uploadProfilePicture=async(req,res)=>{
           height: 300,
           crop: "fill",
         });
-      
+        console.log(result)
         const candidate = await Candidate.findOneAndUpdate(
           { userId: req.currentUser.userId},
           { profilePicture: result.secure_url },
@@ -84,6 +87,7 @@ candidateCltr.uploadProfilePicture=async(req,res)=>{
 candidateCltr.getById=async(req,res)=>{
     try{
         const id = req.params.id
+        console.log(id)
         const candidate = await Candidate.findOne({userId:id}).populate("userId")//populate savedJobs when after working job posting and job applicatoins
         if(!candidate){
             return res.status(404).json({error:"Candidate not found"})
@@ -117,11 +121,8 @@ candidateCltr.getById=async(req,res)=>{
         const id = req.params.id;
         console.log(req.body)
 
-        const candidate = await Candidate.findOne({ userId: id });
-
-        if (!candidate) {
-            return res.status(404).json("Candidate ID not found");
-        }
+        const candidate = await Candidate.findOneAndUpdate({userId : id}, { mobile, education, skills, certification }, { upsert : true});
+        console.log(candidate)
 
         if (mobile) {
             candidate.mobile = mobile;
@@ -160,7 +161,7 @@ candidateCltr.getById=async(req,res)=>{
             ];
         }
 
-        await candidate.save();
+        // await candidate.save();
 
         return res.json(candidate);
 

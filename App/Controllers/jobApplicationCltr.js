@@ -8,6 +8,7 @@ import cloudinary from "../../Config/cloudinary.js";
 import fs, { accessSync } from "fs"
 import jobCltr from "./jobCltr.js";
 import User from "../Models/userSchema.js";
+import nodemailer from "nodemailer"
 
 
 
@@ -81,11 +82,14 @@ jobAppCltr.submitApplication = async (req, res) => {
         }
     
         // Check if job exists
-        const job = await Job.findById(jobId);
+        const job = await Job.findById(jobId).populate("recruiterId")
+        console.log("kjsad",job.email)
         if (!job) {
             return res.status(400).json({ error: "Job not found" });
         }
     
+      
+
         // Prevent duplicate applications
         const existingApplication = await JobApplication.findOne({
             jobId,
@@ -109,6 +113,30 @@ jobAppCltr.submitApplication = async (req, res) => {
             resumeUrl: resumeUpload.secure_url,
             videoUrl: videoUrl,
         });
+
+        const transporter = nodemailer.createTransport({
+            service:"gmail",
+            auth:{
+                user:process.env.EMAIL,
+                pass:process.env.APP_PASSWORD
+            }
+        })
+
+        const mailOptions = {
+            from : "process.env.EMAIL",
+            to: job.email,
+            subject:`New Job Application for ${job.jobtitle}`,
+            html:`
+              <h3>New Job Application Received</h3>
+                <p><strong>Job Title:</strong> ${job.jobtitle}</p>
+                <p><strong>Applicant Name:</strong> ${user.name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Resume:</strong> <a href="${resumeUpload.secure_url}">View Resume</a></p>
+                ${videoUrl ? `<p><strong>Video:</strong> <a href="${videoUrl}">View Video</a></p>` : ""}
+            `
+        }
+
+        await transporter.sendMail(mailOptions)
     
         await newApplication.save();
         return res.status(201).json(newApplication);
@@ -225,7 +253,9 @@ jobAppCltr.saveJobs = async (req, res) => {
         if (!jobId) {
             return res.status(400).json({error:"jobId is required"});
         }
+        console.log(req.currentUser.userId)
         const candidate = await Candidate.findOne({ userId: req.currentUser.userId });
+        
         console.log(candidate);
         if (!candidate) {
             return res.status(400).json({error:"Candidate not found"});

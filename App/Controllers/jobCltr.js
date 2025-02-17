@@ -25,8 +25,8 @@ jobCltr.posting = async (req, res) => {
     try {
         // Find recruiter to get location and company name
         const recruiter = await Recruiter.findOne({ userId: req.currentUser.userId });
-        const user = await User.findById(recruiter.userId)
-        console.log(user.email)
+        const user = await User.findById(req.currentUser.userId)
+        console.log(user)
         //console.log(recruiter.email)
         if (!recruiter) {
             return res.status(400).json({ error: "Recruiter not found" });
@@ -53,10 +53,11 @@ jobCltr.posting = async (req, res) => {
             experienceRequired,
             skillsrequired,
             salary,
-            recruiterId: req.currentUser.userId,
+            recruiterId: recruiter._id,
             jobtype,
             deadline,
-            clicks:0
+            clicks:0,
+            email:user.email
         });
 
         if(!recruiter.isSubscribed){
@@ -143,6 +144,7 @@ jobCltr.gettingQuestions = async(req,res)=>{
 
 jobCltr.getAll=async(req,res)=>{
     try{
+    
         const recruiter = await Recruiter.findOne({userId:req.currentUser.userId})
         if(!recruiter){
             return res.status(400).json("no recruiter is being found")
@@ -150,7 +152,7 @@ jobCltr.getAll=async(req,res)=>{
        
        // console.log(question.questions)
         if(req.currentUser.role==="recruiter"){
-            const jobs = await Job.find({recruiterId:req.currentUser.userId}).lean()
+            const jobs = await Job.find({recruiterId:recruiter._id}).lean()
          // console.log(job);
             if(!jobs){
                 return res.status(400).json("No job posting is found for this recruiter")
@@ -191,63 +193,58 @@ jobCltr.getAll=async(req,res)=>{
     }
 }
 
-jobCltr.searching=async(req,res)=>{
-    try{
-        const {jobtitle,location} =req.query
-        console.log("Received query parameters:", jobtitle, location); 
-        let query={}
-        if(jobtitle){
-         query.jobtitle={$regex:jobtitle,$options:"i"}
-        }
-        if(location){
-         query.location={$regex:location,$options:"i"}
-        }
-        console.log("Generated query:", query);  
- 
-        if(!jobtitle&&!location){
-         return res.status(404).json({message:"Atleast fill one input field"})
-        }       
-        const filtering=await Job.find({...query}).populate({path:"recruiterId",select:"subscriptionPlan"})
-                                                  .sort({
-                                                    "recruiterId.subscriptionPlan":-1,
-                                                    createdAt:-1
-                                                    })
-        const jobs = filtering.filter((ele)=>new Date(new Date(ele.deadline))>=new Date())
-        console.log(filtering)
-        //console.log(jobs)
-        if(jobs.length==0){
-            return  res.status(400).json("no documents found")
-        }
-
-        const priorityOrder = { gold: 1, silver: 2, basic: 3, free: 4 };
-        jobs.sort((a, b) => {
-            return priorityOrder[a.recruiterId.subscriptionPlan] - priorityOrder[b.recruiterId.subscriptionPlan];
-        });
-
+jobCltr.searching = async (req, res) => {
+    try {
+      const { jobtitle, location } = req.query;
+      console.log("Received query parameters:", jobtitle, location);
+  
+      let query = {};
+      if (jobtitle) query.jobtitle = { $regex: jobtitle, $options: "i" };
+      if (location) query.location = { $regex: location, $options: "i" };
+  
+      if (!jobtitle && !location) {
+        return res.status(400).json({ message: "At least fill one input field" });
+      }
+  
+      // Fetch jobs and populate recruiter details
+      const filtering = await Job.find(query)
+        .populate({ path: "recruiterId", select: "subscriptionPlan " });
+  
+      console.log("Populated Jobs:", filtering);
+  
+      // Remove expired jobs
+      const jobs = filtering.filter((ele) => new Date(ele.deadline) >= new Date());
+  
+      if (jobs.length === 0) {
+        return res.status(404).json("No documents found");
+      }
+  
+      // Sort jobs by subscription plan priority
+      const priorityOrder = { gold: 1, silver: 2, basic: 3, free: 4 };
+      jobs.sort((a, b) => priorityOrder[a.recruiterId?.subscriptionPlan] - priorityOrder[b.recruiterId?.subscriptionPlan]);
+  
+      // Fetch questions and format response
       const gettingQuestions = await Promise.all(
-        jobs.map(async(job)=>{
-            const questions = await Question.find({jobId:job._id})
-            const data = questions.map(q=>q.questions).flat()
-            //console.log(data.map((ele)=>ele.questionText))
-            const recruiter = await Recruiter.findOne({userId:job.recruiterId})
-      
-            return {
-
-                ...job.toObject(),
-
-                assignedQuestions:data.map((ele)=>ele.questionText),  recruiterId:recruiter
-              
-            }
+        jobs.map(async (job) => {
+          const questions = await Question.find({ jobId: job._id });
+          const assignedQuestions = questions.flatMap(q => q.questions.map(qText => qText.questionText));
+  
+          return {
+            ...job.toObject(),
+            assignedQuestions,
+          };
         })
-      )
-
-        return res.json(gettingQuestions)
-    } 
-    catch(err){
-        console.log(err)
-        return res.status(500).json("something went wrong")
+      );
+  
+      return res.json(gettingQuestions);
+    } catch (err) {
+      console.error("Error:", err);
+      return res.status(500).json("Something went wrong");
     }
-}
+  };
+  
+  
+  
 
 jobCltr.incrementJobclicks=async(req,res)=>{
     try{

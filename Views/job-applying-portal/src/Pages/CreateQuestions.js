@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { addQtn, getQtn ,assignEditId,updateQuestions,deleteQuestions } from "../redux/slices/questionSlice";
@@ -9,8 +9,8 @@ export default function CreateQuestions() {
   const [newQuestion, setNewQuestion] = useState("");
   const { jobId } = useParams();
   const { data ,editId}  = useSelector((state) => state?.questions);
-  
-  const questionsArray = data?.map(ele => ele.questions).flat()
+  const navigate = useNavigate()
+  const questionsArray = data?.map(ele => ele?.questions).flat()
   console.log(questionsArray)
   console.log(editId)
  
@@ -69,6 +69,10 @@ export default function CreateQuestions() {
     
   }
 
+  function handleHome(){
+    navigate("/dashboard")
+  }
+
 
   return (
     <div>
@@ -96,7 +100,7 @@ export default function CreateQuestions() {
     })
         
     }
-
+  <button onClick={handleHome} className="bg-blue-700 p-2 px-4 rounded-xl mt-4 text-white">Home</button>
     </div>
   );
   

@@ -11,7 +11,7 @@ export default function PostingJobs() {
     const {editJobId,data,serverErrors} = useSelector((state)=>state.jobposting)
     console.log(serverErrors);
     const {recruiterData} = useSelector((state)=>state.recruiter)
-    
+    console.log(recruiterData)
     console.log(data)
     console.log(editJobId)
     const [jobDetails, setJobDetails] = useState({
@@ -238,7 +238,7 @@ export default function PostingJobs() {
                     {/* Server Errors */}
                     {serverErrors && <p className="text-red-600 text-center mt-3">{serverErrors}</p>}
                 </form>
-                {!editJobId&&recruiterData.totalJobPosts<=recruiterData.jobPostingLimit &&(
+                {!recruiterData.isSubscribed&&!editJobId&&recruiterData.totalJobPosts<=recruiterData.jobPostingLimit &&(
                     <div className="bg-yellow-200 text-black p-3 rounded-md mt-4">
                         <div className="mt-2">
                         <p >You have {recruiterData.totalJobPosts-recruiterData.jobPostingLimit} free job posts left. Upgrade now for unlimited postings!</p>

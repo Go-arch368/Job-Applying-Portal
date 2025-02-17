@@ -31,6 +31,7 @@ const jobposting = new Schema ({
     salary:{type:String,required:true},
     createdAt:{type:Date,default:Date.now()},
     deadline:{type:String},
+    email:{type:String},
     clicks:{type:Number,default:0}
 })
 

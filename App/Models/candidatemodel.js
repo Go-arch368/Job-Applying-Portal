@@ -20,7 +20,7 @@ const candidateSchema = new Schema({
   ],
   resumeUpload:{
     type:String,
-    required:true
+ 
 },
   skills: [
     {

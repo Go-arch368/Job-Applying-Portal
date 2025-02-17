@@ -15,7 +15,7 @@ export default function ProfileRecruiter() {
   }, [dispatch, id]);
 
   const { profileData } = useSelector((state) => state.recruiter);
-
+  console.log(profileData)
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -84,7 +84,7 @@ export default function ProfileRecruiter() {
               <input
                 type="text"
                 className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                value={data.name}
+                value={data.userId.name}
                 onChange={(e) => setData({ ...data, name: e.target.value })}
               />
             </div>
@@ -94,7 +94,7 @@ export default function ProfileRecruiter() {
               <input
                 type="email"
                 className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                value={data.email}
+                value={data.userId.email}
                 onChange={(e) => setData({ ...data, email: e.target.value })}
               />
             </div>
@@ -198,11 +198,12 @@ export default function ProfileRecruiter() {
                 alt="profile"
                 className="w-32 h-32 rounded-full border-4 border-gray-300 shadow-md"
               />
-              <h2 className="mt-4 text-xl font-semibold text-gray-800">{profileData?.name}</h2>
-              <p className="text-gray-600">{profileData?.email}</p>
+              <h2 className="mt-4 text-xl font-semibold text-gray-800">{profileData?.userId?.name}</h2>
+              <p className="text-gray-600">{profileData?.userId?.email}</p>
             </div>
             <div className="w-2/3 pl-6 space-y-3">
               <p><span className="font-semibold text-gray-800">Location:</span> {profileData.location}</p>
+              <p><span className="font-semibold text-gray-800">Companyname:</span> {profileData.companyname}</p>
               <p >
   <span className="font-semibold text-gray-800">Role:</span> 
   <div className="flex flex-wrap gap-2 justify-center">

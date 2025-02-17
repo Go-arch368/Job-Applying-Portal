@@ -14,7 +14,7 @@ export const addQtn = createAsyncThunk("questions/addQtn", async ({ newQuestion,
       console.log("API Response:", response.data.questions);
       return response.data.questions;
     } catch (error) {
-      console.error(error?.response?.data?.error);
+      console.error(error?.response?.data);
       return rejectWithValue(error.response?.data|| "Failed to add question");
     }
   }
@@ -83,7 +83,8 @@ const questionReducer = createSlice({
         return { ...state, serverErrors: action.payload, data: [] };
       })
       .addCase(addQtn.fulfilled, (state, action) => {
-        return { ...state, data: [...state.data, ...action.payload] };
+        // return { ...state, data: [...state.data, ...action.payload] };
+        state.data = action.payload
       })
       .addCase(addQtn.rejected, (state, action) => {
         return { ...state, serverErrors: action.payload };

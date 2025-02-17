@@ -1,7 +1,7 @@
 const plans = [
     {
-      name: "Basic ",
-      price: "$15/month",
+      name: "basic",
+      price: "99/1month",
       features: [
         "✅ Unlimited Job Posting",
         "✅ Email Alerts",
@@ -13,8 +13,8 @@ const plans = [
       borderColor: "border-gray-300",
     },
     {
-      name: "Silver",
-      price: "$29/month",
+      name: "silver",
+      price: "299/3months",
       features: [
         "✅ Unlimited Job Posting",
         "✅ Email Alerts",
@@ -22,12 +22,12 @@ const plans = [
         "✅ Top on Candidate Search (Unlimited)",
       ],
       bgColor: "bg-blue-100",
-      textColor: "text-blue-700",
+      textColor: "text-blue-900",
       borderColor: "border-blue-500",
     },
     {
-      name: "Gold",
-      price: "$49/month",
+      name: "gold",
+      price: "499/6months",
       features: [
         "✅ Unlimited Job Posting",
         "✅ Email Alerts",

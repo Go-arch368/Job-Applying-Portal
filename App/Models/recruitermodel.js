@@ -22,15 +22,15 @@ const recruiter = new Schema({
     isSubscribed:{type:Boolean,default:false},
     subscriptionPlan:{type:String,enum:["free","basic","silver","gold"],default:"free"},
     subscriptionExpiry:{type:Date},
-    canViewStats:{type:Boolean,default:false},
-    topOnSearch :{type:Boolean,default:false},
+    // canViewStats:{type:Boolean,default:false},
+    // topOnSearch :{type:Boolean,default:false},
     stripe:{
         status:{type:String,enum:["active","cancelled"],default:"active"},
         stripeCustomerId:{type:String},
         stripeSubscriptionId:{type:String}
     }
 },{timestamps:true})
-
+    
 const Recruiter = model("Recruiter",recruiter)
 
 export default Recruiter    
