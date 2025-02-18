@@ -29,6 +29,9 @@ router.get("/job/:jobId/accepted",authenticateUser,authorizeUser(["recruiter"]),
 router.get("/job/:jobId/rejected",authenticateUser,authorizeUser(["recruiter"]),jobAppCltr.getRejected)
 //get applied jobs of the candidate
 
+//get all applied jobs of the candidate
+router.get("/getAllApplied/:candidateId",authenticateUser,jobAppCltr.getAllApplied)
+
 
 
 export default router;

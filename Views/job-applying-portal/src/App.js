@@ -30,6 +30,14 @@ import Statistics from "./Pages/Statistics";
 import SubscriptionPlans from "./Pages/SubscriptionPlans";
 import Success from "./Pages/Success";
 import Cancel from "./Pages/Cancel";
+import AdminDashboard from "./Pages/Adminanalysis/AdminDashboard";
+import ActiveRecruiters from "./Pages/Adminanalysis/ActiveRecruiters";
+import TopApplicants from "./Pages/Adminanalysis/TopApplicants";
+import TotalCandidates from "./Pages/Adminanalysis/TotalCandidates";
+import TotalRecruiters from "./Pages/Adminanalysis/TotalRecruiters";
+import TotalJobs from "./Pages/Adminanalysis/TotalJobs";
+import ApplicationStatus from "./Pages/Adminanalysis/ApplicationStatus";
+
 function App() {
   const dispatch = useDispatch()
   const {isloggedIn} = useSelector((state)=>state.users)
@@ -73,6 +81,13 @@ function App() {
        <Route path="/subscriptionpage" element={<SubscriptionPlans/>} />
        <Route path="/success" element={<Success/>}/>
        <Route path="/cancel" element={<Cancel/>}/>
+       <Route path="/admindashboard" element={<AdminDashboard/>}/>
+       <Route path="/admin/active-recruiters" element={<ActiveRecruiters />} />
+       <Route path="/admin/total-candidates" element={<TotalCandidates />} />
+       <Route path="/admin/total-jobs" element={<TotalJobs />} />
+       <Route path="/admin/top-applicants" element={<TopApplicants/>} />
+       <Route path="/admin/total-recruiters" element={<TotalRecruiters/>}/>
+       <Route path="/admin/application-status" element={<ApplicationStatus/>}/>
      </Routes>
     </div>
   );

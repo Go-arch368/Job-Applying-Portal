@@ -36,6 +36,11 @@ export default function Navbar() {
 
               {user?.role === "admin" && (
                 <>
+                <li>
+                <Link to="/admindashboard" className="text-gray-700 hover:text-blue-500">
+                      AdminDashboard
+                    </Link>
+                </li>
                   <li>
                     <Link to="/verifyRecruiters" className="text-gray-700 hover:text-blue-500">
                       Verify Recruiters

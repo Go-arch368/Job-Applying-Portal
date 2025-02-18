@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { getApplied } from "../redux/slices/jobapplySlice";
+import { getApplied ,getTotalApplied} from "../redux/slices/jobapplySlice";
 
 export default function AppliedJobs() {
     const dispatch = useDispatch();
     const { applied } = useSelector((state) => state.jobapplying);
-
+    console.log(applied)
     const [search, setSearch] = useState("");
     const [sortby, setSortby] = useState("jobtitle");
     const [order, setOrder] = useState("asc");
@@ -18,6 +18,10 @@ export default function AppliedJobs() {
     useEffect(() => {
         dispatch(getApplied({ search, sortby, order, page, limit }));
     }, [dispatch, search, sortby, order, page, limit]);
+
+    useEffect(()=>{
+        dispatch(getTotalApplied())
+    },[dispatch])
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -76,8 +80,8 @@ export default function AppliedJobs() {
                             {applied?.data?.length > 0 ? (
                                 applied.data.map((ele) => (
                                     <tr key={ele._id} className="hover:bg-gray-50">
-                                        <td className="py-2 px-4 border">{ele.jobId?.jobtitle || "N/A"}</td>
-                                        <td className="py-2 px-4 border">{ele.jobId?.companyname || "N/A"}</td>
+                                        <td className="py-2 px-4 border">{ele.jobId?.jobtitle}</td>
+                                        <td className="py-2 px-4 border">{ele.jobId?.companyname}</td>
                                         <td className="py-2 px-4 border">{ele.status=="accepted"?<p className="text-green-500">accepted</p>:<p className="text-red-500">{ele.status}</p>}</td>
                                     </tr>
                                 ))

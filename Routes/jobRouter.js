@@ -19,4 +19,17 @@ router.get("/job",authenticateUser,authorizeUser(["candidate"]),jobCltr.searchin
 router.put("/:jobId/click",jobCltr.incrementJobclicks)
 router.get("/job/:jobId",authenticateUser,jobCltr.getjobDetails)
 
+//analytics route 
+//router.get("/analytics",authenticateUser,authorizeUser(["admin"]),jobCltr.analytics)
+router.get("/admin/active-recruiters",authenticateUser,authorizeUser(["admin"]),jobCltr.activeRecruiters)//active recrutiers
+router.get("/admin/total-candidates",authenticateUser,authorizeUser(["admin"]),jobCltr.totalCandidates)
+router.get("/admin/total-recruiters",authenticateUser,authorizeUser(["admin"]),jobCltr.totalRecruiters)
+router.get("/admin/total-jobs",authenticateUser,authorizeUser(['admin']),jobCltr.totalPostings)
+router.get("/admin/total-applicants",authenticateUser,authorizeUser(["admin"]),jobCltr.totalApplicants)
+router.get("/admin/job-categories",authenticateUser,authorizeUser(["admin"]),jobCltr.jobCategories)
+router.get("/admin/active-candidates",authenticateUser,authorizeUser(["admin"]),jobCltr.activeCandidates)
+router.get("/admin/application-status",authenticateUser,authorizeUser(["admin"]),jobCltr.applicationStatus)//lfsakjjlkdafdlfsdafl
+router.get("/admin/recent-jobs",authenticateUser,authorizeUser(["admin"]),jobCltr.recentJobs)
+router.get("/admin/top-applicants",authenticateUser,authorizeUser(["admin"]),jobCltr.topapplicants)
+router.get("/admin/job-topapplicants",authenticateUser,authorizeUser(["admin"]),jobCltr.topjobs)
 export default router

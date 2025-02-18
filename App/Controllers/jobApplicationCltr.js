@@ -360,6 +360,21 @@ jobAppCltr.getRejected = async(req,res)=>{
      }
 }
 
-
+jobAppCltr.getAllApplied = async(req,res)=>{
+    try{ 
+       
+        const candidateApplied = await JobApplication.find({applicantId:req.currentUser.userId}).populate("jobId")
+        console.log(candidateApplied);
+        const job = await Job.findById(candidateApplied.map((ele)=>ele.jobId))
+        if(!candidateApplied){
+            return res.status(400).json({error:"candidate not found"})
+        }
+        return res.json(candidateApplied)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({err:"somethig went wrong"})
+    }
+}
 
 export default jobAppCltr

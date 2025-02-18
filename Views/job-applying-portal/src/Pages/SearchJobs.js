@@ -152,7 +152,7 @@ export default function SearchJobs() {
         </button>
         <button 
             className="mt-4 py-2 px-6 bg-green-400 text-white font-semibold rounded-md hover:bg-green-700" 
-            onClick={() => handleSaveJobs(selectedJob._id)}
+            onClick={() => handleSaveJobs(selectedJob?._id)}
           >
           save
           </button>

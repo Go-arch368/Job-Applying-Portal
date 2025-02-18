@@ -159,6 +159,19 @@ export const unSaveJobs = createAsyncThunk("/jobapplying/unSaveJobs",async({id},
   }
 })
 
+export const getTotalApplied = createAsyncThunk("/jobapplying/getTotalApplied",async(_,{rejectWithValue})=>{
+  try{
+       const response = await axios.get("/api/getAllApplied",{headers:{Authorization:localStorage.getItem("token")}})
+       console.log(response.data);
+       return response.data
+       
+  }
+  catch(err){
+    console.log(err?.response?.data?.error)
+    return rejectWithValue(err?.response?.data?.error)
+  }
+})
+
 const jobapplyReducer = createSlice({
   name: "jobapplying",
   initialState: {
@@ -174,7 +187,8 @@ const jobapplyReducer = createSlice({
     searchError:null,
     isloading:false,
     savedJobs:[],
-    savedError:null
+    savedError:null,
+    getAppliedCandidate:[]
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -299,10 +313,19 @@ const jobapplyReducer = createSlice({
     })
     .addCase(unSaveJobs.fulfilled,(state,action)=>{
       const deletingId = state.savedJobs.filter((ele)=>ele._id!==action.payload)
+
       state.savedJobs = deletingId
     })
     .addCase(unSaveJobs.rejected,(state,action)=>{
        state.savedError = action.payload
+    })
+    .addCase(getTotalApplied.fulfilled,(state,action)=>{
+       state.getAppliedCandidate = action.payload
+       state.searchError = null
+    })
+    .addCase(getTotalApplied.rejected,(state,action)=>{
+       state.searchError = action.payload
+       state.getAppliedCandidate = []
     })
   }
 })

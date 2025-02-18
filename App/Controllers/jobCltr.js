@@ -3,6 +3,7 @@ import Question from "../Models/questionmodel.js";
 import Recruiter from "../Models/recruitermodel.js";
 import { validationResult } from "express-validator";
 import User from "../Models/userSchema.js";
+import JobApplication from "../Models/jobapplicationmodel.js";
 import sendEmail from "../../Config/emailService.js";
 const jobCltr = {}
 
@@ -278,5 +279,174 @@ jobCltr.getjobDetails=async(req,res)=>{
     }
 }
 
+// jobCltr.analytics =async(req,res)=>{
+//     try{
+//         const totalJobPosts = await Job.countDocuments()
+//         const activeRecruiters = 
+//     }
+//     catch(err){
+//         console.log(err)
+//         return res.status(500).json("something went wrong")
+//     }
+// }
+
+
+jobCltr.activeRecruiters = async(req,res)=>{
+    try {
+        console.log("hi");
+    
+        // Fetch distinct recruiter IDs
+        const activeRecruiters = await Job.distinct("recruiterId");
+    
+        // Fetch jobs associated with those recruiters
+      const jobs = await Job.find({ recruiterId: { $in: activeRecruiters } }).populate("recruiterId");
+      console.log(jobs)
+      const data = jobs.map((ele) => ele.recruiterId.userId); // Assuming 'userId' is a field in the Recruiter model
+       const recruiter = await User.find({_id:{$in:data}})
+        console.log(recruiter);
+        
+        // Return the results with job and recruiter details
+        res.json({ success: true, job:jobs, recruiterData:recruiter });
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.totalCandidates = async (req, res) => {
+    try {
+        const totalCandidates = await User.find({ role: "candidate" });
+        const candidateIds = totalCandidates.map(candidate => candidate._id);
+        const jobApplications = await JobApplication.find({ applicantId: { $in: candidateIds } }).populate("jobId");  
+        console.log(jobApplications)
+        res.json({ success: true, totalCandidates, jobApplications });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json("Something went wrong");
+    }
+};
+
+jobCltr.totalRecruiters = async(req,res)=>{
+    try{
+        const totalRecruiters = await User.find({role:"recruiter"})
+        if (!totalRecruiters.length) {
+            return res.status(404).json({error: "No recruiters found" });
+        }
+        
+        const recruiterIds = totalRecruiters.map((ele)=>ele._id)
+        const user = await Recruiter.find({userId:{$in:recruiterIds}}).populate("userId")
+        const datafetching  = user.map((ele)=>ele._id)
+        //console.log(datafetching)
+        const job = await Job.find({recruiterId:{$in:datafetching}})
+        console.log(job)
+        return res.json({user,job})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.totalPostings = async(req,res)=>{
+    try{
+        const totalJobs = await Job.countDocuments()
+        res.json({success:true,count:totalJobs})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.totalApplicants = async(req,res)=>{
+    try{
+        const totalApplications = await JobApplication.countDocuments()
+        res.json({ success: true, count: totalApplications });
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.jobCategories = async(req,res)=>{
+    try{
+        const jobCategories = await Job.aggregate([
+            {$group:{_id:"$jobtitle",count:{$sum:1}}},
+            {$sort:{count:-1}}
+        ])
+        res.json({success:true,data:jobCategories})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.activeCandidates = async(req,res)=>{
+    try{
+        const activeCandidates = await JobApplication.distinct("applicantId")
+        res.json({success:true,count:activeCandidates.length})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.applicationStatus = async(req,res)=>{
+    try{
+        const applicationStatus = await JobApplication.aggregate([
+            {$group:{_id:"$status",count:{$sum:1}}}
+        ])
+        return res.json({success:true,data:applicationStatus})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")  
+    }
+}
+
+jobCltr.recentJobs = async(req,res)=>{
+    try{
+        const recentJobs = await Job.find({
+            createdAt:{$gte:new Date(new Date()-7*24*60*60*1000)}
+        })
+        res.json({success:true,data:recentJobs})
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json("something went wrong")   
+    }
+}
+
+jobCltr.topapplicants = async(req,res)=>{
+    try{
+        const topApplicants = await JobApplication.aggregate([
+            {$group:{_id:"$userId",totalApplications:{$sum:1}}},
+            {$sort:{totalApplications:-1}},
+            {$limit:5}
+        ])
+        res.json({success:true,data:topApplicants})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong ")
+    }
+}
+
+jobCltr.topjobs = async(req,res)=>{
+    try {
+        const topJobPosts = await JobApplication.aggregate([
+            { $group: { _id: "$jobId", totalApplications: { $sum: 1 } } },
+            { $sort: { totalApplications: -1 } },
+            { $limit: 5 }
+        ]);
+        res.json({ success: true, data: topJobPosts });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+}
 
 export default jobCltr
