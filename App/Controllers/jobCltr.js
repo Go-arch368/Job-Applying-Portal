@@ -449,4 +449,52 @@ jobCltr.topjobs = async(req,res)=>{
     }
 }
 
+jobCltr.subscriptionStatus = async(req,res)=>{
+    try{
+    //    const recruiterDetails = await Recruiter.find()
+    //    console.log(recruiterDetails);
+    //    const details = recruiterDetails.map((ele)=>ele.subscription)
+       const subscriptionData = await Recruiter.aggregate([
+        {
+            $group:{
+                _id:'$subscriptionPlan',
+                count:{$sum:1}
+            }
+        }
+       ])
+       //console.log(subscriptionData)
+       const formattedData = {
+         free:0,
+         basic:0,
+         silver:0,
+         gold:0
+       }
+       subscriptionData.forEach(item=>{
+         formattedData[item._id] = item.count
+       })
+       res.json(formattedData)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
+jobCltr.recentlyPosted = async(req,res)=>{
+    try{
+        const lastTen = await Job.find()
+                      .sort({createdAt:-1})
+                      .limit(10)
+                      .lean()
+        const jobIds = lastTen.map((ele)=>ele._id)
+        const findingJob = await JobApplication.find({jobId:{$in:jobIds}})
+        console.log(findingJob);
+        return res.status(200).json({lastTen,findingJob})          
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json("something went wrong")
+    }
+}
+
 export default jobCltr

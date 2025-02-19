@@ -1,5 +1,5 @@
 import Sidebar from "./Sidebar"
-
+import Navbar from "../../Components/Navbar"
 export default function AdminDashboard(){
     return(
         <div>

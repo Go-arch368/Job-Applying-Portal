@@ -27,12 +27,12 @@ export const updateProfile = createAsyncThunk("profile/updateProfile",async({id,
     }
 })
 
-export const uploadProfilePicture = createAsyncThunk("profile/uploadProfilePicture",async({profilePic},{rejectWithValue})=>{
+export const uploadProfilePicture = createAsyncThunk("profile/uploadProfilePicture",async(formData,{rejectWithValue,dispatch})=>{
     try{
-        const formData = new FormData()
-        formData.append("profilePicture",profilePic)
-        const response = axios.post("/api/candidate/upload-profile",formData,{headers:{"Content-Type":"multipart/form-data",Authorization:localStorage.getItem("token")}})
+       
+        const response =await axios.post("/api/candidate/upload-profile",formData,{headers:{"Content-Type":"multipart/form-data",Authorization:localStorage.getItem("token")}})
         console.log(response.data.profilePicture)
+        dispatch(getProfile({id:localStorage.getItem("userId")}))
         return response.data.profilePicture
     }
     catch(err){
@@ -41,10 +41,10 @@ export const uploadProfilePicture = createAsyncThunk("profile/uploadProfilePictu
     }
 })
 
-export const uploadResume = createAsyncThunk("profile/uploadResume",async({resume},{rejectWithValue})=>{
-    try{
+export const uploadResume = createAsyncThunk("profile/uploadResume",async({formData},{rejectWithValue})=>{
+    try{/* 
         const formData = new FormData()
-        formData.append("resume",resume)
+        formData.append("resume",resume) */
         const response = await axios.post("/api/candidate",formData,{headers:{"Content-Type":"multipart/form-data",Authorization:localStorage.getItem("token")}})
         console.log(response.data.resumeUrl);
         return response.data.resumeUrl; 
@@ -59,7 +59,7 @@ export const uploadResume = createAsyncThunk("profile/uploadResume",async({resum
 const profileReducer = createSlice({
     name:"profile",
     initialState:{
-        data:{},
+        data:null,
         serverError:null
     },
     reducers:{
@@ -82,11 +82,11 @@ const profileReducer = createSlice({
             state.serverError=action.payload   
         })
         builder.addCase(uploadProfilePicture.fulfilled,(state,action)=>{
-            state.data={...state.data,profilePicture:action.payload}
+            state.data = action.payload
         })
         builder.addCase(uploadProfilePicture.rejected,(state,action)=>{
             state.serverError=action.payload
-            state.data={}
+            state.data= { ...state.data, profilePicture: null };
         })
         builder.addCase(uploadResume.fulfilled, (state, action) => {
             state.data = { ...state.data, resumeUpload: action.payload };

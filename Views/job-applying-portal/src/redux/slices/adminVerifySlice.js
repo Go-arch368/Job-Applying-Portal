@@ -88,6 +88,29 @@ export const applicationStatus = createAsyncThunk("adminVerify/appliationStatus"
   }
 })
 
+export const subscriptionStatus =createAsyncThunk("adminVerify/subscriptionStatus",async(_,{rejectWithValue})=>{
+  try{
+    const response = await axios.get("/api/admin/recruiter-subscription-status",{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data)
+    return response.data
+  }
+  catch(err){
+    console.log(err.response.data.error);
+    return rejectWithValue(err.response.data.error)
+  }
+})
+
+export const recentJobs = createAsyncThunk("adminVerify/recentJobs",async(_,{rejectWithValue})=>{
+  try{
+    const response = await axios.get("/api/admin/recentlypostedjobs",{headers:{Authorization:localStorage.getItem("token")}})
+    console.log(response.data);
+    return response.data
+  }
+  catch(err){
+    console.log(err.response.data.error);
+    return rejectWithValue(err.response.data.error)
+  }
+})
 
 const adminVerifyReducer = createSlice({
   name: "adminVerify",
@@ -96,6 +119,8 @@ const adminVerifyReducer = createSlice({
     recruiterDetails:[],
     candidatesDetails:[],
     applicationDetails:[],
+    subscription:[],
+    recents:[],
     serverErrors: null,
   },
   reducers: {},
@@ -153,6 +178,22 @@ const adminVerifyReducer = createSlice({
      .addCase(applicationStatus.rejected,(state,action)=>{
         state.serverErrors=null
         state.applicationDetails= action.payload
+     })
+     .addCase(subscriptionStatus.fulfilled,(state,action)=>{
+       state.subscription = action.payload
+       state.serverErrors = null
+     })
+     .addCase(subscriptionStatus.rejected,(state,action)=>{
+       state.serverErrors = action.payload
+       state.subscription =null
+     })
+     .addCase(recentJobs.fulfilled,(state,action)=>{
+      state.recents = action.payload
+      state.serverErrors = null
+     })
+     .addCase(recentJobs.rejected,(state,action)=>{
+        state.serverErrors = action.payload
+        state.recents = null
      })
   },
 });

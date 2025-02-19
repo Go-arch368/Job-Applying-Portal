@@ -37,6 +37,9 @@ import TotalCandidates from "./Pages/Adminanalysis/TotalCandidates";
 import TotalRecruiters from "./Pages/Adminanalysis/TotalRecruiters";
 import TotalJobs from "./Pages/Adminanalysis/TotalJobs";
 import ApplicationStatus from "./Pages/Adminanalysis/ApplicationStatus";
+import SubscriptionStatus from "./Pages/Adminanalysis/SubscriptionStatus";
+import RecentJobs from "./Pages/Adminanalysis/RecentJobs";
+import ProfileAdmin from "./Pages/ProfileAdmin";
 
 function App() {
   const dispatch = useDispatch()
@@ -88,6 +91,9 @@ function App() {
        <Route path="/admin/top-applicants" element={<TopApplicants/>} />
        <Route path="/admin/total-recruiters" element={<TotalRecruiters/>}/>
        <Route path="/admin/application-status" element={<ApplicationStatus/>}/>
+       <Route path="/admin/subscription-status" element={<SubscriptionStatus/>}/>
+       <Route path="/admin/recent-jobs" element={<RecentJobs/>}/>
+       <Route path="/adminProfile" element={<ProfileAdmin/>}/>
      </Routes>
     </div>
   );

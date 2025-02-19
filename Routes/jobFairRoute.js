@@ -13,4 +13,5 @@ router.get("/getCandidates/:jobFairId",authenticateUser,authorizeUser(["candidat
 router.get("/jobFair",authenticateUser,authorizeUser(["admin","recruiter","candidate"]),jobFairCltr.getAllJobFair)//get the all the jobfair being created
 router.put("/:jobFairId/jobFairs",authenticateUser,authorizeUser(["admin"]),jobFairCltr.updateJobFair)
 router.delete("/:jobFairId/jobFairs",authenticateUser,authorizeUser(['admin']),jobFairCltr.deleteJobFair)
+
 export default router

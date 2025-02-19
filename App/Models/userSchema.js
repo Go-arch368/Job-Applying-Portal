@@ -7,13 +7,11 @@ const userSchema = new Schema ({
     role:{
         type:String,
         enum:["recruiter","candidate","admin"],
-        required:true
+       
     },
-    subscriptionStatus:{
-        type:String,
-        enum:["active","expired","none"],
-        default:"none"
-    },
+    mobile:{type:Number},
+    profile:{type:String},
+    responsibilities:{type:[String]},
     createdAt:{type:Date,default:Date.now}
     //  companyname:{type:String,required:function(){ return this.role=="recruiter"}},
     // isverified:{type:Boolean,required:function(){return this.role=="recruiter"}},

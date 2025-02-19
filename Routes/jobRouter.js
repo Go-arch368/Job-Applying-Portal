@@ -32,4 +32,9 @@ router.get("/admin/application-status",authenticateUser,authorizeUser(["admin"])
 router.get("/admin/recent-jobs",authenticateUser,authorizeUser(["admin"]),jobCltr.recentJobs)
 router.get("/admin/top-applicants",authenticateUser,authorizeUser(["admin"]),jobCltr.topapplicants)
 router.get("/admin/job-topapplicants",authenticateUser,authorizeUser(["admin"]),jobCltr.topjobs)
+
+//subscripiton status
+router.get("/admin/recruiter-subscription-status",authenticateUser,authorizeUser(["admin"]),jobCltr.subscriptionStatus)
+//last ten jobs getting:
+router.get("/admin/recentlypostedjobs",authenticateUser,authorizeUser(["admin"]),jobCltr.recentlyPosted)
 export default router

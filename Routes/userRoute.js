@@ -5,6 +5,8 @@ import { userValidations, loginValidation } from "../App/Validators/userValidati
 import userCltr from "../App/Controllers/userControllers.js"
 import {checkSchema} from "express-validator"
 import authenticateUser from "../App//Middlewares/AuthenticateUser.js"
+import authorizeUser from "../App/Middlewares/AuthorizeUser.js"
+import upload from "../App/Middlewares/Multer.js"
 //import authorizeUser from "../App//App/Middlewares/AuthorizeUser.js"
 const router = express.Router()
 
@@ -14,6 +16,6 @@ router.get("/userDetails",authenticateUser,userCltr.getUserData)
 //router.get("/getall",userCltr.getAll)
 //router.get("/verifyall",userCltr.verify)
 //router.put("/verify/recruiter/:id",authenticateUser,authorizeUser(["admin"]),checkSchema(idValidation),userCltr.updateRecruiter)
-
+router.put("/userDetailsPost",authenticateUser,authorizeUser(["admin"]),upload.single("profile"),userCltr.postDetails)
 
 export default router

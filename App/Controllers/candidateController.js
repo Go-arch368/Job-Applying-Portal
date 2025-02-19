@@ -12,7 +12,7 @@ import cloudinary from "cloudinary";
 
 candidateCltr.posting = async (req, res) => {
     try {
-        console.log("Uploaded files:", req.files);
+        console.log("Uploaded files:", req.file);
 
         // if (!req.files?.["resume"]?.[0]) {
         //     return res.status(400).json({ error: "Resume file is required" });
@@ -38,8 +38,8 @@ candidateCltr.posting = async (req, res) => {
             return res.status(404).json({ error: "Candidate not found." });
         }
 
-        candidate.resumeUpload = req.files.resume[0].path;
-        console.log(req.files)
+        candidate.resumeUpload = req.file.path;
+        console.log(req.file)
         await candidate.save();
 
         return res.status(200).json({

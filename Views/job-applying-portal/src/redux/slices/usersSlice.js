@@ -49,6 +49,22 @@ export const userRole = createAsyncThunk("users/userRole",async(_,{rejectWithVal
     }
 })
 
+export const profileUpdate = createAsyncThunk("users/profileUpdate",async(formData,{rejectWithValue})=>{
+    try{
+        const response = await axios.put("/api/userDetailsPost",formData,{headers:{
+            Authorization:localStorage.getItem("token"),
+            "Content-Type":"multipart/form-data"
+        }})
+        console.log(response.data)
+        return response.data
+    }
+    catch(err){
+        console.log(err)
+        return rejectWithValue(err.response.data.error)
+    }
+})
+
+
 
 
 
@@ -81,6 +97,15 @@ const usersSlice = createSlice({
         builder.addCase(userRole.rejected,(state,action)=>{
             return{...state,serverErrors:action.payload,user:null}
         })
+        builder.addCase(profileUpdate.fulfilled,(state,action)=>{
+            state.user = action.payload
+            state.serverErrors = null
+        })
+        builder.addCase(profileUpdate.rejected,(state,action)=>{
+            state.serverErrors = action.payload
+            state.user = []
+        })
+
     }
 
 })

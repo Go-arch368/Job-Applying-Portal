@@ -24,19 +24,26 @@ export default function ProfileCandidate() {
 
     const { data } = useSelector((state) => state.profile);
     console.log(data);
+    
+    const {user} = useSelector((state)=>state.users)
+    console.log(user);
+    
+    console.log(data);
     const resumeDetails = data?.resumeUpload
     console.log(resumeDetails);
     
      
      
-    useEffect(() => {
-        dispatch(getProfile({ id }));
-    }, [dispatch, id]);
+     useEffect(() => {
+         dispatch(getProfile({ id }));
+     }, [dispatch, id]);
 
     useEffect(() => {
-        if (data) {
-            setProfile(data);
-        }
+        setProfile((prevProfile) => ({
+            ...prevProfile,
+            ...data,
+        }));
+        
     }, [data]);
 
     function handleProfilePicChange(e) {
@@ -44,44 +51,63 @@ export default function ProfileCandidate() {
     }
 
     function handleFileChange(e) {
+
+        
         setResume(e.target.files[0]);
     }
 
     function handleResumeUpload(e) {
         e.preventDefault();
-        if (!resume) return;
-        
-        try{
-            dispatch(uploadResume({resume})).unwrap()
-            alert("successfully uploaded resume")
+        if (!resume) {
+            alert("Please select a file.");
+            return;
         }
-        catch(err){
-            console.log(err)
-        }
+    
+        const formData = new FormData();
+        formData.append("resume", resume);
+    
+        dispatch(uploadResume({ id: user._id, formData }))
+            .unwrap()
+            .then(() => alert("Successfully uploaded resume"))
+            .catch(err => console.log(err));
     }
+    
 
     const handleProfilePicUpload = async (e) => {
         e.preventDefault();
-        if (!profilePic) return;
+    
+        if (!profilePic) {
+            alert("Please select a profile picture before uploading.");
+            return;
+        }
     
         try {
-            await dispatch(uploadProfilePicture({ profilePic })).unwrap();
+            const formData = new FormData();
+            formData.append("profilePicture", profilePic);
+    
+            await dispatch(uploadProfilePicture(formData)).unwrap();
+            
             alert("Successfully uploaded profile picture");
+             dispatch(getProfile({ id })); // Uncomment if needed
         } catch (err) {
-            console.error("Error uploading profile picture:", err.response);
+            console.error("Error uploading profile picture:", err);
+            alert("Failed to upload profile picture. Please try again.");
         }
     };
+    
     
     function handleAddSkill(e) {
         e.preventDefault();
         if (newSkill.skillName && newSkill.experience) {
             const updatedProfile = { ...profile, skills: [...profile.skills, newSkill] };
             setProfile(updatedProfile);
-            dispatch(updateProfile({ id, profile: updatedProfile }));
+          dispatch(updateProfile({ id:user._id, profile: updatedProfile })).unwrap()
             setNewSkill({ skillName: "", experience: "" });
         } else {
             alert("Please fill in both fields for the skill");
         }
+       console.log(newSkill);
+       
     }
 
     function handleAddEducation(e) {
@@ -89,7 +115,7 @@ export default function ProfileCandidate() {
         if (newEducation.degree && newEducation.startyear && newEducation.endyear && newEducation.institute) {
             const updatedProfile = { ...profile, education: [...profile.education, newEducation] };
             setProfile(updatedProfile);
-            dispatch(updateProfile({ id, profile: updatedProfile }));
+             dispatch(updateProfile({ id:user._id, profile: updatedProfile }));
             setNewEducation({ degree: "", startyear: "", endyear: "", institute: "", cgpa: "" });
         }
     }
@@ -99,23 +125,29 @@ export default function ProfileCandidate() {
         if (newCertification.certificationName && newCertification.duration.startMonth && newCertification.duration.endMonth) {
             const updatedProfile = { ...profile, certification: [...profile.certification, newCertification] };
             setProfile(updatedProfile);
-            dispatch(updateProfile({ id, profile: updatedProfile }));
+           dispatch(updateProfile({ id:user._id, profile: updatedProfile }));
             setNewCertification({ certificationName: "", duration: { startMonth: "", endMonth: "" } });
         }
     }
 
     function handleProfileUpdate(e) {
         e.preventDefault();
-        dispatch(updateProfile({ id, profile }));
+        console.log("id",id,profile);
+        
+        dispatch(updateProfile({ id:user._id, profile }));
     }
 
     function handleDeleteAndUpdate(type, index) {
         setProfile((prevProfile) => {
             const updatedData = prevProfile[type].filter((_, i) => i !== index);
             const updatedProfile = { ...prevProfile, [type]: updatedData };
-            dispatch(updateProfile({ id, profile: updatedProfile }));
+           dispatch(updateProfile({ id:user._id, profile: updatedProfile }));
             return updatedProfile;
         });
+    }
+
+    function handleMobile(){  
+        dispatch(updateProfile({id,profile}))
     }
 
     return (  
@@ -126,7 +158,7 @@ export default function ProfileCandidate() {
 
         <div className="flex flex-col items-center">
                 <img 
-                    src={profile?.profilePicture ? profile?.profilePicture : "default-profile.png"} 
+                    src={data?.profilePicture ? data?.profilePicture : "default-profile.png"} 
                     alt="Profile" 
                     className="w-32 h-32 rounded-full border-2 mb-4"
                 />
@@ -138,12 +170,16 @@ export default function ProfileCandidate() {
             </form>
         </div>
 
-        <h2 className="text-lg font-semibold mt-6">Username: {data?.userId?.name}</h2>
-        <h2 className="text-lg font-semibold">Email: {data?.userId?.email}</h2>
+        <h2 className="text-lg font-semibold mt-6">Username: {user?.name}</h2>
+        <h2 className="text-lg font-semibold">Email: {user.email}</h2>
 
         <form onSubmit={handleProfileUpdate} className="space-y-4 mt-4">
+            <div>
             <label className="block font-semibold">Mobile:</label>
             <input type="text" value={profile.mobile} onChange={(e) => setProfile({ ...profile, mobile: e.target.value })} className="border p-2 w-full rounded" />
+            <button onClick={handleMobile} className="bg-blue-500 text-white p-2 rounded-sm mt-2">submit</button>
+            </div>
+           
 
             <h3 className="text-lg font-semibold">Skills</h3>
             {profile?.skills?.map((skill, index) => (

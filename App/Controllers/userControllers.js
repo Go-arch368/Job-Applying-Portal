@@ -4,6 +4,7 @@ const userCltr = {}
 import Recruiter from "../Models/recruitermodel.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import cloudinary from "../../Config/cloudinary.js"
 
 
 userCltr.register=async(req,res)=>{
@@ -76,6 +77,83 @@ userCltr.getUserData=async(req,res)=>{
     }
 }
 
+
+
+
+userCltr.postDetails = async (req, res) => {
+  try {
+    console.log("hi");
+
+    // Check if currentUser exists
+    if (!req.currentUser || !req.currentUser.userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { mobile, responsibilities } = req.body;
+    console.log("Mobile:", mobile);
+    console.log("File:", req.file);
+    console.log("Responsibilities:", responsibilities);
+
+    const userId = req.currentUser.userId;
+    let updateData = {}; 
+
+  
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "profile_pictures",
+        width: 300,
+        height: 300,
+        crop: "fill",
+      });
+      console.log("Uploaded Image URL:", result.secure_url);
+      updateData.profile = result.secure_url; 
+    }
+
+ 
+    if (mobile) {
+      if (typeof mobile === "string") {
+        try {
+          updateData.mobile = JSON.parse(mobile);
+        } catch (error) {
+          return res.status(400).json({ error: "Invalid mobile format" });
+        }
+      } else {
+        updateData.mobile = mobile;
+      }
+    }
+
+    if (responsibilities) {
+      if (typeof responsibilities === "string") {
+        try {
+          updateData.responsibilities = JSON.parse(responsibilities);
+        } catch (error) {
+          return res.status(400).json({ error: "Invalid responsibilities format" });
+        }
+      } else {
+        updateData.responsibilities = responsibilities;
+      }
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ error: "No data provided for update" });
+    }
+
+    const userDetails = await User.findOneAndUpdate(
+      { _id: userId },
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!userDetails) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json(userDetails);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
 
 
 /* userCltr.verify=async(req,res)=>{
