@@ -1,15 +1,21 @@
 import Navbar from "../Components/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { searchingJobs ,saveJobs} from "../redux/slices/jobapplySlice";
+import { searchingJobs ,saveJobs,withOutSearch} from "../redux/slices/jobapplySlice";
 import { countJobClick } from "../redux/slices/jobpostingSlice";
-import { Link } from "react-router-dom";
+import { Link,useSearchParams,useNavigate } from "react-router-dom";
+import { Loader } from "lucide-react";
+
 
 export default function SearchJobs() {
   const dispatch = useDispatch();
+  const {user} = useSelector((state)=>state.users)
+  console.log(user)
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState({
-    jobtitle: "",
-    location: ""
+    jobtitle: searchParams.get("jobtitle") || "",
+    location: searchParams.get("location") || "",
   });
   const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -20,15 +26,42 @@ export default function SearchJobs() {
   console.log(data);
   console.log(searchError);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const hasReloaded = sessionStorage.getItem("hasReloaded");
+  
+    if (!token && !hasReloaded) {
+      sessionStorage.setItem("hasReloaded", "true"); // Mark as reloaded
+      window.location.reload();
+    }
+  }, []);
+  
+
+  useEffect(()=>{
+     if(search.jobtitle.trim()||search.location.trim()){
+      const { location, jobtitle } = search;
+
+      setSearchParams({
+        jobtitle: search.jobtitle.trim(),
+        location: search.location.trim(),
+      });
+
+      dispatch(searchingJobs(search)).unwrap()
+      .then(() => setError(null))
+      .catch((err) => setError(err.response?.data || "Something went wrong"));
+      
+     }else{
+      dispatch(withOutSearch())
+     }
+  },[search.jobtitle,search.location])
+
   function handleSubmit(e) {
     e.preventDefault();
     const { location, jobtitle } = search;
     if (!location && !jobtitle) {
       setError("Please provide at least one detail.");
       return;
-    }
-
- 
+    } 
     dispatch(
       searchingJobs({
         jobtitle: jobtitle.trim(),
@@ -56,9 +89,22 @@ export default function SearchJobs() {
   function handleSaveJobs(id){
       console.log(id)
       dispatch(saveJobs({id}))
-    
+      
   }
   
+  useEffect(()=>{
+    if(data.length>0&&!selectedJob){
+      setSelectedJob(data[0])
+    }
+  },[data])
+
+  function handleApply(){
+      const token = localStorage.getItem("token")
+      if(!token){
+        alert("Please login and apply for you required job bro😊")
+        navigate("/")
+      }
+  }
 
  return(
    <div>
@@ -148,7 +194,7 @@ export default function SearchJobs() {
         </p>
        <div className="flex gap-3 justify-center">
         <button class="mt-4 py-2 px-6 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
-         <Link to={`/apply/${selectedJob._id}`}>Apply Now</Link> 
+         <Link to={`/apply/${selectedJob._id}`} onClick={handleApply}>Apply Now</Link> 
         </button>
         <button 
             className="mt-4 py-2 px-6 bg-green-400 text-white font-semibold rounded-md hover:bg-green-700" 

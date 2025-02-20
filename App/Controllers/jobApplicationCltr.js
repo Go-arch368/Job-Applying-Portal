@@ -377,4 +377,27 @@ jobAppCltr.getAllApplied = async(req,res)=>{
     }
 }
 
+jobAppCltr.giveSearch=async(req,res)=>{
+    try{
+       const candidate = await Candidate.find({userId:req.currentUser.userId})
+       const skills = candidate.map((ele)=>ele.skills.map((data)=>data.skillName)).flat()
+       let jobs;
+       if(skills.length>0){
+         jobs = await Job.find({jobtitle:{
+            $in:skills.map((skill)=>new RegExp(`^${skill}$`,"i"))
+         }}) 
+         console.log(jobs)
+       }
+       else{
+        jobs = await Job.find().sort({createdAt:-1}).limit(10)
+       }
+
+       return res.json({jobs})
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({error:"something went wrong"})
+    }
+}
+
 export default jobAppCltr

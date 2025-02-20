@@ -56,7 +56,7 @@ export default function ProfileAdmin() {
     <div className="bg-gray-200 min-h-screen">
       <Navbar />
       <div className="flex flex-col items-center justify-center p-6">
-        {/* Profile View (Hidden when Editing) */}
+       
         {!edit && (
           <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-[600px] flex flex-col items-center">
             <img
@@ -80,13 +80,12 @@ export default function ProfileAdmin() {
           </div>
         )}
 
-        {/* Edit Form (Shows only when editing) */}
         {edit && (
           <form
             onSubmit={handleSubmit}
             className="bg-white shadow-lg rounded-xl p-5 w-full max-w-[450px] flex flex-col space-y-3"
           >
-            {/* Profile Upload (Fixed Preview) */}
+           
             <div className="flex items-center justify-center relative">
               <img
                 src={profilePreview || "/default-avatar.png"}

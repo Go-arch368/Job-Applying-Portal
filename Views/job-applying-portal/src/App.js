@@ -40,6 +40,8 @@ import ApplicationStatus from "./Pages/Adminanalysis/ApplicationStatus";
 import SubscriptionStatus from "./Pages/Adminanalysis/SubscriptionStatus";
 import RecentJobs from "./Pages/Adminanalysis/RecentJobs";
 import ProfileAdmin from "./Pages/ProfileAdmin";
+import PrivateRoute from "./Components/PrivateRoute";
+import UnauthorizedPage from "./Components/UnauthorizedPage";
 
 function App() {
   const dispatch = useDispatch()
@@ -55,45 +57,50 @@ function App() {
   return (
     <div className="text-center">
       
+      <Routes>
+         <Route path="/searchJobs" element={<SearchJobs/>}/>
+      </Routes>
+
      <Routes>
       <Route path="/" element={<Home/>}/>
        <Route path="/register" element={<Register/>}/>
        <Route path="/login" element={<Login/>}/>
        <Route path="/dashboard" element={<Dashboard/>}/>
-       <Route path="/verifyRecruiters" element={<VerifyingRecruiters/>}/>
-       <Route path="/jobposting" element={<PostingJobs/>}/>
-       <Route path="/create-questions/:jobId" element={<CreateQuestions/>}/>
-       <Route path="/jobposted" element={<PostedJobs/>}/>
-       <Route path="/searchJobs" element={<SearchJobs/>}/>
-       <Route path="/apply/:jobId" element={<ApplyJobs/>} />
-       <Route path="/candidateList/:jobId" element={<CandidateList/>}/>
-       <Route path="/jobdetails" element={<JobDetails/>}/>
-       <Route path="/accepted/:jobId" element={<AcceptedCandidates/>}/>
-       <Route path="/rejected/:jobId" element={<RejectedCandidates/>}/>
-       <Route path="/appliedjobs" element={<AppliedJobs/>}/>
-       <Route path="/candidate-calendar" element={<CandidateCalendar/>}/>
-       <Route path="/jobFair" element={<JobFair/>}/>
-       <Route path="/createjobFair" element={<CreateJobFair/>} />
-       <Route path="/managejobfair" element={<ManageJobFair/>} />
-       <Route path="/recruiterjobfair" element={<RecruiterjobFair/>}/>
-       <Route path="/candidate-jobFair" element={<CandidatejobFair/>}/>
-       <Route path="/candidateProfile" element={<ProfileCandidate/>}/>
-       <Route path="/saved-jobs" element={<SaveJobs/>}/>
-       <Route path="/recruiterProfile" element={<ProfileRecruiter/>}/>
-       <Route path="/statistics" element={<Statistics/>}/>
-       <Route path="/subscriptionpage" element={<SubscriptionPlans/>} />
+       <Route path="/verifyRecruiters" element={<PrivateRoute role="admin"><VerifyingRecruiters/></PrivateRoute>}/>
+       <Route path="/jobposting" element={<PrivateRoute role="recruiter"><PostingJobs/></PrivateRoute>}/>
+       <Route path="/create-questions/:jobId" element={<PrivateRoute role="recruiter"><CreateQuestions/></PrivateRoute>}/>
+       <Route path="/jobposted" element={<PrivateRoute role="recruiter"><PostedJobs/></PrivateRoute>}/>
+       
+       <Route path="/apply/:jobId" element={<PrivateRoute role="candidate"><ApplyJobs/></PrivateRoute>} />
+       <Route path="/candidateList/:jobId" element={<PrivateRoute role="recruiter"><CandidateList/></PrivateRoute>}/>
+       <Route path="/jobdetails" element={<PrivateRoute role="recruiter"><JobDetails/></PrivateRoute>}/>
+       <Route path="/accepted/:jobId" element={<PrivateRoute role="recruiter"><AcceptedCandidates/></PrivateRoute>}/>
+       <Route path="/rejected/:jobId" element={<PrivateRoute role="recruiter"><RejectedCandidates/></PrivateRoute>}/>
+       <Route path="/appliedjobs" element={<PrivateRoute role="candidate"><AppliedJobs/></PrivateRoute>}/>
+       <Route path="/candidate-calendar" element={<PrivateRoute role="candidate"><CandidateCalendar/></PrivateRoute>}/>
+       <Route path="/jobFair" element={<PrivateRoute role="admin"><JobFair/></PrivateRoute>}/>
+       <Route path="/createjobFair" element={<PrivateRoute role="admin"><CreateJobFair/></PrivateRoute>} />
+       <Route path="/managejobfair" element={<PrivateRoute role="admin"><ManageJobFair/></PrivateRoute>} />
+       <Route path="/recruiterjobfair" element={<PrivateRoute role="recruiter"><RecruiterjobFair/></PrivateRoute>}/>
+       <Route path="/candidate-jobFair" element={<PrivateRoute role="candidate"><CandidatejobFair/></PrivateRoute>}/>
+       <Route path="/candidateProfile" element={<PrivateRoute role="candidate"><ProfileCandidate/></PrivateRoute>}/>
+       <Route path="/saved-jobs" element={<PrivateRoute role="candidate"><SaveJobs/></PrivateRoute>}/>
+       <Route path="/recruiterProfile" element={<PrivateRoute role="recruiter"><ProfileRecruiter/></PrivateRoute>}/>
+       <Route path="/statistics" element={<PrivateRoute role="recruiter"><Statistics/></PrivateRoute>}/>
+       <Route path="/subscriptionpage" element={<PrivateRoute role="recruiter"><SubscriptionPlans/></PrivateRoute>} />
        <Route path="/success" element={<Success/>}/>
        <Route path="/cancel" element={<Cancel/>}/>
-       <Route path="/admindashboard" element={<AdminDashboard/>}/>
-       <Route path="/admin/active-recruiters" element={<ActiveRecruiters />} />
-       <Route path="/admin/total-candidates" element={<TotalCandidates />} />
-       <Route path="/admin/total-jobs" element={<TotalJobs />} />
-       <Route path="/admin/top-applicants" element={<TopApplicants/>} />
-       <Route path="/admin/total-recruiters" element={<TotalRecruiters/>}/>
-       <Route path="/admin/application-status" element={<ApplicationStatus/>}/>
-       <Route path="/admin/subscription-status" element={<SubscriptionStatus/>}/>
-       <Route path="/admin/recent-jobs" element={<RecentJobs/>}/>
-       <Route path="/adminProfile" element={<ProfileAdmin/>}/>
+       <Route path="/admindashboard" element={<PrivateRoute role="admin"><AdminDashboard/></PrivateRoute>}/>
+       <Route path="/admin/active-recruiters" element={<PrivateRoute role="admin"><ActiveRecruiters /></PrivateRoute>} />
+       <Route path="/admin/total-candidates" element={<PrivateRoute role="admin"><TotalCandidates /></PrivateRoute>} />
+       <Route path="/admin/total-jobs" element={<PrivateRoute role="admin"><TotalJobs /></PrivateRoute>} />
+       <Route path="/admin/top-applicants" element={<PrivateRoute role="admin"><TopApplicants/></PrivateRoute>} />
+       <Route path="/admin/total-recruiters" element={<PrivateRoute role="admin"><TotalRecruiters/></PrivateRoute>}/>
+       <Route path="/admin/application-status" element={<PrivateRoute role="admin"><ApplicationStatus/></PrivateRoute>}/>
+       <Route path="/admin/subscription-status" element={<PrivateRoute role="admin"><SubscriptionStatus/></PrivateRoute>}/>
+       <Route path="/admin/recent-jobs" element={<PrivateRoute role="admin"><RecentJobs/></PrivateRoute>}/>
+       <Route path="/adminProfile" element={<PrivateRoute role="admin"><ApplicationStatus/><ProfileAdmin/></PrivateRoute>}/>
+       <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
      </Routes>
     </div>
   );

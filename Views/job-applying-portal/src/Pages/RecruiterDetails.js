@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { recruiterData } from "../redux/slices/recruiterSlice";
 import { useNavigate } from "react-router-dom";
 
-export default function RecruiterDetails({ users }) {
+export default function RecruiterDetails({ users, showRecruiterForm, setShowRecruiterForm ,onclose}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -42,6 +42,7 @@ export default function RecruiterDetails({ users }) {
       website: "",
       description: "",
     });
+    setRecruiterErrors({});
   }
 
   function handleRecruiterSubmit(e) {
@@ -52,84 +53,94 @@ export default function RecruiterDetails({ users }) {
       setRecruiterErrors(errors);
     } else {
       setRecruiterErrors({});
-      dispatch(recruiterData({ recruiterDetails, resetForm }));
-      navigate("/login");
+      dispatch(recruiterData({ recruiterDetails, resetForm ,navigate}));
+      onclose()
+      resetForm();
     }
   }
 
+  if (!showRecruiterForm) return null; 
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-  <div className="bg-white p-4 rounded-lg shadow-md w-80">
-    <h1 className="text-lg font-semibold text-center mb-3">Recruiter Details</h1>
-    <form onSubmit={handleRecruiterSubmit} className="space-y-3">
-      <div>
-        <label className="block text-xs font-medium">Company Name:</label>
-        <input
-          type="text"
-          value={recruiterDetails.companyname}
-          className="w-full border p-2 rounded-md text-xs"
-          onChange={(e) =>
-            setRecruiterDetails({ ...recruiterDetails, companyname: e.target.value })
-          }
-        />
-        {recruiterErrors.companyname && (
-          <p className="text-red-500 text-xs mt-1">{recruiterErrors.companyname}</p>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-xs font-medium">Location:</label>
-        <input
-          type="text"
-          value={recruiterDetails.location}
-          className="w-full border p-2 rounded-md text-xs"
-          onChange={(e) =>
-            setRecruiterDetails({ ...recruiterDetails, location: e.target.value })
-          }
-        />
-        {recruiterErrors.location && (
-          <p className="text-red-500 text-xs mt-1">{recruiterErrors.location}</p>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-xs font-medium">Website:</label>
-        <input
-          type="text"
-          value={recruiterDetails.website}
-          className="w-full border p-2 rounded-md text-xs"
-          onChange={(e) =>
-            setRecruiterDetails({ ...recruiterDetails, website: e.target.value })
-          }
-        />
-        {recruiterErrors.website && (
-          <p className="text-red-500 text-xs mt-1">{recruiterErrors.website}</p>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-xs font-medium">Description:</label>
-        <textarea
-          value={recruiterDetails.description}
-          className="w-full border p-2 rounded-md text-xs h-16 resize-none"
-          onChange={(e) =>
-            setRecruiterDetails({ ...recruiterDetails, description: e.target.value })
-          }
-        ></textarea>
-        {recruiterErrors.description && (
-          <p className="text-red-500 text-xs mt-1">{recruiterErrors.description}</p>
-        )}
-      </div>
-
-      <div className="flex justify-center">
-        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium p-2 rounded-md transition">
-          Send to Admin
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm relative">
+        <button
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          onClick={() => setShowRecruiterForm(false)}
+        >
+          ✖
         </button>
+        <h1 className="text-lg font-semibold text-center mb-4">Recruiter Details</h1>
+        <form onSubmit={handleRecruiterSubmit} className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium">Company Name:</label>
+            <input
+              type="text"
+              value={recruiterDetails.companyname}
+              className="w-full border p-2 rounded-md text-xs focus:ring-2 focus:ring-blue-400"
+              onChange={(e) =>
+                setRecruiterDetails({ ...recruiterDetails, companyname: e.target.value })
+              }
+            />
+            {recruiterErrors.companyname && (
+              <p className="text-red-500 text-xs mt-1">{recruiterErrors.companyname}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium">Location:</label>
+            <input
+              type="text"
+              value={recruiterDetails.location}
+              className="w-full border p-2 rounded-md text-xs focus:ring-2 focus:ring-blue-400"
+              onChange={(e) =>
+                setRecruiterDetails({ ...recruiterDetails, location: e.target.value })
+              }
+            />
+            {recruiterErrors.location && (
+              <p className="text-red-500 text-xs mt-1">{recruiterErrors.location}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium">Website:</label>
+            <input
+              type="text"
+              value={recruiterDetails.website}
+              className="w-full border p-2 rounded-md text-xs focus:ring-2 focus:ring-blue-400"
+              onChange={(e) =>
+                setRecruiterDetails({ ...recruiterDetails, website: e.target.value })
+              }
+            />
+            {recruiterErrors.website && (
+              <p className="text-red-500 text-xs mt-1">{recruiterErrors.website}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium">Description:</label>
+            <textarea
+              value={recruiterDetails.description}
+              className="w-full border p-2 rounded-md text-xs h-16 resize-none focus:ring-2 focus:ring-blue-400"
+              onChange={(e) =>
+                setRecruiterDetails({ ...recruiterDetails, description: e.target.value })
+              }
+            ></textarea>
+            {recruiterErrors.description && (
+              <p className="text-red-500 text-xs mt-1">{recruiterErrors.description}</p>
+            )}
+          </div>
+
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium p-2 rounded-md transition"
+            >
+              Send to Admin
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
-  
-  )
-   
+    </div>
+  );
 }

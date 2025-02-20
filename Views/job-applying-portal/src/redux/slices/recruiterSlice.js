@@ -3,7 +3,7 @@ import axios from "../Config/axios"
 
 
 
-export const recruiterData =createAsyncThunk("recruiter/recruiterData",async({recruiterDetails,resetForm},{rejectWithValue})=>{
+export const recruiterData =createAsyncThunk("recruiter/recruiterData",async({recruiterDetails,resetForm,navigate},{rejectWithValue})=>{
    try{
      
       const response = await axios.post("/api/recruiter",recruiterDetails,{
@@ -13,6 +13,7 @@ export const recruiterData =createAsyncThunk("recruiter/recruiterData",async({re
       localStorage.removeItem("token")
       console.log(response.data)
       resetForm()
+      navigate("/")
      
       return response.data
    }

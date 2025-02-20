@@ -14,7 +14,7 @@ router.get("/jobs",authenticateUser,authorizeUser(["recruiter","admin"]),jobCltr
 router.put("/jobs/:jobId",authenticateUser,authorizeUser(["recruiter"]),jobCltr.updateJob)
 router.delete("/jobs/:jobId",authenticateUser,authorizeUser(["recruiter"]),jobCltr.deleteJob)
 //candidate can able to search for an job :
-router.get("/job",authenticateUser,authorizeUser(["candidate"]),jobCltr.searching)
+router.get("/job",jobCltr.searching)
 //count the clicks
 router.put("/:jobId/click",jobCltr.incrementJobclicks)
 router.get("/job/:jobId",authenticateUser,jobCltr.getjobDetails)

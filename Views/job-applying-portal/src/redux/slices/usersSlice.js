@@ -76,7 +76,11 @@ const usersSlice = createSlice({
         serverErrors:null
     },
     reducers:{
-        
+      logout:(state,action)=>{
+        state.isloggedIn=false
+        state.user=null
+      }
+  
     },
     extraReducers:(builder)=>{
         builder.addCase(userRegister.fulfilled,(state,action)=>{
@@ -110,4 +114,5 @@ const usersSlice = createSlice({
 
 })
 
+export const {logout} = usersSlice.actions
 export default usersSlice.reducer

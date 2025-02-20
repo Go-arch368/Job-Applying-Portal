@@ -1,32 +1,39 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { FaUserCircle,FaUser,FaSave,FaSignOutAlt,FaChartBar } from "react-icons/fa";
 import "../index.css";
+import { logout } from "../redux/slices/usersSlice";
 
 
 export default function Navbar() {
+  const dispatch= useDispatch()
   const navigate = useNavigate();
   const { user, isloggedIn } = useSelector((state) => state.users);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   function handleLogout(e) {
     e.preventDefault();
-    localStorage.removeItem("token");
-    navigate("/login");
+   const token =  localStorage.removeItem("token");
+  const userId =  localStorage.removeItem("userId")
+  console.log("token :",token);
+  console.log("userId :",userId);
+    dispatch(logout())
+  
+    if(!userId&&!token){
+      navigate("/");
+    } 
   }
 
   return (
     <nav className="bg-white shadow-md py-4 px-6">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-blue-600">
-          JobPortal
+          JobFinder
         </Link>
 
         <ul className="flex items-center space-x-6">
-          <li>
-            <Link to="/" className="text-gray-700 hover:text-blue-500">Home</Link>
-          </li>
+         
 
           {isloggedIn ? (
             <>
@@ -198,6 +205,9 @@ export default function Navbar() {
             </>
           ) : (
             <>
+             <li>
+            <Link to="/" className="text-gray-700 hover:text-blue-500">Home</Link>
+          </li>
               <li>
                 <Link to="/register" className="text-gray-700 hover:text-blue-500">Register</Link>
               </li>
