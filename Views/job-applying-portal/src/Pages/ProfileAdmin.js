@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Components/Navbar";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { userRole, profileUpdate } from "../redux/slices/usersSlice";
 import CreatableSelect from "react-select/creatable";
@@ -49,7 +50,17 @@ export default function ProfileAdmin() {
       formData.append(`responsibilities[${index}]`, resp);
     });
 
-    dispatch(profileUpdate(formData));
+    dispatch(profileUpdate(formData))
+    .unwrap()
+    .then(() => {
+      toast.success("Profile updated successfully");
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+      toast.error("Error updating profile");
+    });
+  
+   
   }
 
   return (

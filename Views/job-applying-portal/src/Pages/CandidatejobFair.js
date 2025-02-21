@@ -14,7 +14,7 @@ export default function CandidatejobFair() {
         dispatch(getAll());
     }, [dispatch]);
 
-    const { data, registeredAll, candidateRegistered } = useSelector((state) => state.jobFair);
+    const { data, registeredAll, candidateRegistered,candidateError,isLoading } = useSelector((state) => state.jobFair);
     const today = new Date()
     console.log(candidateRegistered);
 
@@ -30,6 +30,11 @@ export default function CandidatejobFair() {
                 setCandidateErrors((prev) => ({ ...prev, [id]: error }));
             });
     }
+
+    useEffect(() => {
+        console.log("Updated candidateRegistered:", candidateRegistered);
+    }, [candidateRegistered]);
+    
 
     function handleRecruiterRegistered(id) {
         console.log(id);
@@ -66,13 +71,16 @@ export default function CandidatejobFair() {
                                 </h3>
 
                             <div className="mt-4 flex gap-2 justify-center">
-                                <button
-                                    className="border bg-orange-400 text-white px-4 py-1 rounded"
+                            <button
+                                    className={`border px-4 py-1 rounded ${
+                                        candidateRegistered[ele._id] ? "bg-gray-400 text-white" : "bg-orange-400 text-white"
+                                    }`}
                                     onClick={() => handleRegister(ele._id)}
-                                    disabled={isExpired}
+                                    disabled={isExpired || candidateRegistered[ele._id]} // Disable if already registered
                                 >
-                                   Register
+                                    {candidateRegistered[ele._id] ? "Registered" : "Register"}
                                 </button>
+
 
                                 <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={() => handleRecruiterRegistered(ele._id)} disabled={isExpired}>
                                     Companies Registered

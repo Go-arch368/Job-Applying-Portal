@@ -217,7 +217,7 @@ jobCltr.searching = async (req, res) => {
       const jobs = filtering.filter((ele) => new Date(ele.deadline) >= new Date());
   
       if (jobs.length === 0) {
-        return res.status(404).json("No documents found");
+        return res.status(404).json({error:"No documents found"});
       }
   
       // Sort jobs by subscription plan priority
@@ -396,12 +396,26 @@ jobCltr.activeCandidates = async(req,res)=>{
 }
 
 jobCltr.applicationStatus = async(req,res)=>{
-    try{
-        const applicationStatus = await JobApplication.aggregate([
-            {$group:{_id:"$status",count:{$sum:1}}}
-        ])
-        return res.json({success:true,data:applicationStatus})
-    }
+   try {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const applicationStatus = await JobApplication.aggregate([
+        {
+            $match: {
+                createdAt: { $gte: oneMonthAgo } // Filter last one month
+            }
+        },
+        {
+            $group: {
+                _id: "$status",
+                count: { $sum: 1 }
+            }
+        }
+    ]);
+
+    return res.json({ success: true, data: applicationStatus });
+} 
     catch(err){
         console.log(err)
         return res.status(500).json("something went wrong")  

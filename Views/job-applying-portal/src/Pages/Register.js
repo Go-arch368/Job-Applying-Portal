@@ -1,6 +1,6 @@
-
 import { useState } from "react";
 import validator from "validator";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { userRegister } from "../redux/slices/usersSlice";
 import RecruiterDetails from "./RecruiterDetails";
@@ -17,7 +17,6 @@ export default function Register({ onClose }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { serverErrors } = useSelector((state) => state.users);
-
     const [users, setUsers] = useState(form);
 
     const [clientErrors, setClientErrors] = useState({});
@@ -70,13 +69,17 @@ export default function Register({ onClose }) {
                 .unwrap()
                 .then((response) => {
                   console.log(response)
+                  toast.success("Registered Successfully")
                     if (users.role === "recruiter") {
                         setShowRecruiterForm(true);
                     } else {
-                        navigate("/login");
+                        navigate("/login")
                     }
                 })
-                .catch((err) => console.log("Registration failed:", err));
+                .catch((err) => {
+                  console.log("Registration failed:", err)
+                  toast.error("Registration Failed! try again ")
+        });
         }
     }
 

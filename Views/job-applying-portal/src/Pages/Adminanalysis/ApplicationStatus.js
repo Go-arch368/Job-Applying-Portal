@@ -29,6 +29,7 @@ export default function ApplicationStatus() {
 
                
                 <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+                    <h1>Last 30 days</h1>
                     <ResponsiveContainer width="100%" height={400}>
                         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" />

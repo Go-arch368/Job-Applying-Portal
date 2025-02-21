@@ -1,7 +1,7 @@
 import Navbar from "../Components/Navbar";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { searchingJobs ,saveJobs,withOutSearch} from "../redux/slices/jobapplySlice";
+import { searchingJobs ,saveJobs,withOutSearch,getSaved} from "../redux/slices/jobapplySlice";
 import { countJobClick } from "../redux/slices/jobpostingSlice";
 import { Link,useSearchParams,useNavigate } from "react-router-dom";
 import { Loader } from "lucide-react";
@@ -20,7 +20,7 @@ export default function SearchJobs() {
   const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
 
-  const { data, searchError,savedJobs,savedError} = useSelector((state) => state.jobapplying);
+  const { data, searchError,savedJobs,savedError,isloading} = useSelector((state) => state.jobapplying);
   console.log(savedJobs)
   console.log(savedError)
   console.log(data);
@@ -35,25 +35,29 @@ export default function SearchJobs() {
       window.location.reload();
     }
   }, []);
-  
+   
+    
+      useEffect(() => {
+          dispatch(getSaved());
+      }, [dispatch]);
 
-  useEffect(()=>{
-     if(search.jobtitle.trim()||search.location.trim()){
-      const { location, jobtitle } = search;
 
-      setSearchParams({
-        jobtitle: search.jobtitle.trim(),
-        location: search.location.trim(),
-      });
-
-      dispatch(searchingJobs(search)).unwrap()
-      .then(() => setError(null))
-      .catch((err) => setError(err.response?.data || "Something went wrong"));
+      useEffect(() => {
+        if (search.jobtitle.trim() || search.location.trim()) {
+          setSearchParams({
+            jobtitle: search.jobtitle.trim(),
+            location: search.location.trim(),
+          });
       
-     }else{
-      dispatch(withOutSearch())
-     }
-  },[search.jobtitle,search.location])
+          dispatch(searchingJobs(search))
+            .unwrap()
+            .then(() => setError(null))
+            .catch((err) => setError(err.response?.data || "Something went wrong"));
+        } else {
+          dispatch(withOutSearch());
+        }
+      }, [search.jobtitle, search.location, dispatch]); // Add `dispatch` here
+      
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -88,15 +92,19 @@ export default function SearchJobs() {
 
   function handleSaveJobs(id){
       console.log(id)
+      if(savedJobs.some((job)=>job._id==id)){
+        alert("job already saved")
+        return 
+      }
       dispatch(saveJobs({id}))
-      
+    
   }
   
   useEffect(()=>{
     if(data.length>0&&!selectedJob){
       setSelectedJob(data[0])
     }
-  },[data])
+  },[data,selectedJob])
 
   function handleApply(){
       const token = localStorage.getItem("token")
@@ -118,7 +126,7 @@ export default function SearchJobs() {
           type="search"
           value={search.jobtitle}
           onChange={(e) => setSearch({ ...search, jobtitle: e.target.value })}
-          placeholder="Search for jobs by title or company"
+          placeholder="Search for jobs by title "
           class="w-full p-1 border-2 border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <input
@@ -200,7 +208,7 @@ export default function SearchJobs() {
             className="mt-4 py-2 px-6 bg-green-400 text-white font-semibold rounded-md hover:bg-green-700" 
             onClick={() => handleSaveJobs(selectedJob?._id)}
           >
-          save
+          {savedJobs?.some((ele)=>ele._id===selectedJob._id)?"saved":"save"}
           </button>
 
         </div>

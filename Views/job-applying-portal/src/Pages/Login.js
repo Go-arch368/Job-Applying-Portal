@@ -1,5 +1,6 @@
 import { useState } from "react";
 import validator from "validator";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../redux/slices/usersSlice";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,8 @@ export default function Login({ onClose }) {
 
     const [clientErrors, setClientErrors] = useState({});
     const { serverErrors } = useSelector((state) => state.users);
-
+    console.log(serverErrors);
+    
     function validation() {
         let errors = {};
         if (!users.email) {
@@ -43,7 +45,14 @@ export default function Login({ onClose }) {
             setClientErrors(errors);
         } else {
             setClientErrors({});
-            dispatch(userLogin({ users, resetForm, navigate }));
+            dispatch(userLogin({ users, resetForm, navigate })).unwrap()
+            .then(()=>{
+                toast.success("LoggedIn Successfully")
+            })
+            .catch((err)=>{
+                console.log(err)
+                toast.error("Failed to Login!")
+            })    
         }
     }
 
@@ -55,7 +64,7 @@ export default function Login({ onClose }) {
                 </button>
                 <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h1>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {serverErrors && <p className="text-red-500 text-center">{serverErrors}</p>}
+                    {typeof serverErrors=="string" && <p className="text-red-500 text-center">{serverErrors}</p>}
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Email</label>
@@ -77,6 +86,14 @@ export default function Login({ onClose }) {
                             onChange={(e) => setUsers({ ...users, password: e.target.value })}
                         />
                         {clientErrors.password && <span className="text-red-500 text-sm">{clientErrors.password}</span>}
+                       {serverErrors &&
+  Array.isArray(serverErrors) &&
+  serverErrors
+    .filter((ele) => ele.path === "password")
+    .map((ele, index) => (
+      <p key={index} className="text-red-500">{ele.msg}</p>
+    ))}
+
                     </div>
 
                     <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">

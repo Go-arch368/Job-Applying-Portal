@@ -21,8 +21,8 @@ export const searchingJobs = createAsyncThunk( "jobapplying/searchingJobs", asyn
  export const withOutSearch = createAsyncThunk("jobapplying/withOutSearch",async(_,{rejectWithValue})=>{
    try{
      const response = await axios.get("/api/jobs/noSearch",{headers:{Authorization:localStorage.getItem("token")}})
-     console.log(response?.data.jobs)
-     return response.data.jobs
+     console.log(response?.data.gettingQuestions)
+     return response.data.gettingQuestions
    }
    catch(err){
     console.log(err)
@@ -134,10 +134,11 @@ export const fetchCalendarInterviews = createAsyncThunk("/jobapplying/fetchCalen
   }
 })
 
-export const saveJobs = createAsyncThunk("/jobapplying/saveJobs",async({id},{rejectWithValue})=>{
+export const saveJobs = createAsyncThunk("/jobapplying/saveJobs",async({id},{rejectWithValue,dispatch})=>{
   try{
     const response = await axios.post("/api/candidate/saved-jobs",{jobId:id},{headers:{Authorization:localStorage.getItem("token")}})
     console.log(response.data)
+    dispatch(getSaved())
     return response.data  
   }
   catch(err){
@@ -231,8 +232,11 @@ const jobapplyReducer = createSlice({
       .addCase(applyingjob.fulfilled, (state, action) => {
         state.applying = action.payload;
         state.isloading=false
-        state.serverError = null;
         state.data=[]
+        state.serverError = null
+        state.searchError=null
+        state.interviewError=null
+        state.serverError = null;
       })
       .addCase(applyingjob.rejected, (state, action) => {
         state.serverError = action.payload;
@@ -317,12 +321,17 @@ const jobapplyReducer = createSlice({
       state.interviewError = action.payload
       state.interviews=null
     })
+    .addCase(saveJobs.pending,(state,action)=>{
+      state.isloading=true
+    })
     .addCase(saveJobs.fulfilled,(state,action)=>{
-      state.savedJobs = action.payload
+      state.savedJobs = [...state.savedJobs,action.payload]
+      state.isloading = false
       state.savedError = null
     })
     .addCase(saveJobs.rejected,(state,action)=>{
        state.savedError = action.payload
+       state.isloading = false
        state.savedJobs = null
     })
     .addCase(getSaved.fulfilled,(state,action)=>{

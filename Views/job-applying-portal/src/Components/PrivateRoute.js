@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 const PrivateRoute = ({ children, role }) => {
 
   const {user,isloggedIn} = useSelector((state) => state.users);
-  console.log("hi",user)
-  console.log("role",role)
-  console.log("loggedIn",isloggedIn)
+  // console.log("hi",user)
+  // console.log("role",role)
+  // console.log("loggedIn",isloggedIn)
   const publicRoutes = ["/searchJobs"] 
   if(publicRoutes.includes(window.location.pathname)){
       return children

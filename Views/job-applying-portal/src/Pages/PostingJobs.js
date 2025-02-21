@@ -241,7 +241,7 @@ export default function PostingJobs() {
                 {!recruiterData.isSubscribed&&!editJobId&&recruiterData.totalJobPosts<=recruiterData.jobPostingLimit &&(
                     <div className="bg-yellow-200 text-black p-3 rounded-md mt-4">
                         <div className="mt-2">
-                        <p >You have {recruiterData.totalJobPosts-recruiterData.jobPostingLimit} free job posts left. Upgrade now for unlimited postings!</p>
+                        <p >You have {Math.abs(recruiterData.totalJobPosts-recruiterData.jobPostingLimit)} free job posts left. Upgrade now for unlimited postings!</p>
                         </div>
                         <div className="mt-2 ">
                          <button className="bg-blue-600 text-white px-3 py-1 rounded-md ml-2 mb-3 "><Link to="/subscriptionpage">Upgrade Now</Link></button>

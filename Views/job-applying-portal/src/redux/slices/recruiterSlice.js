@@ -13,7 +13,7 @@ export const recruiterData =createAsyncThunk("recruiter/recruiterData",async({re
       localStorage.removeItem("token")
       console.log(response.data)
       resetForm()
-      navigate("/")
+      // navigate("/")
      
       return response.data
    }

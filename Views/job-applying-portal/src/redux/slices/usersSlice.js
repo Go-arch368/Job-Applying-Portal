@@ -84,19 +84,19 @@ const usersSlice = createSlice({
     },
     extraReducers:(builder)=>{
         builder.addCase(userRegister.fulfilled,(state,action)=>{
-          return{...state,isloggedIn:true,user:action.payload}
+          return{...state,isloggedIn:true,user:action.payload,serverErrors:null}
         })
         builder.addCase(userRegister.rejected,(state,action)=>{
            return {...state,isloggedIn:false,user:null,serverErrors:action.payload}
         })
         builder.addCase(userLogin.fulfilled,(state,action)=>{
-           return {...state,isloggedIn:true,user:action.payload} 
+           return {...state,isloggedIn:true,user:action.payload,serverErrors:null} 
         })
         builder.addCase(userLogin.rejected,(state,action)=>{
             return {...state,isloggedIn:false,user:null,serverErrors:action.payload}
         })  
         builder.addCase(userRole.fulfilled,(state,action)=>{
-            return {...state,isloggedIn:true,user:action.payload}
+            return {...state,isloggedIn:true,user:action.payload,serverErrors:null}
         })
         builder.addCase(userRole.rejected,(state,action)=>{
             return{...state,serverErrors:action.payload,user:null}

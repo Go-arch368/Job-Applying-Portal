@@ -51,6 +51,7 @@ export default function ProfileRecruiter() {
       setEdit(false)
       const formData = new FormData()
       formData.append("companyLogo",data.companyLogo)
+      
       dispatch(updateRecruiterUpload({formData,id}))
 
   }

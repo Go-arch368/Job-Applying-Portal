@@ -377,27 +377,55 @@ jobAppCltr.getAllApplied = async(req,res)=>{
     }
 }
 
-jobAppCltr.giveSearch=async(req,res)=>{
-    try{
-       const candidate = await Candidate.find({userId:req.currentUser.userId})
-       const skills = candidate.map((ele)=>ele.skills.map((data)=>data.skillName)).flat()
-       let jobs;
-       if(skills.length>0){
-         jobs = await Job.find({jobtitle:{
-            $in:skills.map((skill)=>new RegExp(`^${skill}$`,"i"))
-         }}) 
-         console.log(jobs)
-       }
-       else{
-        jobs = await Job.find().sort({createdAt:-1}).limit(10)
-       }
+jobAppCltr.giveSearch = async (req, res) => {
+    try {
+        const candidate = await Candidate.find({ userId: req.currentUser.userId });
+        const skills = candidate.flatMap(ele => ele.skills.map(data => data.skillName));
 
-       return res.json({jobs})
+        let filtering;
+        if (skills.length > 0) {
+            filtering = await Job.find({
+                jobtitle: {
+                    $in: skills.map(skill => new RegExp(`^${skill}$`, "i"))
+                }
+            }).populate({ path: "recruiterId", select: "subscriptionPlan" });
+        } else {
+            filtering = await Job.find()
+                .sort({ createdAt: -1 })
+                .limit(10)
+                .populate({ path: "recruiterId", select: "subscriptionPlan" });
+        }
+
+      
+        const jobs = filtering.filter(ele => new Date(ele.deadline) >= new Date());
+
+        if (jobs.length === 0) {
+            return res.status(404).json({ error: "No documents found" });
+        }
+
+
+        const priorityOrder = { gold: 1, silver: 2, basic: 3, free: 4 };
+        jobs.sort((a, b) => priorityOrder[a?.recruiterId?.subscriptionPlan] - priorityOrder[b?.recruiterId?.subscriptionPlan]);
+
+        const gettingQuestions = await Promise.all(
+            jobs.map(async (job) => {
+                const questions = await Question.find({ jobId: job._id });
+                const assignedQuestions = questions.flatMap(q => q.questions.map(qText => qText.questionText));
+
+                return {
+                    ...job.toObject(),
+                    assignedQuestions,
+                };
+            })
+        );
+
+        return res.json({ gettingQuestions });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Something went wrong" });
     }
-    catch(err){
-        console.log(err)
-        return res.status(500).json({error:"something went wrong"})
-    }
-}
+};
+
 
 export default jobAppCltr

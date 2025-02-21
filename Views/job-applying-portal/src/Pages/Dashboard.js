@@ -1,10 +1,38 @@
+import { useSelector } from "react-redux";
 import Navbar from "../Components/Navbar";
+import SearchJobs from "./SearchJobs";
+import VerifyingRecruiters from "./VerifyingRecruiters";
+import PostingJobs from "./PostingJobs";
+import { useEffect, useState } from "react";
 
-export default function Dashboard(){
-    return(
+export default function Dashboard() {
+    const { user } = useSelector((state) => state.users) || {}; 
+    const [roleComponent, setRoleComponent] = useState(null);
+
+    useEffect(() => {
+        if (!user || !user.role) {
+            setRoleComponent(null); // Clear component on logout
+            return;
+        }
+
+        if (user.role === "recruiter") {
+            setRoleComponent(<PostingJobs />);
+        } else if (user.role === "admin") {
+            setRoleComponent(<VerifyingRecruiters />);
+        } else if (user.role === "candidate") {
+            setRoleComponent(<SearchJobs />);
+        } else {
+            setRoleComponent(null);
+        }
+    }, [user]); 
+
+    if (!user || !user.role) {
+        return <div>Loading...</div>; // Prevent errors during logout
+    }
+
+    return (
         <div>
-            <Navbar />
-            <h1>This is your Dashboard Component</h1>
+            {roleComponent}
         </div>
-    )
+    );
 }

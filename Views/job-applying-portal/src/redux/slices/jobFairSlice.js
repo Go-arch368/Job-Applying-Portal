@@ -172,11 +172,13 @@ const jobFairReducer = createSlice({
         builder.addCase(candidatejobFair.pending,(state,action)=>{
             state.isLoading=true
         })
-        builder.addCase(candidatejobFair.fulfilled,(state,action)=>{
-            state.candidateRegistered=action.payload
-            state.candidateError=null
-            state.isLoading=false
-        })
+        builder.addCase(candidatejobFair.fulfilled, (state, action) => {
+            const { id } = action.payload; // Assuming payload contains the job fair ID
+            state.candidateRegistered = { ...state.candidateRegistered, [id]: true }; // Store registration status per job fair
+            state.candidateError = null;
+            state.isLoading = false;
+        });
+        
         builder.addCase(candidatejobFair.rejected,(state,action)=>{
            state.candidateError=action.payload
            state.candidateRegistered=[]

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { recruiterData } from "../redux/slices/recruiterSlice";
 import { useNavigate } from "react-router-dom";
@@ -53,10 +54,22 @@ export default function RecruiterDetails({ users, showRecruiterForm, setShowRecr
       setRecruiterErrors(errors);
     } else {
       setRecruiterErrors({});
-      dispatch(recruiterData({ recruiterDetails, resetForm ,navigate}));
+     
+      try{
+        dispatch(recruiterData({ recruiterDetails, resetForm ,navigate})).unwrap()
+        toast.success("Details submitted to admin")
+      }
+      catch(err){
+       toast.error("Submit failed")
+      }
+
       onclose()
       resetForm();
     }
+  }
+
+  function handleSendAdmin(){
+     navigate("/")
   }
 
   if (!showRecruiterForm) return null; 
@@ -135,6 +148,7 @@ export default function RecruiterDetails({ users, showRecruiterForm, setShowRecr
             <button
               type="submit"
               className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium p-2 rounded-md transition"
+              onSubmit={handleSendAdmin}
             >
               Send to Admin
             </button>

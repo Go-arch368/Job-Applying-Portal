@@ -7,6 +7,7 @@ import questionReducer from "./slices/questionSlice"
 import jobapplyReducer from "./slices/jobapplySlice"
 import jobFairReducer from "./slices/jobFairSlice"
 import profileReducer from "./slices/profileSlice"
+import resetPasswordReducer from "./slices/resetPasswordSlice"
 const store = configureStore({
     reducer:{
        users:usersReducer,
@@ -16,7 +17,8 @@ const store = configureStore({
        questions:questionReducer,
        jobapplying:jobapplyReducer, 
        jobFair:jobFairReducer,
-       profile:profileReducer
+       profile:profileReducer,
+       resetPassword:resetPasswordReducer
     }
 })
 

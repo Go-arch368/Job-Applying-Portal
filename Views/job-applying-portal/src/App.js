@@ -42,7 +42,10 @@ import RecentJobs from "./Pages/Adminanalysis/RecentJobs";
 import ProfileAdmin from "./Pages/ProfileAdmin";
 import PrivateRoute from "./Components/PrivateRoute";
 import UnauthorizedPage from "./Components/UnauthorizedPage";
-
+import Settings from "./Components/Settings";
+import ResetPassword from "./Components/ResetPassword";
+import { ToastContainer,toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const dispatch = useDispatch()
   const {isloggedIn} = useSelector((state)=>state.users)
@@ -56,7 +59,7 @@ function App() {
 
   return (
     <div className="text-center">
-      
+        <ToastContainer position="top-right" autoClose={3000} /> 
       <Routes>
          <Route path="/searchJobs" element={<SearchJobs/>}/>
       </Routes>
@@ -99,8 +102,10 @@ function App() {
        <Route path="/admin/application-status" element={<PrivateRoute role="admin"><ApplicationStatus/></PrivateRoute>}/>
        <Route path="/admin/subscription-status" element={<PrivateRoute role="admin"><SubscriptionStatus/></PrivateRoute>}/>
        <Route path="/admin/recent-jobs" element={<PrivateRoute role="admin"><RecentJobs/></PrivateRoute>}/>
-       <Route path="/adminProfile" element={<PrivateRoute role="admin"><ApplicationStatus/><ProfileAdmin/></PrivateRoute>}/>
+       <Route path="/adminProfile" element={<PrivateRoute role="admin"><ProfileAdmin/></PrivateRoute>}/>
        <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
+       <Route path="/settings" element={<Settings/>}/>
+       <Route path="/resetpassword" element={<ResetPassword/>} />
      </Routes>
     </div>
   );

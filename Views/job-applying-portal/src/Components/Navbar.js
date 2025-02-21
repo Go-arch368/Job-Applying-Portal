@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { FaUserCircle,FaUser,FaSave,FaSignOutAlt,FaChartBar } from "react-icons/fa";
+import { FaUserCircle,FaUser,FaSave,FaSignOutAlt,FaChartBar,FaCog } from "react-icons/fa";
 import "../index.css";
 import { logout } from "../redux/slices/usersSlice";
 
@@ -48,11 +48,11 @@ export default function Navbar() {
                       AdminDashboard
                     </Link>
                 </li>
-                  <li>
+                  {/* <li>
                     <Link to="/verifyRecruiters" className="text-gray-700 hover:text-blue-500">
                       Verify Recruiters
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link to="/jobFair" className="text-gray-700 hover:text-blue-500">
                       JobFair
@@ -72,6 +72,13 @@ export default function Navbar() {
                             onClick={() => navigate("/adminProfile")} 
                           >
                             <FaUser color="blue"/> Profile
+                          </li>
+
+                          <li
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                            onClick={() => navigate("/settings")} 
+                          >
+                               <FaCog color="blue" /> Settings
                           </li>
                       
                           <li
@@ -95,11 +102,11 @@ export default function Navbar() {
                       Posted Jobs
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/jobposting" className="text-gray-700 hover:text-blue-500">
                       Posting Job
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link to="/jobdetails" className="text-gray-700 hover:text-blue-500">
                       Job Details
@@ -110,6 +117,13 @@ export default function Navbar() {
                       Apply JobFair
                     </Link>
                   </li>
+
+                  <li>
+                    <Link to="/subscriptionpage" className="text-gray-700 hover:text-blue-500">
+                      subscription
+                    </Link>
+                  </li>
+
                   <li className="relative">
                 <FaUserCircle
                   className="text-gray-700 text-3xl cursor-pointer"
@@ -131,6 +145,13 @@ export default function Navbar() {
                           >
                            <FaChartBar  color="blue" /> Statistics
                           </li>
+
+                          <li
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                            onClick={() => navigate("/settings")} 
+                          >
+                               <FaCog color="blue" /> Settings
+                          </li>
                        
                           <li
                             className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer flex items-center gap-2"
@@ -148,11 +169,11 @@ export default function Navbar() {
 
               {user.role === "candidate" && (
                 <>
-                  <li>
+                  {/* <li>
                     <Link to="/searchJobs" className="text-gray-700 hover:text-blue-500">
                       Search Jobs
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link to="/appliedjobs" className="text-gray-700 hover:text-blue-500">
                       Applied Jobs
@@ -189,6 +210,12 @@ export default function Navbar() {
                             onClick={() => navigate("/saved-jobs")}
                           >
                             <FaSave /> Saved Jobs
+                          </li>
+                          <li
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                            onClick={() => navigate("/settings")} 
+                          >
+                               <FaCog color="blue" /> Settings
                           </li>
                           <li
                             className="px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer flex items-center gap-2"

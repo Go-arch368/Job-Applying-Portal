@@ -7,6 +7,8 @@ import { applyingjob } from "../redux/slices/jobapplySlice";
 export default function ApplyJobs() {
     const dispatch = useDispatch();
     const { jobId } = useParams();
+    console.log(jobId);
+    
     const [selectedQuestions, setSelectedQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [resume, setResume] = useState(null);
@@ -17,6 +19,7 @@ export default function ApplyJobs() {
     const [recordTime, setRecordTime] = useState(0);
     const [recordingCompleted, setRecordingCompleted] = useState(false);
     const [error,setError] = useState(null)
+    const [isSubmitted,setIsSubmitted] = useState(false)
     
     const webcamRef = useRef(null);
     const mediaRecorderRef = useRef(null);
@@ -119,8 +122,8 @@ export default function ApplyJobs() {
     }
 
     async function handleSubmitApplication(e) {
-      
         e.preventDefault();
+        setIsSubmitted(true)
         if (!resume || !videoBlob) {
             alert("Please upload your resume and complete the video interview");
             return;
@@ -202,7 +205,7 @@ export default function ApplyJobs() {
 
                    
                     {currentQuestionIndex === selectedQuestions.length - 1 && (
-                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">{isloading?"submitting":"submitted"}</button>
+                        <button onClick={handleSubmitApplication} className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded">   {isSubmitted ? "Submitted" : isloading ? "Submitting..." : "Submit"}</button>
                     )}
                          {serverError && <p className="text-red-500 text-center">{serverError}</p>}
 
