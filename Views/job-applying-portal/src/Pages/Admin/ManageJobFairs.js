@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { getAll, jobFaireditId, deleteEvent } from "../../redux/slices/jobFairSlice";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 export default function ManageJobFair() {
   const dispatch = useDispatch();
@@ -29,8 +30,18 @@ export default function ManageJobFair() {
     }
   }
 
+  function handlePrevPage(){
+    navigate(-1)
+  }
+
   return (
     <div className="p-4">
+      <div className="mb-2">
+      <button className="bg-red-500 text-white p-2 rounded-full " onClick={handlePrevPage}>
+      Prev Page
+    </button>
+      </div>
+  
       <div className="grid grid-cols-2 gap-4">
         {data.length > 0 ? (
           data.map((ele) => {

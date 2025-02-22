@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile, updateProfile ,uploadProfilePicture,uploadResume} from "../redux/slices/profileSlice";
 import Navbar from "../Components/Navbar";
+import { toast } from "react-toastify";
 
 export default function ProfileCandidate() {
     const [profile, setProfile] = useState({
@@ -59,7 +60,7 @@ export default function ProfileCandidate() {
     function handleResumeUpload(e) {
         e.preventDefault();
         if (!resume) {
-            alert("Please select a file.");
+            toast.error("please select a file")
             return;
         }
     
@@ -68,7 +69,9 @@ export default function ProfileCandidate() {
     
         dispatch(uploadResume({ id: user._id, formData }))
             .unwrap()
-            .then(() => alert("Successfully uploaded resume"))
+            .then(() => {
+               toast.success("resume successfully uploaded")
+            })
             .catch(err => console.log(err));
     }
     
@@ -77,7 +80,8 @@ export default function ProfileCandidate() {
         e.preventDefault();
     
         if (!profilePic) {
-            alert("Please select a profile picture before uploading.");
+           // alert("Please select a profile picture before uploading.");
+            toast.error("Please select a profile picture before uploading.")
             return;
         }
     
@@ -87,11 +91,13 @@ export default function ProfileCandidate() {
     
             await dispatch(uploadProfilePicture(formData)).unwrap();
             
-            alert("Successfully uploaded profile picture");
-             dispatch(getProfile({ id })); // Uncomment if needed
+           
+            toast.success("successfully uploaded profile picture")
+             dispatch(getProfile({ id })); 
         } catch (err) {
             console.error("Error uploading profile picture:", err);
-            alert("Failed to upload profile picture. Please try again.");
+            //alert("Failed to upload profile picture. Please try again.");
+            toast.error("Failed to upload profile picture. Please try again")
         }
     };
     
@@ -104,7 +110,8 @@ export default function ProfileCandidate() {
           dispatch(updateProfile({ id:user._id, profile: updatedProfile })).unwrap()
             setNewSkill({ skillName: "", experience: "" });
         } else {
-            alert("Please fill in both fields for the skill");
+            //alert("Please fill in both fields for the skill");
+            toast.error("please fill in both fileds for the skill")
         }
        console.log(newSkill);
        
@@ -117,6 +124,8 @@ export default function ProfileCandidate() {
             setProfile(updatedProfile);
              dispatch(updateProfile({ id:user._id, profile: updatedProfile }));
             setNewEducation({ degree: "", startyear: "", endyear: "", institute: "", cgpa: "" });
+        }else{
+            toast.error("please fill all the fields")
         }
     }
 
@@ -127,6 +136,9 @@ export default function ProfileCandidate() {
             setProfile(updatedProfile);
            dispatch(updateProfile({ id:user._id, profile: updatedProfile }));
             setNewCertification({ certificationName: "", duration: { startMonth: "", endMonth: "" } });
+        }
+        else{
+            toast.error("please all the fields")
         }
     }
 

@@ -45,7 +45,7 @@ export default function Navbar() {
                 <>
                 <li>
                 <Link to="/admindashboard" className="text-gray-700 hover:text-blue-500">
-                      AdminDashboard
+                      Analysis
                     </Link>
                 </li>
                   {/* <li>
@@ -97,16 +97,16 @@ export default function Navbar() {
 
               {user.role === "recruiter" && (
                 <>
-                  <li>
+                  {/* <li>
                     <Link to="/jobposted" className="text-gray-700 hover:text-blue-500">
                       Posted Jobs
                     </Link>
-                  </li>
-                  {/* <li>
+                  </li> */}
+                  <li>
                     <Link to="/jobposting" className="text-gray-700 hover:text-blue-500">
                       Posting Job
                     </Link>
-                  </li> */}
+                  </li>
                   <li>
                     <Link to="/jobdetails" className="text-gray-700 hover:text-blue-500">
                       Job Details

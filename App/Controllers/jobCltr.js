@@ -216,9 +216,9 @@ jobCltr.searching = async (req, res) => {
       // Remove expired jobs
       const jobs = filtering.filter((ele) => new Date(ele.deadline) >= new Date());
   
-      if (jobs.length === 0) {
-        return res.status(404).json({error:"No documents found"});
-      }
+    //   if (jobs.length === 0) {
+    //     return res.status(404).json({error:"No documents found"});
+    //   }
   
       // Sort jobs by subscription plan priority
       const priorityOrder = { gold: 1, silver: 2, basic: 3, free: 4 };

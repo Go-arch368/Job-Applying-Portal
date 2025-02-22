@@ -254,12 +254,17 @@ jobAppCltr.saveJobs = async (req, res) => {
             return res.status(400).json({error:"jobId is required"});
         }
         console.log(req.currentUser.userId)
-        const candidate = await Candidate.findOne({ userId: req.currentUser.userId });
+
+        const candidate = await Candidate.findOneAndUpdate(
+            { userId: req.currentUser.userId },      // Find condition
+            { $setOnInsert: { userId: req.currentUser.userId } }, // Only sets if creating
+            { upsert: true, new: true }              // Create if not found, return new doc
+        );
         
         console.log(candidate);
-        if (!candidate) {
-            return res.status(400).json({error:"Candidate not found"});
-        }
+        // if (!candidate) {
+        //     return res.status(400).json({error:"Candidate not found"});
+        // }
         // Check if the job is already saved
         if (candidate.saveJobs.includes(jobId)) {
             return res.status(400).json({error:"This job is already saved"});
@@ -399,9 +404,9 @@ jobAppCltr.giveSearch = async (req, res) => {
       
         const jobs = filtering.filter(ele => new Date(ele.deadline) >= new Date());
 
-        if (jobs.length === 0) {
-            return res.status(404).json({ error: "No documents found" });
-        }
+        // if (jobs.length === 0) {
+        //     return res.status(404).json({ error: "No documents found" });
+        // }
 
 
         const priorityOrder = { gold: 1, silver: 2, basic: 3, free: 4 };
@@ -418,7 +423,7 @@ jobAppCltr.giveSearch = async (req, res) => {
                 };
             })
         );
-
+        console.log(gettingQuestions)
         return res.json({ gettingQuestions });
 
     } catch (err) {

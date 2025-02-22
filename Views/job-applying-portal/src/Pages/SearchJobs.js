@@ -1,4 +1,5 @@
 import Navbar from "../Components/Navbar";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { searchingJobs ,saveJobs,withOutSearch,getSaved} from "../redux/slices/jobapplySlice";
@@ -31,7 +32,7 @@ export default function SearchJobs() {
     const hasReloaded = sessionStorage.getItem("hasReloaded");
   
     if (!token && !hasReloaded) {
-      sessionStorage.setItem("hasReloaded", "true"); // Mark as reloaded
+      sessionStorage.setItem("hasReloaded", "true");
       window.location.reload();
     }
   }, []);
@@ -53,7 +54,7 @@ export default function SearchJobs() {
             .unwrap()
             .then(() => setError(null))
             .catch((err) => setError(err.response?.data || "Something went wrong"));
-        } else {
+        } else if (!search.jobtitle.trim()||!search.location.trim()){
           dispatch(withOutSearch());
         }
       }, [search.jobtitle, search.location, dispatch]); // Add `dispatch` here
@@ -92,8 +93,9 @@ export default function SearchJobs() {
 
   function handleSaveJobs(id){
       console.log(id)
-      if(savedJobs.some((job)=>job._id==id)){
-        alert("job already saved")
+      if(savedJobs?.some((job)=>job._id==id)){
+        //alert("job already saved")
+        toast.error("job already saved")
         return 
       }
       dispatch(saveJobs({id}))
@@ -144,9 +146,9 @@ export default function SearchJobs() {
         </button>
      
       </form>
-      {/* {error&&<p className="text-red-500">{error}</p>} */}
+      {error&&<p className="text-red-500">{error}</p>}
          <div> {searchError && (
-        <p class="text-red-500 mb-4">{searchError}</p>
+        <p class="text-red-500 mb-4">{searchError.error}</p>
       )}</div>
     </div>
   </div> 
@@ -172,7 +174,6 @@ export default function SearchJobs() {
       </div>
     </div>
 
-    {/* <!-- Right Section: Detailed Job View --> */}
     {selectedJob && (
       <div class="lg:w-2/3 w-full p-6 bg-gray-50 rounded-lg shadow-md pl-4">
         <h1 class="text-3xl font-bold text-gray-800 mb-4">{selectedJob.jobtitle}</h1>
@@ -180,16 +181,17 @@ export default function SearchJobs() {
           <strong>Company:</strong> {selectedJob.companyname}
         </p>
         <p class="text-lg text-gray-700 mb-2">
+
           <strong>Location:</strong> {selectedJob.location}
-        </p>
+          </p>
         <p class="text-lg text-gray-700 mb-2">
-          <strong>Salary:</strong> {selectedJob.salary}
+                          <strong>Salary:</strong> {selectedJob.salary}
         </p>
         <p class="text-lg text-gray-700 mb-2">
           <strong>Job Type:</strong> {selectedJob.jobtype}
         </p>
         <p class="text-lg text-gray-700 mb-2">
-          <strong>Description:</strong> {selectedJob.description}
+              <strong>Description:</strong> {selectedJob.description}
         </p>
         <p class="text-lg text-gray-700 mb-2">
           <strong>Experience Required:</strong> {selectedJob.experienceRequired}
@@ -208,11 +210,11 @@ export default function SearchJobs() {
             className="mt-4 py-2 px-6 bg-green-400 text-white font-semibold rounded-md hover:bg-green-700" 
             onClick={() => handleSaveJobs(selectedJob?._id)}
           >
-          {savedJobs?.some((ele)=>ele._id===selectedJob._id)?"saved":"save"}
-          </button>
+{Array.isArray(savedJobs) && savedJobs?.some(ele => ele?._id === selectedJob?._id) ? "saved" : "save"}
+</button>
 
         </div>
-        {savedError&&<p className="text-red-400">{savedError}</p>}
+        {/* {savedError&&<p className="text-red-400">{savedError}</p>} */}
       </div>
     )}
   </div>

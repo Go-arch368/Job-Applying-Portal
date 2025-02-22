@@ -21,8 +21,8 @@ export const searchingJobs = createAsyncThunk( "jobapplying/searchingJobs", asyn
  export const withOutSearch = createAsyncThunk("jobapplying/withOutSearch",async(_,{rejectWithValue})=>{
    try{
      const response = await axios.get("/api/jobs/noSearch",{headers:{Authorization:localStorage.getItem("token")}})
-     console.log(response?.data.gettingQuestions)
-     return response.data.gettingQuestions
+     console.log(response?.data?.gettingQuestions)
+     return response?.data?.gettingQuestions
    }
    catch(err){
     console.log(err)
@@ -325,7 +325,7 @@ const jobapplyReducer = createSlice({
       state.isloading=true
     })
     .addCase(saveJobs.fulfilled,(state,action)=>{
-      state.savedJobs = [...state.savedJobs,action.payload]
+      state.savedJobs = action.payload
       state.isloading = false
       state.savedError = null
     })

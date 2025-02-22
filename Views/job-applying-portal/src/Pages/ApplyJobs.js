@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import { applyingjob } from "../redux/slices/jobapplySlice";
 
 export default function ApplyJobs() {
     const dispatch = useDispatch();
     const { jobId } = useParams();
+    const navigate = useNavigate()
     console.log(jobId);
     
     const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -153,13 +154,17 @@ export default function ApplyJobs() {
    
     }
 
+    function handleDashboard(){
+         navigate("/dashboard")
+    }
+
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h1 className="text-2xl font-semibold text-center mb-4">Apply for Job</h1>
        
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Left Column (Application Form Section) */}
+              
                 <div className="md:col-span-2 flex flex-col">
                     <div className="mb-4">
                         <h2 className="font-semibold">Upload Resume</h2>
@@ -218,20 +223,23 @@ export default function ApplyJobs() {
                     </div>
                 </div>
 
+            
+
               
                 <div className="flex items-center justify-center h-screen">
   <div className="flex flex-col justify-center items-start border p-6 rounded-lg shadow-lg bg-white w-96">
     <h2 className="text-xl font-semibold mb-4">Job Details</h2>
-    {data.map( (ele) => ele._id == jobId && (
+    {data?.map( (ele) => ele?._id == jobId && (
           <div key={ele._id} className="mt-4">
-            <p><strong>Job Title:</strong> {ele.jobtitle}</p>
-            <p><strong>Location:</strong> {ele.location}</p>
-            <p><strong>Salary:</strong> {ele.salary}</p>
+            <p><strong>Job Title:</strong> {ele?.jobtitle}</p>
+            <p><strong>Location:</strong> {ele?.location}</p>
+            <p><strong>Salary:</strong> {ele?.salary}</p>
           </div>
         ))} </div>
 </div>
 
             </div>
+            <button className="bg-blue-500 text-white p-2 rounded-md" onClick={handleDashboard}>Home</button>
         </div>
     );
 }

@@ -14,7 +14,7 @@ export default function TotalCandidates() {
     }, [dispatch]);
 
     const { candidatesDetails } = useSelector((state) => state.adminVerify) || {};
-
+    console.log(candidatesDetails)
     // Toggle function to expand/collapse only one candidate at a time
     const toggleAppliedJobs = (candidateId) => {
         setExpandedCandidate((prev) => (prev === candidateId ? null : candidateId)); // Collapse if already expanded, else expand
@@ -27,7 +27,7 @@ export default function TotalCandidates() {
 
             {/* Main Content */}
             <div className="flex-1 p-6 ml-64">
-                <h1 className="text-2xl font-semibold text-gray-800 mb-6">Total Candidates</h1>
+                <h1 className="text-2xl font-semibold text-gray-800 mb-6">Total Candidates-{candidatesDetails?.totalCandidates?.length}</h1>
 
                 {/* Candidates List */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

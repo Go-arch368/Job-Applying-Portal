@@ -4,6 +4,8 @@ import SearchJobs from "./SearchJobs";
 import VerifyingRecruiters from "./VerifyingRecruiters";
 import PostingJobs from "./PostingJobs";
 import { useEffect, useState } from "react";
+import PostedJobs from "./PostedJobs";
+import AdminDashboard from "./Adminanalysis/AdminDashboard";
 
 export default function Dashboard() {
     const { user } = useSelector((state) => state.users) || {}; 
@@ -16,9 +18,9 @@ export default function Dashboard() {
         }
 
         if (user.role === "recruiter") {
-            setRoleComponent(<PostingJobs />);
+            setRoleComponent(<PostedJobs />);
         } else if (user.role === "admin") {
-            setRoleComponent(<VerifyingRecruiters />);
+            setRoleComponent(<VerifyingRecruiters/>);
         } else if (user.role === "candidate") {
             setRoleComponent(<SearchJobs />);
         } else {
@@ -32,6 +34,7 @@ export default function Dashboard() {
 
     return (
         <div>
+       
             {roleComponent}
         </div>
     );

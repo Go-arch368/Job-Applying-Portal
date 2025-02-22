@@ -8,7 +8,7 @@ export const resetPasswordWithOldPassword =createAsyncThunk('resetPassword/reset
         return response.data
     }
     catch(err){
-        console.log(err.response.data.error)
+        console.log(err.response)
         return rejectWithValue(err.response.data.error)
     }
 })

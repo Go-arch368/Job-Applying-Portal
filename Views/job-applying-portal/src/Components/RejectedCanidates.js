@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getRejected } from "../redux/slices/jobapplySlice";
 import Navbar from "./Navbar";
 
-export default function RejectedCandidates() {  // Renamed for consistency
+export default function RejectedCandidates() { 
     const dispatch = useDispatch();
     const { jobId } = useParams();
     
@@ -12,7 +12,7 @@ export default function RejectedCandidates() {  // Renamed for consistency
 
     useEffect(() => {
         dispatch(getRejected({ jobId }));
-    }, [dispatch, jobId]); // Added dependencies
+    }, [dispatch, jobId]);
 
     return (
         <div>

@@ -103,7 +103,7 @@ const recruiterSlice = createSlice({
     },
     extraReducers:(builder)=>{
          builder.addCase(recruiterData.fulfilled,(state,action)=>{
-          return {...state,data:action.payload}
+          return {...state,data:action.payload,serverErrors:null}
          })
          builder.addCase(recruiterData.rejected,(state,action)=>{
           return {...state,serverErrors:action.payload,data:null}
@@ -144,3 +144,6 @@ const recruiterSlice = createSlice({
 })
 
 export default recruiterSlice.reducer
+
+
+                                                                

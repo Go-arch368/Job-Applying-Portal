@@ -3,6 +3,7 @@ import Navbar from "../Components/Navbar";
 import { getAll, displayRegistered, candidatejobFair } from "../redux/slices/jobFairSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 export default function CandidatejobFair() {
     const dispatch = useDispatch();
@@ -23,8 +24,8 @@ export default function CandidatejobFair() {
         dispatch(candidatejobFair({ id }))
             .unwrap()
             .then(() => {
-                alert("successfully registered")
-              
+               // alert("successfully registered")
+                toast("successfully registered")
             })
             .catch((error) => {
                 setCandidateErrors((prev) => ({ ...prev, [id]: error }));

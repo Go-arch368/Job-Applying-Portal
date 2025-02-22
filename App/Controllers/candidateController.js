@@ -32,7 +32,7 @@ candidateCltr.posting = async (req, res) => {
         const userId = req.currentUser.userId;
         
         
-        let candidate = await Candidate.findOne({ userId });
+        let candidate = await Candidate.findOneAndUpdate({ userId },{$setOnInsert:{userId}},{upsert:true,new:true});
         
         if (!candidate) {
             return res.status(404).json({ error: "Candidate not found." });
@@ -69,8 +69,8 @@ candidateCltr.uploadProfilePicture=async(req,res)=>{
         console.log(result)
         const candidate = await Candidate.findOneAndUpdate(
           { userId: req.currentUser.userId},
-          { profilePicture: result.secure_url },
-          { new: true }
+          { profilePicture: result.secure_url },{upsert:true,
+           new: true }
         );
         console.log(candidate)
         if (!candidate) {
@@ -117,11 +117,12 @@ candidateCltr.getById=async(req,res)=>{
   candidateCltr.update = async (req, res) => {
     try {
         console.log("hi")
-        const { mobile, education, skills, certification } = req.body;
+        const { education, mobile, skills, certification } = req.body;
+        console.log(mobile)
         const id = req.params.id;
         console.log(req.body)
 
-        const candidate = await Candidate.findOneAndUpdate({userId : id}, { mobile, education, skills, certification }, { upsert : true});
+        const candidate = await Candidate.findOneAndUpdate({userId : id}, { mobile, education, skills, certification }, { upsert : true,new:true});
         console.log(candidate)
 
         if (mobile) {
@@ -134,8 +135,8 @@ candidateCltr.getById=async(req,res)=>{
             }
 
             candidate.education = [
-                ...candidate.education.filter(ele => education.some(e => e._id == ele._id)), // Keep existing matches
-                ...education.filter(e => !candidate.education.some(ele => ele._id == e._id)) // Add new entries
+                ...candidate.education.filter(ele => education.some(e => e._id == ele._id)), 
+                ...education.filter(e => !candidate.education.some(ele => ele._id == e._id)) 
             ];
         }
 

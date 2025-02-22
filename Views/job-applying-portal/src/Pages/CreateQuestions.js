@@ -9,6 +9,7 @@ export default function CreateQuestions() {
   const [newQuestion, setNewQuestion] = useState("");
   const { jobId } = useParams();
   const { data ,editId}  = useSelector((state) => state?.questions);
+  console.log(data)
   const navigate = useNavigate()
   const questionsArray = data?.map(ele => ele?.questions).flat()
   console.log(questionsArray)

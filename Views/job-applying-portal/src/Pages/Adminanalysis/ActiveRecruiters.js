@@ -23,7 +23,7 @@ export default function ActiveRecruiters() {
 
             {/* Main Content */}
             <div className="flex-1 p-6 ml-64">
-                <h1 className="text-2xl font-semibold text-gray-800 mb-4">Active Recruiters</h1>
+                <h1 className="text-2xl font-semibold text-gray-800 mb-4">Active Recruiters-{recruiterDetails?.recruiterData?.length}</h1>
 
                 {/* Recruiters List */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

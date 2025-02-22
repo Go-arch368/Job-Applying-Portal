@@ -10,8 +10,9 @@ const validatePassword = (password) => {
 userpassCltr.resetPassword=async (req,res)=>{
     try{
         const {email,oldPassword,newPassword} = req.body
+        console.log(email,oldPassword,newPassword)
         if(!email||!oldPassword||!newPassword){
-            return res.status(400).json({errors:"all fields are required"})
+            return res.status(400).json({error:"all fields are required"})
         }
         const user = await User.findOne({email});
         if(!user){

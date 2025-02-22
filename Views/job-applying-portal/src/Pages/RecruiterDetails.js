@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { recruiterData } from "../redux/slices/recruiterSlice";
 import { useNavigate } from "react-router-dom";
 
-export default function RecruiterDetails({ users, showRecruiterForm, setShowRecruiterForm ,onclose}) {
+export default function RecruiterDetails({ users, showRecruiterForm ,onclose}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -79,7 +79,7 @@ export default function RecruiterDetails({ users, showRecruiterForm, setShowRecr
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm relative">
         <button
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          onClick={() => setShowRecruiterForm(false)}
+          onClick={onclose}
         >
           ✖
         </button>
