@@ -60,12 +60,12 @@ function App() {
   return (
     <div className="text-center">
         <ToastContainer position="top-right" autoClose={3000} /> 
-      <Routes>
-         <Route path="/searchJobs" element={<SearchJobs/>}/>
-      </Routes>
+     
 
      <Routes>
-      <Route path="/" element={<Home/>}/>
+       <Route path="/searchJobs" element={<SearchJobs/>}/>
+       <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
+       <Route path="/" element={<Home/>}/>
        <Route path="/register" element={<Register/>}/>
        <Route path="/login" element={<Login/>}/>
        <Route path="/dashboard" element={<Dashboard/>}/>
@@ -73,7 +73,6 @@ function App() {
        <Route path="/jobposting" element={<PrivateRoute role="recruiter"><PostingJobs/></PrivateRoute>}/>
        <Route path="/create-questions/:jobId" element={<PrivateRoute role="recruiter"><CreateQuestions/></PrivateRoute>}/>
        <Route path="/jobposted" element={<PrivateRoute role="recruiter"><PostedJobs/></PrivateRoute>}/>
-       
        <Route path="/apply/:jobId" element={<PrivateRoute role="candidate"><ApplyJobs/></PrivateRoute>} />
        <Route path="/candidateList/:jobId" element={<PrivateRoute role="recruiter"><CandidateList/></PrivateRoute>}/>
        <Route path="/jobdetails" element={<PrivateRoute role="recruiter"><JobDetails/></PrivateRoute>}/>
@@ -103,7 +102,6 @@ function App() {
        <Route path="/admin/subscription-status" element={<PrivateRoute role="admin"><SubscriptionStatus/></PrivateRoute>}/>
        <Route path="/admin/recent-jobs" element={<PrivateRoute role="admin"><RecentJobs/></PrivateRoute>}/>
        <Route path="/adminProfile" element={<PrivateRoute role="admin"><ProfileAdmin/></PrivateRoute>}/>
-       <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
        <Route path="/settings" element={<Settings/>}/>
        <Route path="/resetpassword" element={<ResetPassword/>} />
      </Routes>

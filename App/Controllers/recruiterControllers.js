@@ -5,6 +5,9 @@ import User from "../Models/userSchema.js"
 import cloudinary from "../../Config/cloudinary.js";
 import JobApplication from "../Models/jobapplicationmodel.js";
 import Job from "../Models/jobmodel.js";
+import nodemailer from "nodemailer"
+import sendEmail from "../../Config/emailService.js";
+
 
 recruiterCltr.posting = async (req, res) => {
     const errors = validationResult(req);
@@ -17,6 +20,7 @@ recruiterCltr.posting = async (req, res) => {
     try {
         const recruiter = new Recruiter({ companyname, location, website, userId: req.currentUser.userId ,description});
         const user = await User.findById(req.currentUser.userId);
+        console.log(user)
         if (!user) {
             return res.status(404).json({ message: "user not found" });
         }
@@ -24,6 +28,24 @@ recruiterCltr.posting = async (req, res) => {
        // recruiter.email = user.email;
         await recruiter.save();
         const recruiterPopulate = await Recruiter.findById(recruiter._id).populate("userId");
+       
+        const transporter = nodemailer.createTransport({
+            service:"gmail",
+            auth:{
+                user:process.env.EMAIL,
+                pass:process.env.APP_PASSWORD
+            }
+        })
+
+        const mailOptions = {
+            from:process.env.EMAIL,
+            to:process.env.EMAIL,
+            subject: "🚀 New Recruiter Registered",
+            text:`A New recruiter has been reigstered ${user.name} (${user.email}).
+                 Company:${companyname}, Location:${location},Website:${website}`
+        }
+        await transporter.sendMail(mailOptions)
+
         return res.status(201).json( recruiterPopulate );
     } catch (err) {
         console.error(err);
@@ -49,12 +71,19 @@ recruiterCltr.update = async(req,res)=>{
     } 
         const id = req.params.id
         const body = req.body
+        console.log("hello",body)
     try{
-        const findingId = await Recruiter.findById(id)
+        const findingId = await Recruiter.findById(id).populate('userId')
+        console.log(findingId)
         if(!findingId){
             return res.status(404).json("your is not found")
         }
        const update = await Recruiter.findByIdAndUpdate(id,body,{new:true,runValidators:true}).populate("userId")
+       await sendEmail(
+        findingId.userId.email,
+        "🎉 Congratulations! You’ve been selected as a recruiter",
+        `We’re excited to let you know that ${findingId.companyname} has selected you. You can now start posting jobs on our platform. Best of luck! 🚀`
+       );    
        return res.status(200).json(update)
     }
     catch(err){
@@ -71,13 +100,21 @@ recruiterCltr.destroy=async(req,res)=>{
         const id = req.params.id
    
     try{
-        const findingId = await Recruiter.findById(id)
+        const findingId = await Recruiter.findById(id).populate("userId")
         if(!findingId){
             return res.status(404).json("your is not found")
         }
       
        const del =await Recruiter.findByIdAndDelete(id).populate("userId")
+
+       await sendEmail(
+        findingId.userId.email,
+        "🔔 Update on Your Recruiter Status",
+        `We regret to inform you that your recruiter access with ${findingId.companyname} has been removed. If you believe this is an error or have any questions, please reach out to our support team.`
+       );
+    
        return res.status(200).json(del)
+
     }
     catch(err){
         console.log(err)

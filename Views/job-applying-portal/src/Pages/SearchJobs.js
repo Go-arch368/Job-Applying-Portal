@@ -92,6 +92,11 @@ export default function SearchJobs() {
   };
 
   function handleSaveJobs(id){
+    const token = localStorage.getItem("token")
+    if(!token){
+      toast.error("please login and save jobs")
+      navigate("/")
+    }
       console.log(id)
       if(savedJobs?.some((job)=>job._id==id)){
         //alert("job already saved")
@@ -111,7 +116,7 @@ export default function SearchJobs() {
   function handleApply(){
       const token = localStorage.getItem("token")
       if(!token){
-        alert("Please login and apply for you required job bro😊")
+        toast.error("please login and save jobs")
         navigate("/")
       }
   }
