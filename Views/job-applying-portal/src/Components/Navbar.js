@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { FaUserCircle,FaUser,FaSave,FaSignOutAlt,FaChartBar,FaCog } from "react-icons/fa";
+import { FaUserCircle,FaUser,FaSave,FaSignOutAlt,FaChartBar,FaCog ,FaQuestionCircle} from "react-icons/fa";
 import "../index.css";
 import { logout } from "../redux/slices/usersSlice";
 
@@ -144,6 +144,14 @@ export default function Navbar() {
                             onClick={() => navigate("/statistics")}
                           >
                            <FaChartBar  color="blue" /> Statistics
+                          </li>
+
+                          <li
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                            onClick={() => navigate("/recruiter/queries")}
+                          >
+                           <FaQuestionCircle color="blue" />
+                           Job queries
                           </li>
 
                           <li

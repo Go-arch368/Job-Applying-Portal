@@ -47,7 +47,7 @@ function SubscriptionPlans (){
 
          
             <button className={`mt-6 px-6 py-2 rounded-lg text-white bg-opacity-90 hover:bg-opacity-100 transition ${plan.textColor}`} onClick={()=>handleSubscribe(plan.name)}>
-              Subscribe
+                Subscribe
             </button>
           </div>
         ))}

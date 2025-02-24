@@ -4,6 +4,7 @@ import { getAll } from "../redux/slices/jobFairSlice";
 import Navbar from "../Components/Navbar";
 import { format } from "date-fns";
 import { recruiterRegister,displayRegistered } from "../redux/slices/jobFairSlice";
+import { toast } from "react-toastify";
 
 export default function RecruiterjobFair() {
   const dispatch = useDispatch();
@@ -46,7 +47,8 @@ export default function RecruiterjobFair() {
     setClientErrors({})
     dispatch(recruiterRegister({id,role})).unwrap()
     try{
-       alert("successfully registered")
+      toast.success("successfully registered")
+      // alert("successfully registered")
        setRole("")
     }
     catch(err){

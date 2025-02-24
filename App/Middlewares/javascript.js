@@ -1,74 +1,79 @@
-const fruits =["apple","orange","mango"]
-console.log(...fruits)//unpacking 
-let vegetables = ["carrot","brinjal"]
-console.log(fruits.push(...vegetables))
+// const fruits =["apple","orange","mango"]
+// console.log(...fruits)//unpacking 
+// let vegetables = ["carrot","brinjal"]
+// console.log(fruits.push(...vegetables))
 
-let name ="gowtham"
-console.log(...name)
+// let name ="gowtham"
+// console.log(...name)
 
-let data =  [
-    { _id: 1, degree: "High School", year: 2010 },
-    { _id: 2, degree: "Bachelor's", year: 2015 }
-]
+// let data =  [
+//     { _id: 1, degree: "High School", year: 2010 },
+//     { _id: 2, degree: "Bachelor's", year: 2015 }
+// ]
 
-let dataValue =  { _id: 2, degree: "Bachelor's", year: 2020}
+// let dataValue =  { _id: 2, degree: "Bachelor's", year: 2020}
 
 
 
-const dataFetching = data.map((ele)=>ele._id==dataValue._id?{...ele,...dataValue}:ele)
-console.log(dataFetching);
+// const dataFetching = data.map((ele)=>ele._id==dataValue._id?{...ele,...dataValue}:ele)
+// console.log(dataFetching);
 
-const arr = [1,2,3,4]
-const arr1 = [8,9]
-console.log([...arr, ...arr1])  //[1,2,3,4, [,8,9]]
+// const arr = [1,2,3,4]
+// const arr1 = [8,9]
+// console.log([...arr, ...arr1])  //[1,2,3,4, [,8,9]]
 
-const datamapping=[
-{
+// const datamapping=[
+// {
   
-    jobtitle: 'python developer',
-    companyname: 'Cognizant private limited',
-    description: 'our company is looking for an python developer .',
+//     jobtitle: 'python developer',
+//     companyname: 'Cognizant private limited',
+//     description: 'our company is looking for an python developer .',
    
-    noofOpenings: 2,
-    assignedQuestions: [],
-    jobtype: 'fulltime',
-    skillsrequired: [ 'python', 'dhanjo' ],
-    location: 'Bangalore',
-    experienceRequired: '3',
-    salary: '700k',
+//     noofOpenings: 2,
+//     assignedQuestions: [],
+//     jobtype: 'fulltime',
+//     skillsrequired: [ 'python', 'dhanjo' ],
+//     location: 'Bangalore',
+//     experienceRequired: '3',
+//     salary: '700k',
    
-    deadline: '2025-02-23',
-    clicks: 0,
-    __v: 0
-  },
-  {
+//     deadline: '2025-02-23',
+//     clicks: 0,
+//     __v: 0
+//   },
+//   {
    
-    jobtitle: 'php developer',
-    companyname: 'Cognizant private limited',
-    description: 'our company is looking of an php deveop',
+//     jobtitle: 'php developer',
+//     companyname: 'Cognizant private limited',
+//     description: 'our company is looking of an php deveop',
   
-    noofOpenings: 2,
-    assignedQuestions: [],
-    jobtype: 'fulltime',
-    skillsrequired: [ 'php', 'laravel' ],
-    location: 'Delhi',
-    experienceRequired: '1',
-    salary: '500k-600k',
-    deadline: '2025-03-09',
-    clicks: 0,
-    __v: 0
-  }
-]
+//     noofOpenings: 2,
+//     assignedQuestions: [],
+//     jobtype: 'fulltime',
+//     skillsrequired: [ 'php', 'laravel' ],
+//     location: 'Delhi',
+//     experienceRequired: '1',
+//     salary: '500k-600k',
+//     deadline: '2025-03-09',
+//     clicks: 0,
+//     __v: 0
+//   }
+// ]
 
-//const value = datamapping.map((ele)=>ele.jobtitle)
-
-
-const sorting =[45,34,12,98,1,87]
-const details = sorting.sort((a,b)=>a-b)
-console.log(details)
+// //const value = datamapping.map((ele)=>ele.jobtitle)
 
 
-const array = [45,23,-3,45,78,1]
-const dfd= array.sort((a,b)=>b-a)
+// const sorting =[45,34,12,98,1,87]
+// const details = sorting.sort((a,b)=>a-b)
+// console.log(details)
 
-console.log(dfd[1])
+
+// const array = [45,23,-3,45,78,1]
+// const dfd= array.sort((a,b)=>b-a)
+
+// console.log(dfd[1])
+
+const data = [34,56,76,23,1]
+const value = data.reduce((acc,cv)=>{
+  
+})

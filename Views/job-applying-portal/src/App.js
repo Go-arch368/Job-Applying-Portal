@@ -44,8 +44,10 @@ import PrivateRoute from "./Components/PrivateRoute";
 import UnauthorizedPage from "./Components/UnauthorizedPage";
 import Settings from "./Components/Settings";
 import ResetPassword from "./Components/ResetPassword";
+import Candidatequery from "./Pages/Candidatequery";
 import { ToastContainer,toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Recruiterquery from "./Pages/Recruiterquery";
 function App() {
   const dispatch = useDispatch()
   const {isloggedIn} = useSelector((state)=>state.users)
@@ -104,6 +106,8 @@ function App() {
        <Route path="/adminProfile" element={<PrivateRoute role="admin"><ProfileAdmin/></PrivateRoute>}/>
        <Route path="/settings" element={<Settings/>}/>
        <Route path="/resetpassword" element={<ResetPassword/>} />
+       <Route path="/candidatequery/:jobId" element={<Candidatequery/>}/>
+       <Route path="/recruiter/queries" element={<Recruiterquery/>}/>
      </Routes>
     </div>
   );
