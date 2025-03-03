@@ -48,9 +48,15 @@ import Candidatequery from "./Pages/Candidatequery";
 import { ToastContainer,toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Recruiterquery from "./Pages/Recruiterquery";
+import NotFoundPage from "./Components/NotFoundPage";
 function App() {
   const dispatch = useDispatch()
-  const {isloggedIn} = useSelector((state)=>state.users)
+  const {user,isloggedIn} = useSelector((state)=>state.users)
+  
+  useEffect(()=>{
+    if(!user) return <p>Loading user data...</p>
+  },[])
+
   useEffect(()=>{
     dispatch(userRole())
   },[dispatch])
@@ -66,7 +72,6 @@ function App() {
 
      <Routes>
        <Route path="/searchJobs" element={<SearchJobs/>}/>
-       <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
        <Route path="/" element={<Home/>}/>
        <Route path="/register" element={<Register/>}/>
        <Route path="/login" element={<Login/>}/>
@@ -108,6 +113,8 @@ function App() {
        <Route path="/resetpassword" element={<ResetPassword/>} />
        <Route path="/candidatequery/:jobId" element={<Candidatequery/>}/>
        <Route path="/recruiter/queries" element={<Recruiterquery/>}/>
+       <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
+       <Route path="*" element={<NotFoundPage/>}/>
      </Routes>
     </div>
   );

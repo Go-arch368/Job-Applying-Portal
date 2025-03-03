@@ -116,9 +116,17 @@ export default function SearchJobs() {
   function handleApply(){
       const token = localStorage.getItem("token")
       if(!token){
-        toast.error("please login and save jobs")
+        toast.error("please login and apply for the job")
         navigate("/")
       }
+  }
+
+  function handleInquire(){
+    const token = localStorage.getItem("token")
+    if(!token){
+      toast.error("please login and inquire about the job")
+      navigate("/")
+    }
   }
 
  return(
@@ -208,7 +216,7 @@ export default function SearchJobs() {
           <strong>Deadline:</strong> {selectedJob.deadline}
         </p>
        <div className="flex gap-3 justify-center">
-        <button className="mt-4 px-6 bg-red-600  text-white font-semibold rounded-md hover:bg-red-700"><Link to={`/candidatequery/${selectedJob._id}`}>Inquire About Job</Link></button>
+        <button className="mt-4 px-6 bg-red-600  text-white font-semibold rounded-md hover:bg-red-700" onClick={handleInquire}><Link to={`/candidatequery/${selectedJob._id}`}>Inquire About Job</Link></button>
         <button class="mt-4 py-2 px-6 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
          <Link to={`/apply/${selectedJob._id}`} onClick={handleApply}>Apply Now</Link> 
         </button>
