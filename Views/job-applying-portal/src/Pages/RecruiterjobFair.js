@@ -67,45 +67,48 @@ export default function RecruiterjobFair() {
       )}
 
       <div className={`grid grid-cols-2 gap-4 p-10 ${register ? "opacity-20 pointer-events-none" : ""}`}>
-        {data.length > 0 ? (
-          data.map((ele) => {
-                const jobDate = new Date(ele.date)
-                const isExpired = jobDate<today
-                return (
-            <div key={ele._id} className={`p-4 border rounded-lg shadow bg-white ${isExpired?"opacity-50 grayscale bg-gray-100" : "bg-white"}`}>
-              <h1 className="font-bold text-lg">Name: {ele.name}</h1>
-              <h2 className="text-gray-700">Description: {ele.description}</h2>
-              <h2 className="text-gray-700">
-                Date: {format(ele.date, "yyyy-MM-dd")}
-              </h2>
-              <h2 className="text-gray-700">Location: {ele.location}</h2>
-              <h3>
-                  Status:{" "}
-                  {isExpired ? (
-                    <span className="text-red-500 font-semibold">Expired</span>
-                  ) : (
-                    <span className="text-green-500">{ele.status}</span>
-                  )}
-                </h3>
+      {data.length > 0 ? (
+  data.map((ele) => {
+    const jobDate = new Date(ele.date);
+    const isExpired = jobDate < today;
 
-              <div className="mt-4 flex gap-2 justify-center">
-                <button
-                  className="border bg-orange-400 text-white px-4 py-1 rounded"
-                  onClick={() => handleRegister(ele)}
-                  disabled={isExpired}
-                >
-                  Register
-                </button>
-                <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={()=>handleRecruiterRegistered(ele._id)} disabled={isExpired}>
-                  Recruiters Registered
-                </button>
-              </div>
-            </div>
-                )
- } ))
-         : (
-          <p className="text-center text-gray-500">No job fairs available</p>
-        )}
+    return (
+      <div key={ele._id} className={`p-4 border rounded-lg shadow ${isExpired ? "opacity-50 grayscale bg-gray-100" : "bg-white"}`}>
+        <h1 className="font-bold text-lg">Name: {ele.name}</h1>
+        <h2 className="text-gray-700">Description: {ele.description}</h2>
+        <h2 className="text-gray-700">
+          Date: {format(ele.date, "yyyy-MM-dd")}
+        </h2>
+        <h2 className="text-gray-700">Location: {ele.location}</h2>
+        <h3>
+          Status:{" "}
+          {isExpired ? (
+            <span className="text-red-500 font-semibold">Expired</span>
+          ) : (
+            <span className="text-green-500">{ele.status}</span>
+          )}
+        </h3>
+        <div className="mt-4 flex gap-2 justify-center">
+          <button
+            className="border bg-orange-400 text-white px-4 py-1 rounded"
+            onClick={() => handleRegister(ele)}
+            disabled={isExpired}
+          >
+            Register
+          </button>
+          <button className="border bg-red-500 text-white px-4 py-1 rounded" onClick={() => handleRecruiterRegistered(ele._id)} disabled={isExpired}>
+            Recruiters Registered
+          </button>
+        </div>
+      </div>
+    );
+  })
+) : (
+  <p className="text-gray-500 text-lg flex justify-center items-center h-40 bg-gray-100 rounded-lg shadow-md col-span-full">
+    🚫 No job fairs available at the moment. Check back soon!
+  </p>
+)}
+
       </div>
 
       {/* Modal Form when register is true */}

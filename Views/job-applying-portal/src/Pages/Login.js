@@ -99,6 +99,7 @@ export default function Login({ onClose }) {
                     <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition">
                         Login
                     </button>
+                    <p>don't have an account? <a href="/register" className="text-blue-700">register</a></p>
                 </form>
             </div>
         </div>

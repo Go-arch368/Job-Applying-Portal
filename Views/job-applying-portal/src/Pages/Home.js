@@ -22,6 +22,9 @@ const Home = () => {
     };
 
     const handleSearch = () => {
+        if(!jobtitle.trim()||location.trim()){
+            alert("please fill atleast one field")
+        }
         if (jobtitle.trim() || location.trim()) { // Ensures at least one field is filled
             navigate(`/searchJobs?jobtitle=${encodeURIComponent(jobtitle)}&location=${encodeURIComponent(location)}`);
         }
@@ -103,12 +106,12 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Footer */}
+          
             <footer className="bg-gray-800 text-white text-center py-6">
                 <p>© 2025 JobFinder. All Rights Reserved.</p>
             </footer>
 
-            {/* Modals */}
+           
             {isLoginOpen && <Login onClose={toggleLogin} />}
             {isRegisterOpen && <Register onClose={toggleRegister} />}
         </div>

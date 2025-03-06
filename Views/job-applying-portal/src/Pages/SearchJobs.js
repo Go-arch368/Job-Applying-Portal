@@ -159,7 +159,7 @@ export default function SearchJobs() {
         </button>
      
       </form>
-      {error&&<p className="text-red-500">{error}</p>}
+      {/* {error&&<p className="text-red-500">{error}</p>} */}
          <div> {searchError && (
         <p class="text-red-500 mb-4">{searchError.error}</p>
       )}</div>
@@ -210,7 +210,7 @@ export default function SearchJobs() {
           <strong>Experience Required:</strong> {selectedJob.experienceRequired}
         </p>
         <p class="text-lg text-gray-700 mb-2">
-          <strong>Skills Required:</strong> {selectedJob.skillsrequired.join(', ')}
+          <strong>Skills Required:</strong> {selectedJob?.skillsrequired?.join(', ')}
         </p>
         <p class="text-lg text-gray-700 mb-2">
           <strong>Deadline:</strong> {selectedJob.deadline}

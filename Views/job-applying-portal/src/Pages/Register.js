@@ -175,6 +175,7 @@ export default function Register({ onClose }) {
                       <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition" type="submit">
                         Register
                       </button>
+                      <p>already have an account?<a href="/login" className="text-blue-600">login</a></p>
                     </div>
                   </>
                 )}
