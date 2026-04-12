@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
 import { applyingjob } from "../redux/slices/jobapplySlice";
 import { toast } from "react-toastify";
+import { FaFileAlt, FaVideo, FaStop, FaStepForward, FaPlay, FaCheckCircle, FaBriefcase, FaMapMarkerAlt, FaMoneyBillWave, FaArrowLeft, FaClock } from "react-icons/fa";
 
 export default function ApplyJobs() {
     const dispatch = useDispatch();
@@ -153,127 +154,235 @@ export default function ApplyJobs() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-            <h1 className="text-2xl font-semibold text-center mb-4">Apply for Job</h1>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Left Section: Resume Upload and Video Interview */}
-                <div className="md:col-span-2 flex flex-col">
-                    <div className="mb-4">
-                        <h2 className="font-semibold">Upload Resume</h2>
-                        <input
-                            type="file"
-                            accept=".pdf,.docx"
-                            onChange={handleFileChange}
-                            className="mt-2 p-2 border rounded w-full"
-                        />
-                    </div>
-
-                    {selectedQuestions.length > 0 && (
-                        <div className="mb-4">
-                            {/* Display the current question */}
-                            {isRecording && (
-                                <h3 className="text-lg font-medium mb-2">
-                                    {selectedQuestions[currentQuestionIndex]}
-                                </h3>
-                            )}
-
-                            <Webcam
-                                audio
-                                ref={webcamRef}
-                                screenshotFormat="image/jpeg"
-                                videoConstraints={{ facingMode: "user" }}
-                                className="rounded-lg border mb-2"
-                                width="50%"
-                                videoStyle={{ maxWidth: '60%', margin: 'auto' }}
-                            />
-
-                            <div className="flex space-x-4 justify-center mt-2">
-                                {/* Start Recording Button */}
-                                {!isRecording && !recordingCompleted && (
-                                    <button
-                                        onClick={handleStartRecording}
-                                        className="bg-green-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Start Recording
-                                    </button>
-                                )}
-
-                                {/* Next Question Button */}
-                                {isRecording && currentQuestionIndex < selectedQuestions.length - 1 && (
-                                    <button
-                                        onClick={handleNextQuestion}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Next Question
-                                    </button>
-                                )}
-
-                                {/* Stop Recording Button */}
-                                {isRecording && currentQuestionIndex === selectedQuestions.length - 1 && (
-                                    <button
-                                        onClick={handleStopRecording}
-                                        className="bg-red-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Stop Recording
-                                    </button>
-                                )}
-                            </div>
-
-                            <p className="text-gray-700 mt-2">Recording Time: {recordTime}s</p>
-                        </div>
-                    )}
-
-                    {videoUrl && (
-                        <div className="mb-4">
-                            <h3 className="font-semibold">Recorded Video</h3>
-                            <video src={videoUrl} controls className="rounded-lg border w-full"></video>
-                        </div>
-                    )}
-
-                    {/* Submit Application Button */}
-                    {currentQuestionIndex === selectedQuestions.length - 1 && recordingCompleted && (
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex items-center justify-between mb-8 animate-fadeInDown">
+                    <div>
                         <button
-                            onClick={handleSubmitApplication}
-                            className="bg-purple-600 text-white px-4 py-2 mt-4 w-full rounded"
+                            onClick={handleDashboard}
+                            className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium transition-colors mb-2"
                         >
-                            {isSubmitted ? "Submitted" : isloading ? "Submitting..." : "Submit Application"}
+                            <FaArrowLeft size={14} /> Back to Dashboard
                         </button>
-                    )}
-
-                    {serverError && <p className="text-red-500 text-center">{serverError}</p>}
-
-                    <div className="mt-4">
-                        <h4 className="font-semibold">Timestamps</h4>
-                        <p>Question 1 : 0</p>
-                        {timestamps.map((entry, index) => (
-                            <p key={index} className="text-gray-600">Question {entry.questionIndex + 2}: {entry.timestamp}s</p>
-                        ))}
+                        <h1 className="text-3xl font-bold gradient-text">Application Submission</h1>
                     </div>
                 </div>
 
-                {/* Right Section: Job Details */}
-                <div className="flex items-center justify-center h-screen">
-                    <div className="flex flex-col justify-center items-start border p-6 rounded-lg shadow-lg bg-white w-96">
-                        <h2 className="text-xl font-semibold mb-4">Job Details</h2>
-                        {data?.map((ele) => ele?._id === jobId && (
-                            <div key={ele._id} className="mt-4">
-                                <p><strong>Job Title:</strong> {ele?.jobtitle}</p>
-                                <p><strong>Location:</strong> {ele?.location}</p>
-                                <p><strong>Salary:</strong> {ele?.salary}</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    {/* Left Section: Context (Resume & Video Interview) */}
+                    <div className="lg:col-span-2 space-y-6">
+                        
+                        {/* Resume Card */}
+                        <div className="glass-card rounded-2xl p-6 sm:p-8 card-hover animate-fadeInUp" style={{ animationDelay: '0.1s' }}>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">
+                                    <FaFileAlt size={20} />
+                                </div>
+                                <h2 className="text-xl font-semibold text-gray-800">1. Upload Resume</h2>
                             </div>
-                        ))}
+                            
+                            <div className="border-2 border-dashed border-indigo-200 rounded-xl p-8 bg-white/50 text-center hover:bg-white transition-colors group relative">
+                                <input
+                                    type="file"
+                                    accept=".pdf,.docx"
+                                    onChange={handleFileChange}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    id="resume-upload"
+                                />
+                                <div className="space-y-2 pointer-events-none">
+                                    <FaFileAlt className="mx-auto text-indigo-300 group-hover:text-indigo-500 transition-colors" size={32} />
+                                    <p className="text-gray-600 font-medium">Click or drag file to upload</p>
+                                    <p className="text-sm text-gray-400">PDF, DOCX up to 5MB</p>
+                                    {resume && (
+                                        <div className="mt-4 inline-flex items-center gap-2 badge badge-indigo animate-fadeIn">
+                                            <FaCheckCircle /> {resume.name}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Video Interview Card */}
+                        {selectedQuestions.length > 0 && (
+                            <div className="glass-card rounded-2xl p-6 sm:p-8 card-hover animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-3 bg-purple-100 rounded-xl text-purple-600">
+                                            <FaVideo size={20} />
+                                        </div>
+                                        <h2 className="text-xl font-semibold text-gray-800">2. Video Interview</h2>
+                                    </div>
+                                    
+                                    {isRecording && (
+                                        <div className="badge badge-rose animate-pulse flex items-center gap-2 px-3 py-1.5">
+                                            <div className="w-2 h-2 rounded-full bg-rose-500"></div>
+                                            Recording: {recordTime}s
+                                        </div>
+                                    )}
+                                </div>
+
+                                {isRecording && (
+                                    <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl mb-6 shadow-sm">
+                                        <p className="text-sm text-indigo-600 font-medium uppercase tracking-wider mb-1">Question {currentQuestionIndex + 1} of {selectedQuestions.length}</p>
+                                        <h3 className="text-lg font-semibold text-gray-800 leading-snug">
+                                            {selectedQuestions[currentQuestionIndex]}
+                                        </h3>
+                                    </div>
+                                )}
+
+                                <div className="relative rounded-2xl overflow-hidden ring-4 ring-slate-100 bg-black aspect-video flex items-center justify-center mb-6 shadow-inner">
+                                    {!videoUrl ? (
+                                        <Webcam
+                                            audio
+                                            ref={webcamRef}
+                                            screenshotFormat="image/jpeg"
+                                            videoConstraints={{ facingMode: "user" }}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <video src={videoUrl} controls className="w-full h-full object-cover"></video>
+                                    )}
+                                </div>
+
+                                {/* Video Actions */}
+                                <div className="flex flex-wrap gap-4 justify-center">
+                                    {!isRecording && !recordingCompleted && (
+                                        <button
+                                            onClick={handleStartRecording}
+                                            className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                        >
+                                            <FaPlay /> Start Recording
+                                        </button>
+                                    )}
+
+                                    {isRecording && currentQuestionIndex < selectedQuestions.length - 1 && (
+                                        <button
+                                            onClick={handleNextQuestion}
+                                            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                        >
+                                            <FaStepForward /> Next Question
+                                        </button>
+                                    )}
+
+                                    {isRecording && currentQuestionIndex === selectedQuestions.length - 1 && (
+                                        <button
+                                            onClick={handleStopRecording}
+                                            className="flex items-center gap-2 bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600 text-white px-6 py-3 rounded-full font-medium transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                        >
+                                            <FaStop /> Finish Recording
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Timestamps Preview */}
+                                {timestamps.length > 0 && (
+                                    <div className="mt-8 pt-6 border-t border-gray-100">
+                                        <h4 className="flex items-center gap-2 font-medium text-gray-700 mb-4">
+                                            <FaClock className="text-gray-400"/> Recording Timestamps
+                                        </h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            <span className="badge badge-indigo">Q1 @ 0s</span>
+                                            {timestamps.map((entry, index) => (
+                                                <span key={index} className="badge badge-indigo">
+                                                    Q{entry.questionIndex + 2} @ {entry.timestamp}s
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Submission Area */}
+                        {currentQuestionIndex === selectedQuestions.length - 1 && recordingCompleted && (
+                            <div className="animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+                                <button
+                                    onClick={handleSubmitApplication}
+                                    disabled={isSubmitted || isloading}
+                                    className={`w-full py-4 rounded-xl font-bold text-lg text-white shadow-lg transition-all ${
+                                        isSubmitted 
+                                        ? "bg-green-500 cursor-not-allowed" 
+                                        : "btn-primary-gradient cursor-pointer"
+                                    }`}
+                                >
+                                    {isSubmitted ? (
+                                        <span className="flex items-center justify-center gap-2"><FaCheckCircle/> Application Received</span>
+                                    ) : isloading ? (
+                                        "Submitting securely..."
+                                    ) : (
+                                        "Submit Final Application"
+                                    )}
+                                </button>
+                                {serverError && (
+                                    <div className="mt-4 p-4 bg-rose-50 text-rose-600 rounded-xl border border-rose-100 text-center font-medium animate-fadeIn">
+                                        {serverError}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right Section: Job Overview Sidebar */}
+                    <div className="lg:col-span-1">
+                        <div className="glass-card rounded-2xl p-6 sticky top-24 card-hover animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+                            <h2 className="text-lg font-bold text-gray-800 mb-6 pb-4 border-b border-gray-100">Job Overview</h2>
+                            {data?.map((ele) => ele?._id === jobId && (
+                                <div key={ele._id} className="space-y-6">
+                                    {ele?.companyname && (
+                                        <div>
+                                            <p className="text-sm text-gray-500 font-medium mb-1">Company</p>
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2.5 bg-indigo-50 text-indigo-500 rounded-lg">
+                                                    <FaBriefcase size={16} />
+                                                </div>
+                                                <p className="font-semibold text-gray-800 text-lg leading-tight">{ele?.companyname}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    <div>
+                                        <p className="text-sm text-gray-500 font-medium mb-1">Position</p>
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-blue-50 text-blue-500 rounded-lg">
+                                                <FaBriefcase size={16} />
+                                            </div>
+                                            <p className="font-semibold text-gray-800 text-lg leading-tight">{ele?.jobtitle}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <p className="text-sm text-gray-500 font-medium mb-1">Location</p>
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-emerald-50 text-emerald-500 rounded-lg">
+                                                <FaMapMarkerAlt size={16} />
+                                            </div>
+                                            <p className="font-medium text-gray-700">{ele?.location}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <p className="text-sm text-gray-500 font-medium mb-1">Compensation</p>
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-amber-50 text-amber-500 rounded-lg">
+                                                <FaMoneyBillWave size={16} />
+                                            </div>
+                                            <p className="font-medium text-gray-700">{ele?.salary}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-6 mt-6 border-t border-gray-100">
+                                        <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-100/50">
+                                            <p className="text-sm text-indigo-800">
+                                                <span className="font-bold">Pro tip:</span> Ensure you maintain eye contact with the camera and speak clearly during the video interview phase.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {/* Home Button */}
-            <button
-                onClick={handleDashboard}
-                className="bg-blue-500 text-white p-2 rounded-md"
-            >
-                Home
-            </button>
         </div>
     );
 }

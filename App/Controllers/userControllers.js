@@ -23,7 +23,7 @@ userCltr.register=async(req,res)=>{
           user.role="admin"
         }
         await user.save()
-        const tokenData = jwt.sign({userId:user._id,role:user.role},"Secret@123",{expiresIn:"7d"})
+        const tokenData = jwt.sign({userId:user._id,role:user.role},process.env.SECRET_KEY,{expiresIn:"7d"})
       return res.json({token:tokenData})
     }
     catch(err){
@@ -58,7 +58,7 @@ userCltr.loginUser=async(req,res)=>{
            }
       }
 
-    const tokenData = jwt.sign({userId:user._id,role:user.role},"Secret@123",{expiresIn:"7d"})
+    const tokenData = jwt.sign({userId:user._id,role:user.role},process.env.SECRET_KEY,{expiresIn:"7d"})
       return res.json({token:tokenData,user})
     }
     catch(err){
@@ -70,10 +70,14 @@ userCltr.loginUser=async(req,res)=>{
 userCltr.getUserData=async(req,res)=>{
     try{
       const user = await User.findById(req.currentUser.userId)
+      if(!user){
+        return res.status(404).json({error:"User not found"})
+      }
       return res.json(user)
     }
     catch(err){
         console.log(err)
+        return res.status(500).json({error:"Something went wrong"})
     }
 }
 

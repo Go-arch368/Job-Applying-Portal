@@ -7,7 +7,23 @@ import RegisteredCandidates from "./RegisteredCandidates";
 import RegisteredRecruiters from "./RegisteredRecruiters";
 
 export default function JobFair() {
-  const [activeTab, setActiveTab] = useState("create"); // ✅ Default to first tab
+  const [activeTab, setActiveTab] = useState("create"); // Default to first tab
+
+  // Render the corresponding component based on the activeTab
+  const renderContent = () => {
+    switch (activeTab) {
+      case "create":
+        return <CreateJobFair />;
+      case "manage":
+        return <ManageJobFair />;
+      case "recruiters":
+        return <RegisteredRecruiters />;
+      case "candidates":
+        return <RegisteredCandidates />;
+      default:
+        return <CreateJobFair />; // Fallback to CreateJobFair
+    }
+  };
 
   return (
     <div className="flex">
@@ -16,10 +32,7 @@ export default function JobFair() {
 
       {/* Main Content Area */}
       <div className="ml-64 flex-grow p-6 bg-gray-100 min-h-screen">
-        {activeTab === "create" && <CreateJobFair />}
-        {activeTab === "manage" && <ManageJobFair />}
-        {activeTab === "recruiters" && <RegisteredRecruiters />}
-        {activeTab === "candidates" && <RegisteredCandidates />}
+        {renderContent()}
       </div>
     </div>
   );

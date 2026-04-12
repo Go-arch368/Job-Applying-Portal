@@ -30,19 +30,24 @@ export default function ManageJobFair() {
     }
   }
 
-  function handlePrevPage(){
-    navigate(-1)
+  function handlePrevPage() {
+    navigate(-1);
   }
 
   return (
-    <div className="p-4">
-      <div className="mb-2">
-      <button className="bg-red-500 text-white p-2 rounded-full " onClick={handlePrevPage}>
-      Prev Page
-    </button>
+    <div className="min-h-screen bg-gray-100 p-6">
+      {/* Previous Page Button */}
+      <div className="mb-6">
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+          onClick={handlePrevPage}
+        >
+          Previous Page
+        </button>
       </div>
-  
-      <div className="grid grid-cols-2 gap-4">
+
+      {/* Job Fair Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.length > 0 ? (
           data.map((ele) => {
             const jobDate = new Date(ele.date);
@@ -51,33 +56,47 @@ export default function ManageJobFair() {
             return (
               <div
                 key={ele._id}
-                className={`p-4 border rounded-lg shadow transition duration-300 ${
-                  isExpired ? "opacity-50 grayscale bg-gray-100" : "bg-white"
+                className={`p-6 bg-white border border-gray-200 rounded-xl shadow-lg transition duration-300 ${
+                  isExpired ? "opacity-50 grayscale bg-gray-50" : "hover:shadow-xl"
                 }`}
               >
-                <h1 className="font-bold text-lg">Name: {ele.name}</h1>
-                <h2 className="text-gray-700">Description: {ele.description}</h2>
-                <h2 className="text-gray-700">Date: {format(jobDate, "yyyy-MM-dd")}</h2>
-                <h2 className="text-gray-700">Location: {ele.location}</h2>
-                <h3>
-                  Status:{" "}
-                  {isExpired ? (
-                    <span className="text-red-500 font-semibold">Expired</span>
-                  ) : (
-                    <span className="text-green-500">{ele.status}</span>
-                  )}
-                </h3>
+                {/* Job Fair Name */}
+                <h1 className="text-xl font-bold text-gray-800 mb-2">{ele.name}</h1>
 
-                <div className="mt-4 flex gap-2 justify-center">
+                {/* Job Fair Description */}
+                <p className="text-gray-600 mb-4">{ele.description}</p>
+
+                {/* Job Fair Details */}
+                <div className="space-y-2 text-gray-700">
+                  <p>
+                    <span className="font-semibold">Date:</span> {format(jobDate, "yyyy-MM-dd")}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Location:</span> {ele.location}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Status:</span>{" "}
+                    {isExpired ? (
+                      <span className="text-red-500 font-semibold">Expired</span>
+                    ) : (
+                      <span className="text-green-500 font-semibold">Active</span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="mt-6 flex gap-4">
                   <button
-                    className="border bg-orange-400 text-white px-4 py-1 rounded disabled:opacity-50"
+                    className={`flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300 ${
+                      isExpired ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                     onClick={() => handleEdit(ele._id)}
                     disabled={isExpired}
                   >
                     Edit
                   </button>
                   <button
-                    className="border bg-red-500 text-white px-4 py-1 rounded"
+                    className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
                     onClick={() => handleDelete(ele._id)}
                   >
                     Delete
@@ -87,7 +106,7 @@ export default function ManageJobFair() {
             );
           })
         ) : (
-          <p className="text-center text-gray-500">No job fairs available</p>
+          <p className="text-center text-gray-500 col-span-full">No job fairs available</p>
         )}
       </div>
     </div>

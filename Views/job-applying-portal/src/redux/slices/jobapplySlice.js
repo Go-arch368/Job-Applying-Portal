@@ -20,9 +20,9 @@ export const searchingJobs = createAsyncThunk( "jobapplying/searchingJobs", asyn
 
  export const withOutSearch = createAsyncThunk("jobapplying/withOutSearch",async(_,{rejectWithValue})=>{
    try{
-     const response = await axios.get("/api/jobs/noSearch",{headers:{Authorization:localStorage.getItem("token")}})
+     const response = await axios.get("/api/jobs/noSearch")
      console.log(response?.data?.gettingQuestions)
-     return response?.data?.gettingQuestions
+     return response?.data?.gettingQuestions || []
    }
    catch(err){
     console.log(err)
@@ -206,25 +206,37 @@ const jobapplyReducer = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(searchingJobs.pending, (state) => {
+        state.isloading = true;
+        state.searchError = null;
+      })
       .addCase(searchingJobs.fulfilled, (state, action) => {
         state.data = action.payload;
         state.searchError = null;
-        state.applying=[]
+        state.applying=[];
+        state.isloading = false;
       })  
       .addCase(searchingJobs.rejected, (state, action) => {
         state.searchError = action.payload;
         state.data = [];
-        state.applying=[]
+        state.applying=[];
+        state.isloading = false;
+      })
+      .addCase(withOutSearch.pending, (state) => {
+        state.isloading = true;
+        state.searchError = null;
       })
       .addCase(withOutSearch.fulfilled, (state, action) => {
         state.data = action.payload;
         state.searchError = null;
-        state.applying=[]
+        state.applying=[];
+        state.isloading = false;
       })  
       .addCase(withOutSearch.rejected, (state, action) => {
         state.searchError = action.payload;
         state.data = [];
-        state.applying=[]
+        state.applying=[];
+        state.isloading = false;
       })
       .addCase(applyingjob.pending,(state,action)=>{
         state.isloading=true

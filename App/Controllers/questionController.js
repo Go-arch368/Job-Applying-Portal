@@ -105,6 +105,8 @@ questionCltr.deleteWithJob = async (req, res) => {
             return res.status(404).json({ error: "Question not found" });
         }
 
+        console.log("Finding what is inside question",question)
+
         res.json({
             message: "Question deleted successfully",
             question

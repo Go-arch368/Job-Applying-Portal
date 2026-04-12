@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken"
 export default function authenticateUser(req,res,next){
       const tokenVerify = req.headers["authorization"]
        if(!tokenVerify){
-        return res.status(400).json("invalid token")
+        return res.status(401).json({error:"No token provided"})
       } 
       try{
         const tokenDetails = jwt.verify(tokenVerify,process.env.SECRET_KEY)
@@ -16,7 +16,7 @@ export default function authenticateUser(req,res,next){
       }
       catch(err){
         console.log(err)
-        return res.status(500).json({error:"invalid or expired token"})
+        return res.status(401).json({error:"Invalid or expired token"})
       }
 }
 

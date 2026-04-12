@@ -51,18 +51,33 @@ import Recruiterquery from "./Pages/Recruiterquery";
 import NotFoundPage from "./Components/NotFoundPage";
 function App() {
   const dispatch = useDispatch()
-  const {user,isloggedIn} = useSelector((state)=>state.users)
+  const {user, isloggedIn, isLoading} = useSelector((state) => state.users)
   
-  useEffect(()=>{
-    if(!user) return <p>Loading user data...</p>
-  },[])
-
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(userRole())
-  },[dispatch])
+  }, [dispatch])
 
-  if(localStorage.getItem("token")&&!isloggedIn){
-    return <p style={{color:"red"}}>loading...</p>
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      }}>
+        <div style={{
+          width: 60, height: 60,
+          border: '5px solid rgba(255,255,255,0.3)',
+          borderTop: '5px solid #fff',
+          borderRadius: '50%',
+          animation: 'spin 0.8s linear infinite'
+        }} />
+        <p style={{ color: '#fff', marginTop: 20, fontSize: 18, fontWeight: 500 }}>Loading...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    )
   }
 
   return (

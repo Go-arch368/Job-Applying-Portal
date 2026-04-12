@@ -30,9 +30,8 @@ router.get("/job/:jobId/rejected",authenticateUser,authorizeUser(["recruiter"]),
 //get applied jobs of the candidate
 
 //get all applied jobs of the candidate
-router.get("/getAllApplied/:candidateId",authenticateUser,jobAppCltr.getAllApplied)
+router.get("/getAllApplied",authenticateUser,jobAppCltr.getAllApplied)
 
-router.get("/jobs/noSearch",authenticateUser,jobAppCltr.giveSearch)
 
 
 

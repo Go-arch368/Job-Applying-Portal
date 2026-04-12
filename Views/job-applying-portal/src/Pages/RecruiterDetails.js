@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { recruiterData } from "../redux/slices/recruiterSlice";
 import { useNavigate } from "react-router-dom";
+import { FaBuilding, FaMapMarkerAlt, FaGlobe, FaAlignLeft, FaTimes } from "react-icons/fa";
 
 export default function RecruiterDetails({ users, showRecruiterForm ,onclose}) {
   const dispatch = useDispatch();
@@ -55,12 +56,11 @@ export default function RecruiterDetails({ users, showRecruiterForm ,onclose}) {
     } else {
       setRecruiterErrors({});
      
-      try{
-        dispatch(recruiterData({ recruiterDetails, resetForm ,navigate})).unwrap()
+      try {
+        dispatch(recruiterData({ recruiterDetails, resetForm, navigate })).unwrap()
         toast.success("Details submitted to admin")
-      }
-      catch(err){
-       toast.error("Submit failed")
+      } catch(err) {
+        toast.error("Submit failed")
       }
 
       onclose()
@@ -68,93 +68,93 @@ export default function RecruiterDetails({ users, showRecruiterForm ,onclose}) {
     }
   }
 
-  function handleSendAdmin(){
-     navigate("/")
-  }
-
   if (!showRecruiterForm) return null; 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm relative">
-        <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          onClick={onclose}
-        >
-          ✖
-        </button>
-        <h1 className="text-lg font-semibold text-center mb-4">Recruiter Details</h1>
-        <form onSubmit={handleRecruiterSubmit} className="space-y-3">
-          <div>
-            <label className="block text-xs font-medium">Company Name:</label>
-            <input
-              type="text"
-              value={recruiterDetails.companyname}
-              className="w-full border p-2 rounded-md text-xs focus:ring-2 focus:ring-blue-400"
-              onChange={(e) =>
-                setRecruiterDetails({ ...recruiterDetails, companyname: e.target.value })
-              }
-            />
-            {recruiterErrors.companyname && (
-              <p className="text-red-500 text-xs mt-1">{recruiterErrors.companyname}</p>
-            )}
-          </div>
+    <div className="relative">
+      <button
+        type="button"
+        className="absolute -top-4 -right-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors z-10"
+        onClick={onclose}
+      >
+        <FaTimes size={18} />
+      </button>
 
-          <div>
-            <label className="block text-xs font-medium">Location:</label>
-            <input
-              type="text"
-              value={recruiterDetails.location}
-              className="w-full border p-2 rounded-md text-xs focus:ring-2 focus:ring-blue-400"
-              onChange={(e) =>
-                setRecruiterDetails({ ...recruiterDetails, location: e.target.value })
-              }
-            />
-            {recruiterErrors.location && (
-              <p className="text-red-500 text-xs mt-1">{recruiterErrors.location}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium">Website:</label>
-            <input
-              type="text"
-              value={recruiterDetails.website}
-              className="w-full border p-2 rounded-md text-xs focus:ring-2 focus:ring-blue-400"
-              onChange={(e) =>
-                setRecruiterDetails({ ...recruiterDetails, website: e.target.value })
-              }
-            />
-            {recruiterErrors.website && (
-              <p className="text-red-500 text-xs mt-1">{recruiterErrors.website}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium">Description:</label>
-            <textarea
-              value={recruiterDetails.description}
-              className="w-full border p-2 rounded-md text-xs h-16 resize-none focus:ring-2 focus:ring-blue-400"
-              onChange={(e) =>
-                setRecruiterDetails({ ...recruiterDetails, description: e.target.value })
-              }
-            ></textarea>
-            {recruiterErrors.description && (
-              <p className="text-red-500 text-xs mt-1">{recruiterErrors.description}</p>
-            )}
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium p-2 rounded-md transition"
-              onSubmit={handleSendAdmin}
-            >
-              Send to Admin
-            </button>
-          </div>
-        </form>
+      <div className="text-center mb-8">
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <FaBuilding className="text-2xl text-blue-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900">Company Details</h1>
+        <p className="text-gray-500 mt-2 text-sm z-10 relative">Tell us about your company to attract the best talent.</p>
       </div>
+
+      <form onSubmit={handleRecruiterSubmit} className="space-y-5">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Company Name</label>
+          <div className="relative">
+            <FaBuilding className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="e.g. Acme Corp"
+              value={recruiterDetails.companyname}
+              className={`w-full border-2 border-slate-200 rounded-xl pl-11 pr-4 py-3 text-[15px] transition-all bg-gray-50 focus:border-indigo-500 focus:bg-white hover:bg-white outline-none focus:ring-4 focus:ring-indigo-500/10 ${recruiterErrors.companyname ? 'border-red-300 ring-4 ring-red-500/10 focus:border-red-500' : ''}`}
+              onChange={(e) => setRecruiterDetails({ ...recruiterDetails, companyname: e.target.value })}
+            />
+          </div>
+          {recruiterErrors.companyname && <p className="text-red-500 text-xs font-medium ml-1 mt-1">{recruiterErrors.companyname}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Location</label>
+          <div className="relative">
+            <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="e.g. New York, NY"
+              value={recruiterDetails.location}
+              className={`w-full border-2 border-slate-200 rounded-xl pl-11 pr-4 py-3 text-[15px] transition-all bg-gray-50 focus:border-indigo-500 focus:bg-white hover:bg-white outline-none focus:ring-4 focus:ring-indigo-500/10 ${recruiterErrors.location ? 'border-red-300 ring-4 ring-red-500/10 focus:border-red-500' : ''}`}
+              onChange={(e) => setRecruiterDetails({ ...recruiterDetails, location: e.target.value })}
+            />
+          </div>
+          {recruiterErrors.location && <p className="text-red-500 text-xs font-medium ml-1 mt-1">{recruiterErrors.location}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Website URL</label>
+          <div className="relative">
+            <FaGlobe className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="https://acmecorp.com"
+              value={recruiterDetails.website}
+              className={`w-full border-2 border-slate-200 rounded-xl pl-11 pr-4 py-3 text-[15px] transition-all bg-gray-50 focus:border-indigo-500 focus:bg-white hover:bg-white outline-none focus:ring-4 focus:ring-indigo-500/10 ${recruiterErrors.website ? 'border-red-300 ring-4 ring-red-500/10 focus:border-red-500' : ''}`}
+              onChange={(e) => setRecruiterDetails({ ...recruiterDetails, website: e.target.value })}
+            />
+          </div>
+          {recruiterErrors.website && <p className="text-red-500 text-xs font-medium ml-1 mt-1">{recruiterErrors.website}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Company Description</label>
+          <div className="relative">
+            <FaAlignLeft className="absolute left-4 top-4 text-gray-400" />
+            <textarea
+              placeholder="What makes your company a great place to work?"
+              value={recruiterDetails.description}
+              className={`w-full border-2 border-slate-200 rounded-xl pl-11 pr-4 py-3 text-[15px] transition-all bg-gray-50 focus:border-indigo-500 focus:bg-white hover:bg-white outline-none focus:ring-4 focus:ring-indigo-500/10 h-32 resize-none ${recruiterErrors.description ? 'border-red-300 ring-4 ring-red-500/10 focus:border-red-500' : ''}`}
+              onChange={(e) => setRecruiterDetails({ ...recruiterDetails, description: e.target.value })}
+            ></textarea>
+          </div>
+          {recruiterErrors.description && <p className="text-red-500 text-xs font-medium ml-1 mt-1">{recruiterErrors.description}</p>}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full btn-primary-gradient py-3.5 rounded-xl text-sm font-bold mt-4 hover:shadow-lg flex justify-center items-center"
+        >
+          Submit Recruiter Profile
+        </button>
+      </form>
     </div>
   );
 }

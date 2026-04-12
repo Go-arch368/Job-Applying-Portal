@@ -4,8 +4,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { resetState, resetPasswordWithOldPassword } from "../redux/slices/resetPasswordSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function ResetPassword() {
+    const navigate = useNavigate()
     const {user} = useSelector((state)=>state.users)
     const [email, setEmail] = useState(user?.email||"");
     const [oldPassword, setOldPassword] = useState("");
@@ -18,7 +20,7 @@ export default function ResetPassword() {
     const [clientError,setClientError] = useState("")
 
     function validation(){
-
+  
        let errors={}
        if(!oldPassword){
         errors.oldPassword = "oldPassword field is required"
@@ -55,6 +57,7 @@ export default function ResetPassword() {
             dispatch(resetPasswordWithOldPassword({ email, oldPassword, newPassword })).unwrap()
             .then(()=>{
                 toast.success("Password updated successfully!");
+                navigate("/login",{replace:true})
                    // setEmail("");
             // setOldPassword("");
             // setNewPassword("");

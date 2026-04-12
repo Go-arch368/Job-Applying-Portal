@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config()
+
 import express from "express"
 import configuredb from "./Config/db.js"
 import userRouter from "./Routes/userRoute.js";
@@ -11,13 +14,11 @@ import interviewRouter from "./Routes/interviewRoute.js"
 import jobFairRouter from "./Routes/jobFairRoute.js"
 import paymentRouter from "./Routes/paymentRoute.js"
 import supportRouter from "./Routes/supportRoute.js"
-import  dotenv from "dotenv";
 import cors from "cors"
 const app=express()
 app.post("/api/webhooks", express.raw({ type: "application/json" }));
 app.use(express.json()); 
 app.use(cors())
-dotenv.config()
 const port =4010
 configuredb()
 
