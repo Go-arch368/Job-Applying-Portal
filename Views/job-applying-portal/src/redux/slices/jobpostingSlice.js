@@ -128,7 +128,7 @@ const jobpostingReducer = createSlice({
            .addCase(updateJobDetails.rejected,(state,action)=>{
                state.serverErrors =action.payload
                state.data=null
-           })
+           })   
            .addCase(deletingJob.fulfilled,(state,action)=>{
               const deleteDocument = state.data.filter((ele)=>ele._id!==action.payload._id)
               state.data=deleteDocument
