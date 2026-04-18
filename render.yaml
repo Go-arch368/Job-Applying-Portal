@@ -1,0 +1,27 @@
+services:
+  # ── Backend ───────────────────────────────────────────────
+  - type: web
+    name: job-applying-portal-backend
+    runtime: node
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4010
+      # Add MONGO_URI, JWT_SECRET, CLOUDINARY_*, STRIPE_* etc.
+      # in Render Dashboard → Environment instead of here.
+
+  # ── Frontend ──────────────────────────────────────────────
+  - type: web
+    name: job-applying-portal-frontend
+    runtime: static
+    rootDir: Views/job-applying-portal
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
