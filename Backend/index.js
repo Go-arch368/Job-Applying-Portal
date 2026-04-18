@@ -18,7 +18,16 @@ import cors from "cors"
 const app=express()
 app.post("/api/webhooks", express.raw({ type: "application/json" }));
 app.use(express.json()); 
-app.use(cors())
+// app.use(cors())
+app.use(cors({
+    origin:[
+        "https://job-applying-portal-frontend.onrender.com",
+        "http://localhost:4010"  ,
+        "http://localhost:3000"
+    ],
+    credentials:true
+}))
+app.options("/*/", cors());
 const port =process.env.PORT
 configuredb()
 
