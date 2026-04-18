@@ -19,7 +19,7 @@ const app=express()
 app.post("/api/webhooks", express.raw({ type: "application/json" }));
 app.use(express.json()); 
 app.use(cors())
-const port =4010
+const port =process.env.PORT
 configuredb()
 
 
