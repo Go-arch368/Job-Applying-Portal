@@ -12,7 +12,7 @@ export const userRegister = createAsyncThunk("users/userRegister", async ({ user
     }
     catch (err) {
         console.log(err)
-        return rejectWithValue(err.response.data.error)
+        return rejectWithValue(err?.response?.data?.error || err.message)
     }
 })
 
@@ -29,8 +29,8 @@ export const userLogin = createAsyncThunk("/users/userLogin", async ({ users, re
 
     }
     catch (err) {
-        console.log(err.response.data.error)
-        return rejectWithValue(err.response.data.error)
+        console.log(err?.response?.data?.error || err.message)
+        return rejectWithValue(err?.response?.data?.error || err.message)
     }
 })
 
@@ -63,7 +63,7 @@ export const profileUpdate = createAsyncThunk("users/profileUpdate", async (form
     }
     catch (err) {
         console.log(err)
-        return rejectWithValue(err.response.data.error)
+        return rejectWithValue(err?.response?.data?.error || err.message)
     }
 })
 
