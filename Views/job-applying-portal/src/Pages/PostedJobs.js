@@ -132,6 +132,7 @@ export default function PostedJobs() {
                                 {/* Footer Actions */}
                                 <div className="p-4 bg-gray-50 border-t border-gray-100 grid grid-cols-2 gap-3">
                                     <Link
+                                         // id is job id 
                                         to={`/candidateList/${ele._id}`}
                                         className="bg-white border-2 border-indigo-50 text-indigo-600 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-50 hover:border-indigo-100 transition shadow-sm flex items-center justify-center gap-2"
                                     >

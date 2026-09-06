@@ -7,7 +7,7 @@ import { FaUserCircle, FaEnvelope, FaFileDownload, FaCheckCircle, FaTimesCircle,
 import { Loader } from "lucide-react";
 
 export default function CandidateList() {
-  const { jobId } = useParams();
+  const { jobId } = useParams(); 
   const dispatch = useDispatch();
   console.log(jobId);
   const navigate = useNavigate()

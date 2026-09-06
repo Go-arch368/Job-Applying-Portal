@@ -42,8 +42,7 @@ export default function CreateQuestions() {
       setNewQuestion("")
    }
    else{
-    dispatch(addQtn({ newQuestion, jobId }))
-    .unwrap()
+    dispatch(addQtn({ newQuestion, jobId })).unwrap()
     dispatch(getQtn({jobId})).unwrap()
     setNewQuestion("")
    }
@@ -97,7 +96,9 @@ export default function CreateQuestions() {
       </button>
   
     {questionsArray?.length >0&&questionsArray?.map(ele => {
-        return <p key={ele?._id}>{ele?.questionText}<button onClick={(e)=>handleEdit(ele?._id)} className="border bg-blue-500 p-2 px-4 rounded-xl text-white">Edit</button><button onClick={()=>{handleDelete(ele?._id)}} className="border bg-red-500 p-2 px-4 rounded-xl text-white">Delete</button></p>
+        return <p key={ele?._id}>{ele?.questionText}
+        <button onClick={(e)=>handleEdit(ele?._id)} className="border bg-blue-500 p-2 px-4 rounded-xl text-white">Edit</button>
+        <button onClick={()=>{handleDelete(ele?._id)}} className="border bg-red-500 p-2 px-4 rounded-xl text-white">Delete</button></p>
     })
         
     }

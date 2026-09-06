@@ -21,3 +21,4 @@ const supportSchema = new Schema({
 const Support = model("Support",supportSchema)
 
 export default Support 
+

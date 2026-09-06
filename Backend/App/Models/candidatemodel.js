@@ -46,3 +46,11 @@ const candidateSchema = new Schema({
 const Candidate = model('Candidate', candidateSchema);
 
 export default Candidate;
+
+
+
+// const candiateSchema = new Schema ({
+//})
+
+// export Candidate = model("Candidate",candidateSchema)
+// export Candidate = model("Candidate",candidateSchema)

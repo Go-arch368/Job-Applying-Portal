@@ -127,8 +127,9 @@ const adminVerifyReducer = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getRecruiters.fulfilled, (state, action) => {
-        state.data = action.payload;
+        return {...state,data:action.payload}
       })
+     
       .addCase(getRecruiters.rejected, (state, action) => {
         state.serverErrors = action.payload;
       })

@@ -76,7 +76,7 @@ recruiterCltr.update = async(req,res)=>{
         const findingId = await Recruiter.findById(id).populate('userId')
         console.log(findingId)
         if(!findingId){
-            return res.status(404).json("your is not found")
+            return res.status(404).json("your id is not found")
         }
        const update = await Recruiter.findByIdAndUpdate(id,body,{new:true,runValidators:true}).populate("userId")
        await sendEmail(

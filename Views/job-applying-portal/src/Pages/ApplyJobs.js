@@ -36,7 +36,6 @@ export default function ApplyJobs() {
     const { data, applying, serverError, isloading } = useSelector((state) => state.jobapplying);
     const findingQuestions = data?.filter((ele) => ele._id.toString() === jobId).map((ele) => ele.assignedQuestions);
     const flatQuestions = findingQuestions ? findingQuestions.flat() : [];
-
     // Shuffle questions on mount
     useEffect(() => {
         if (flatQuestions.length > 0 && !shuffleDone.current) {

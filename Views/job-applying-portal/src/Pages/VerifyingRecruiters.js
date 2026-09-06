@@ -23,7 +23,8 @@ export default function VerifyingRecruiters() {
   function handleDelete(ele){
     const deleting = window.confirm("Are you sure to delete the document")
     if(deleting){
-        dispatch(deleteRecruiter({_id:ele._id}))
+        dispatch(deleteRecruiter({_id:ele._id})).unwrap()
+        .then(()=>dispatch(getRecruiters()))
     }
   }
 

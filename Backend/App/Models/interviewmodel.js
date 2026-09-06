@@ -12,3 +12,4 @@ const interviewSchema = new Schema({
 const Interview = model("Interview",interviewSchema)
 
 export default Interview
+
